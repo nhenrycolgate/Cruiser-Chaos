@@ -32,4 +32,7 @@ function Timer(time) {
         this.time--;
     }
 
+    this.toString = function(){
+        return Math.floor(time/60)+":" + (time%60);
+    }
 }
