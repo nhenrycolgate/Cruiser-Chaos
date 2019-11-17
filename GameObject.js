@@ -4,6 +4,7 @@ function GameObject(engine, transform, render, type) {
     this.render = render;
     this.transform = transform;
     this.type = type;
+    this.enabled = true;
 
     this.SetRender = function(render) {
         this.render = render;
@@ -27,6 +28,14 @@ function GameObject(engine, transform, render, type) {
 
     this.Destroy = function(engine) {
         engine.Destroy(this);
+    }
+
+    this.Enable = function() {
+        this.enabled = true;
+    }
+
+    this.Disable = function() {
+        this.enabled = false;
     }
 
 }

@@ -1,16 +1,17 @@
-//-----------------//
-//--FINAL PROJECT--//
-//-----------------//
+var engine;
 
+function init(event){
+    engine = new new Engine();
 
-//-----------------//
-//------INIT-------//
-//-----------------//
+    //populate engine with objects to handle logic
 
-var engine = new new Engine();
+    loop();
+}
 
-//GAME LOOP//
-//while (true) {
-//  engine.Update();
-//}
-//END LOOP//
+function loop() {
+
+    engine.Update();
+    requestAnimationFrame(loop);
+}
+
+window.addEventListener('load', init, false);

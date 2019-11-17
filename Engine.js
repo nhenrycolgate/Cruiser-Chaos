@@ -1,3 +1,5 @@
+//TODO: Add to this the camera render and scene handling
+
 function Engine() {
 
     this.objects = new Map();
@@ -51,7 +53,9 @@ function Engine() {
 
     this.UpdateObjects = function() {
         for (var object of objects.values()) {
-            object.Update(this);
+            if (object.enabled) {
+                object.Update(this);
+            }
         }
     }
 
