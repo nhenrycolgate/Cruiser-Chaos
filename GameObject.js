@@ -19,11 +19,15 @@ function GameObject(engine, transform, render, type) {
     }
 
     this.Render = function(engine) {
-        //should be the object function used to flush it to the buffer
+        if (render == null) {
+            return;
+        }
+        this.render.mesh.position.x = transform.x;
+        this.render.mesh.position.y = transform.y;
+        this.render.mesh.position.z = transform.z;
     }
 
     this.Update = function(engine) {
-        //handle logic of the object
     }
 
     this.Destroy = function(engine) {
@@ -36,6 +40,10 @@ function GameObject(engine, transform, render, type) {
 
     this.Disable = function() {
         this.enabled = false;
+    }
+
+    this.toString = function() {
+        return "[object id:" + this.id + "][object type:" + this.type + "]";
     }
 
 }

@@ -4,33 +4,35 @@ function Engine() {
 
     this.objects = new Map();
     this.typeMap = new Map();
-    this.buttons = new Map(); //should be a map with button enum for key and booleans for values
+    this.buttons = new Map(); //TODO: should be a map with button enum for key and booleans for values
     this.enabled = true;
 
     this.Add = function(object) {
-        objects.set(object.id, object);
-        if (typeMap.has(object.type)) {
+        this.objects.set(object.id, object);
+        if (this.typeMap.has(object.type)) {
             var typeIDMap = typeMap.get(object.type);
             typeIDMap.set(object.id, object);
+            this.typeMap.set(object.type, typeIDMap);
         }
         else {
             var typeIDMap = new Map();
             typeIDMap.set(object.id, object);
+            this.typeMap.set(object.type, typeIDMap);
         }
     }
 
     this.GetNextID = function() {
         var id = 0;
-        while (objects.has(id)) {
+        while (this.objects.has(id)) {
             id++;
         }
         return id++;
     }
 
     this.Destroy = function(object) {
-        objects.delete(object.id);
-        if (typeMap.has(object.type)) {
-            var typeIDMap = typeMap.get(object.type);
+        this.objects.delete(object.id);
+        if (this.typeMap.has(object.type)) {
+            var typeIDMap = this.typeMap.get(object.type);
             typeIDMap.delete(object.id);
         }
     }
@@ -39,20 +41,20 @@ function Engine() {
         return buttons;
     }
 
-    this.HandleInput = function {
+    this.HandleInput = function() {
         //get input from the user for one frame, setting the buttons map
     }
 
     this.Update = function() {
-        if (enabled) {
-            HandleInput();
-            UpdateObjects();
-            RenderObjects();
+        if (this.enabled) {
+            this.HandleInput();
+            this.UpdateObjects();
+            this.RenderObjects();
         }
     }
 
     this.UpdateObjects = function() {
-        for (var object of objects.values()) {
+        for (var object of this.objects.values()) {
             if (object.enabled) {
                 object.Update(this);
             }
@@ -60,13 +62,14 @@ function Engine() {
     }
 
     this.RenderObjects = function() {
-        for (var object of objects.values()) {
-            objects.Render(this);
+        for (var object of this.objects.values()) {
+            object.Render(this);
         }
     }
 
     this.CreateInstance = function(object) {
-        engine.Add(object);
+        this.Add(object);
+        scene.add(object.render.mesh);
     }
 
     this.enable = function() {

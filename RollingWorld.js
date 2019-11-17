@@ -1,15 +1,17 @@
-function RollingWorld(engine, render, transform, speed, direction, hp, enemyType) {
+function RollingWorld(engine, transform, render) {
 
-    this.type = "WORLD";
-    this.speed = speed;
+    GameObject.call(this, engine, transform, render, "WORLD");
 
     //TODO: set up pooling system, which will destroy unloaded assets and allocate created assets.
     this.assets = [];
 
-    GameObject.call(this, engine, render, transform, type);
+    this.SetSpeed = function(speed) {
+        this.speed = speed;
+    }
 
     this.Update = function() {
-        render.rotation.x += speed; //have the world spinning around the x axis
+        console.log("speed" + this.speed);
+        render.mesh.rotation.x += this.speed; //have the world spinning around the x axis
 
         //should have some function call when a branched path appears that rotation the sphere by the y axis at intersects
     }
@@ -32,10 +34,10 @@ function RollingWorldRender() {
     var sides = 40;
     var tiers = 40;
 
-    var sphereGeometry = new THREE.SphereGeometry( worldRadius, sides, tiers);
-    var sphereMaterial = new THREE.MeshStandardMaterial( { color: 0xfffafa ,shading:THREE.FlatShading} )
+    var sphereGeometry = new THREE.OctahedronGeometry( 50, 3 );
+    var sphereMaterial = new THREE.MeshLambertMaterial( { color:0xff0000 } );
 
-    var rolling_world_render = new THREE.Mesh( sphereGeometry, sphereMaterial );
+    var world = new THREE.Mesh( sphereGeometry, sphereMaterial );
 
-    this.mesh.add(rolling_world_render);
+    this.mesh.add(world);
 }

@@ -1,4 +1,4 @@
-function Enemy(engine, render, transform, speed, direction, hp, enemyType) {
+function Enemy(engine, transform, render, speed, direction, hp, enemyType) {
 
     this.type = "ENEMY";
     this.speed = speed;
@@ -6,7 +6,7 @@ function Enemy(engine, render, transform, speed, direction, hp, enemyType) {
     this.direction = direction;
     this.enemyType = enemyType;
 
-    GameObject.call(this, engine, render, transform, type);
+    GameObject.call(this, engine, transform, render, type);
 
     this.SetHP = function(hp) {
         this.hp = hp;

@@ -17,4 +17,8 @@ function Transform(x, y, z) {
         this.z += z;
     }
 
+    this.Copy = function() {
+        return new Transform(this.x, this.y, this.z);
+    }
+
 }
