@@ -8,6 +8,13 @@ function Enemy(engine, transform, render, speed, direction, hp, enemyType) {
 
     GameObject.call(this, engine, transform, render, type);
 
+    this.Init = function(speed, direction, hp, enemyType) {
+        this.speed = speed;
+        this.hp = hp;
+        this.direction = direction;
+        this.enemyType = enemyType;
+    }
+
     this.SetHP = function(hp) {
         this.hp = hp;
     }

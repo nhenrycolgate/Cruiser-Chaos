@@ -26,12 +26,14 @@ function init(event) {
 
     engine = new Engine();
 
-    var world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender());
-    world.SetSpeed(DegreesToRadians(1));
-    engine.CreateInstance(world);
+    //var world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender());
+    //world.SetSpeed(DegreesToRadians(1));
+    //engine.CreateInstance(world);
 
-    //var cruiser = new Cruiser(engine, new Transform(0, 0, 0), new CruiserRender(), 1);
-    //engine.CreateInstance(cruiser);
+    var cruiser = new Cruiser(engine, new Transform(0, 0, 0), new CruiserRender());
+    cruiser.InitWheels();
+    cruiser.SetSpeed(DegreesToRadians(1));
+    engine.CreateInstance(cruiser);
 
     /*var shapeGeometry = new THREE.CubeGeometry(25, 25, 25, 1, 1, 1);
     var shapeMaterial = new THREE.MeshPhongMaterial( { color:0xff0000, transparent:true, opacity:1 } );

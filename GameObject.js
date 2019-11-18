@@ -27,6 +27,13 @@ function GameObject(engine, transform, render, type) {
         this.render.mesh.position.z = transform.z;
     }
 
+    this.MeshSpin = function(x, y, z) {
+        //DEBUG METHOD
+        this.render.mesh.rotation.x += x;
+        this.render.mesh.rotation.y += y;
+        this.render.mesh.rotation.z += z;
+    }
+
     this.Update = function(engine) {
     }
 
