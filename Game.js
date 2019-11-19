@@ -4,6 +4,7 @@ var engine,
     renderer,
     container,
     controls;
+	var timer;
 
 var HEIGHT, WIDTH;
 
@@ -23,7 +24,7 @@ function init(event) {
     CreateLights();
 
     //Variable Initialization//
-
+	
     engine = new Engine();
 
     var world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender());
@@ -109,10 +110,9 @@ function CreateLights() {
 
 }
 
-function loop() {
+function loop() { //game loop, game engine updates which updates scene 
 
     engine.Update();
-
     renderer.render(scene, camera);
     requestAnimationFrame(loop);
 }

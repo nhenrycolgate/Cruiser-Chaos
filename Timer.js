@@ -22,18 +22,26 @@ function Timer(time) {
     }
 
     this.Expired = function() {
-        return left == 0;
+        return this.left == 0;
     }
 
     this.Tick = function() {
-        if (!enabled) {
+        if (!this.enabled) {
             return;
         }
-        this.time--;
+        this.left--;
+		if (this.left==0){
+			this.enabled=!this.enabled;
+		}
     }
 
     this.toString = function() {
-        return "[Max time:" + time + "][Time left:" + left + "][enabled:" + enabled + "]";
+		//second format
+		return "[Max time: " + this.time + "][Time left: " + this.left + "][enabled:" + this.enabled + "]";
+
+		//minute:second format
+        //return "[Max time: " + Math.floor(this.time/60) +":" + this.time%60 + "][Time left: " + Math.floor(this.left/60) + ":" + this.left%60+ "][enabled:" + this.enabled + "]";
+		
     }
 
 }
