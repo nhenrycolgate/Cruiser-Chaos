@@ -67,7 +67,8 @@ function Engine() {
         }
     }
 
-    this.CreateInstance = function(object) {  
+    this.CreateInstance = function(object) {
+        object.Init();
         this.Add(object);
         scene.add(object.render.mesh);
     }

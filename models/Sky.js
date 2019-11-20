@@ -17,7 +17,7 @@ function SkyRender() {
     this.mesh = new THREE.Object3D();
     this.mesh.name = "SKY";
 
-    var lightGeometry = new THREE.OctahedronGeometry( 50 , 3 );
+    var lightGeometry = new THREE.OctahedronGeometry( 10 , 3 );
     var lightMaterial = new THREE.MeshLambertMaterial( {color: COLORS.red} );
     var light = new THREE.Mesh(lightGeometry, lightMaterial);
     light.position.x = 200;

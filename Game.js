@@ -28,12 +28,12 @@ function init(event) {
 
     engine = new Engine();
 
-    //var world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender());
-    //world.SetSpeed(DegreesToRadians(1));
-    //engine.CreateInstance(world);
+    var world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender());
+    world.SetSpeed(DegreesToRadians(1));
+    engine.CreateInstance(world);
 
-    var cruiser = new Cruiser(engine, new Transform(0, 0, 0), new CruiserRender());
-    cruiser.InitWheels();
+    var cruiser = new Cruiser(engine, new Transform(0, 0 + world.radius + 50 / 2, 0), new CruiserRender());
+    //cruiser.InitWheels();
     cruiser.SetSpeed(DegreesToRadians(1));
     engine.CreateInstance(cruiser);
 

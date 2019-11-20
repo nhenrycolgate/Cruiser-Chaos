@@ -5,6 +5,7 @@ function GameObject(engine, transform, render, type) {
     this.transform = transform;
     this.type = type;
     this.enabled = true;
+    this.initialized = false;
 
     this.SetRender = function(render) {
         this.render = render;
@@ -32,6 +33,9 @@ function GameObject(engine, transform, render, type) {
         this.render.mesh.rotation.x += x;
         this.render.mesh.rotation.y += y;
         this.render.mesh.rotation.z += z;
+    }
+
+    this.Init = function(engine) {
     }
 
     this.Update = function(engine) {

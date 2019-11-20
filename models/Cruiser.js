@@ -2,6 +2,7 @@ function Cruiser(engine, transform, render) {
 
     GameObject.call(this, engine, transform, render, "Cruiser");
     this.wheels = []; //contains the mesh information for the wheels
+    this.height = 50;
 
     //defines the lane the cruiser is currently occupying.  Set to the middle lane by default.
     //lane = 0 => leftmost lane
@@ -12,12 +13,6 @@ function Cruiser(engine, transform, render) {
     this.lane = 1;
 
     this.Update = function(engine) {
-
-        this.MeshSpin(
-        DegreesToRadians(0),
-        DegreesToRadians(1),
-        DegreesToRadians(0)
-        );
 
         for (var i = 0; i < this.wheels.length; i++) {
             var wheel = this.wheels[i];
@@ -36,6 +31,11 @@ function Cruiser(engine, transform, render) {
 
     this.InitWheels = function() {
         this.wheels = render.wheels;
+    }
+
+    this.Init = function() {
+        this.InitWheels();
+        this.render.mesh.rotation.y += DegreesToRadians(90);
     }
 
 }

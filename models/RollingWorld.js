@@ -4,6 +4,11 @@ function RollingWorld(engine, transform, render) {
 
     //TODO: set up pooling system, which will destroy unloaded assets and allocate created assets.
     this.assets = [];
+    this.radius = 100;
+
+    this.Init = function() {
+        this.SetSpeed(DegreesToRadians(1));
+    }
 
     this.SetSpeed = function(speed) {
         this.speed = speed;
@@ -31,10 +36,8 @@ function RollingWorldRender() {
     this.mesh.name = "RollingWorld";
 
     var worldRadius = 100;
-    var sides = 40;
-    var tiers = 50;
 
-    var sphereGeometry = new THREE.OctahedronGeometry( 50, 3 );
+    var sphereGeometry = new THREE.OctahedronGeometry( worldRadius, 3 );
     var sphereMaterial = new THREE.MeshLambertMaterial( { color:COLORS.red } );
 
     var world = new THREE.Mesh( sphereGeometry, sphereMaterial );
