@@ -61,13 +61,13 @@ function Engine() {
         }
     }
 
-    this.RenderObjects = function() {
+    this.RenderObjects = function() { //render all objects to scene. 
         for (var object of this.objects.values()) {
             object.Render(this);
         }
     }
 
-    this.CreateInstance = function(object) {
+    this.CreateInstance = function(object) {  
         this.Add(object);
         scene.add(object.render.mesh);
     }

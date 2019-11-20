@@ -10,7 +10,7 @@ function RollingWorld(engine, transform, render) {
     }
 
     this.Update = function() {
-        console.log("speed" + this.speed);
+        // console.log("speed" + this.speed + " (print statement located in rollingworld.js)");
         render.mesh.rotation.x += this.speed; //have the world spinning around the x axis
 
         //should have some function call when a branched path appears that rotation the sphere by the y axis at intersects
@@ -32,10 +32,10 @@ function RollingWorldRender() {
 
     var worldRadius = 100;
     var sides = 40;
-    var tiers = 40;
+    var tiers = 50;
 
     var sphereGeometry = new THREE.OctahedronGeometry( 50, 3 );
-    var sphereMaterial = new THREE.MeshLambertMaterial( { color:0xff0000 } );
+    var sphereMaterial = new THREE.MeshLambertMaterial( { color:COLORS.red } );
 
     var world = new THREE.Mesh( sphereGeometry, sphereMaterial );
 

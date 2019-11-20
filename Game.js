@@ -4,6 +4,7 @@ var engine,
     renderer,
     container,
     controls;
+var timer;
 
 var HEIGHT, WIDTH;
 
@@ -111,10 +112,9 @@ function CreateLights() {
 
 }
 
-function loop() {
+function loop() { //game loop, game engine updates which updates scene
 
     engine.Update();
-
     renderer.render(scene, camera);
     requestAnimationFrame(loop);
 }
