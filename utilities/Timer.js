@@ -30,8 +30,8 @@ function Timer(time) {
             return;
         }
         this.left--;
-		if (this.left==0){
-			this.enabled=!this.enabled;
+		if (this.left == 0){
+			this.enabled =! this.enabled;
 		}
     }
 

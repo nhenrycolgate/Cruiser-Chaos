@@ -10,7 +10,7 @@ function Engine() {
     this.Add = function(object) {
         this.objects.set(object.id, object);
         if (this.typeMap.has(object.type)) {
-            var typeIDMap = typeMap.get(object.type);
+            var typeIDMap = this.typeMap.get(object.type);
             typeIDMap.set(object.id, object);
             this.typeMap.set(object.type, typeIDMap);
         }

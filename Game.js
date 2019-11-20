@@ -87,7 +87,7 @@ function CreateScene() {
 
 function CreateLights() {
 
-  hemisphereLight = new THREE.HemisphereLight(0xaaaaaa,0x000000, .9)
+  hemisphereLight = new THREE.HemisphereLight(0xaaaaaa,0x000000, .9);
 
   ambientLight = new THREE.AmbientLight(0xdc8874, .5);
 

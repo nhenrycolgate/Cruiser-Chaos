@@ -55,7 +55,7 @@ function CruiserRender() {
     var bodyDepth = 50;
 
     var bodyGeometry = new THREE.BoxGeometry(bodyWidth, bodyHeight, bodyDepth, 1, 1, 1);
-    var bodyMaterial = new THREE.MeshLambertMaterial({color:Colors.red});
+    var bodyMaterial = new THREE.MeshLambertMaterial({color:COLORS.red});
     var body = new THREE.Mesh(bodyGeometry, bodyMaterial);
 
     this.mesh.add(body);
@@ -67,7 +67,7 @@ function CruiserRender() {
     var frontDepth = 45;
 
     var frontGeometry = new THREE.BoxGeometry(frontWidth, frontHeight, frontDepth, 1, 1, 1);
-    var frontMaterial = new THREE.MeshLambertMaterial({color:Colors.red});
+    var frontMaterial = new THREE.MeshLambertMaterial({color:COLORS.red});
     var front = new THREE.Mesh(frontGeometry, frontMaterial);
     front.position.x = -(bodyWidth / 2) - (frontWidth / 2);
     front.position.y = (frontHeight / 2) - (bodyHeight / 2);
@@ -81,7 +81,7 @@ function CruiserRender() {
     var windowDepth = 2;
 
     var windowGeometry = new THREE.BoxGeometry(windowWidth, windowHeight, windowDepth, 1, 1, 1);
-    var windowMaterial = new THREE.MeshLambertMaterial({color:Colors.white});
+    var windowMaterial = new THREE.MeshLambertMaterial({color:COLORS.white});
     var window = new THREE.Mesh(windowGeometry, windowMaterial);
 
     this.mesh.add(window);
@@ -132,7 +132,7 @@ function CruiserRender() {
                          							wheelRadiusDetail,
                          							6,
                          						);
-    var wheelMaterial = new THREE.MeshLambertMaterial({color:Colors.brownDark});
+    var wheelMaterial = new THREE.MeshLambertMaterial({color:COLORS.brownDark});
     var wheel = new THREE.Mesh(wheelGeometry, wheelMaterial);
 
 
@@ -151,7 +151,7 @@ function CruiserRender() {
                          							spockRadiusDetail,
                          							6,
                          						);
-    var spockMaterial = new THREE.MeshLambertMaterial({color:Colors.white});
+    var spockMaterial = new THREE.MeshLambertMaterial({color:COLORS.white});
     var spock = new THREE.Mesh(spockGeometry, spockMaterial);
     wheel.add(spock);
     wheel.rotation.x = DegreesToRadians(90);
@@ -166,7 +166,7 @@ function CruiserRender() {
     this.mesh.add(wheelCopy);
     this.wheels.push(wheelCopy);
 
-    var spockMaterial = new THREE.MeshLambertMaterial({color:Colors.white});
+    var spockMaterial = new THREE.MeshLambertMaterial({color:COLORS.white});
     var spock = new THREE.Mesh(spockGeometry, spockMaterial);
     wheel.add(spock);
     wheel.rotation.x = DegreesToRadians(90);
@@ -189,7 +189,7 @@ function CruiserRender() {
     this.mesh.add(wheelCopy);
     this.wheels.push(wheelCopy);
 
-    var spockMaterial = new THREE.MeshLambertMaterial({color:Colors.white});
+    var spockMaterial = new THREE.MeshLambertMaterial({color:COLORS.white});
     var spock = new THREE.Mesh(spockGeometry, spockMaterial);
     wheel.add(spock);
     wheel.rotation.x = DegreesToRadians(90);
