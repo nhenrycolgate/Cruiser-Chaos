@@ -31,10 +31,14 @@ function init(event) {
     //world.SetSpeed(DegreesToRadians(1));
     //engine.CreateInstance(world);
 
-    var cruiser = new Cruiser(engine, new Transform(0, 0, 0), new CruiserRender());
-    cruiser.InitWheels();
-    cruiser.SetSpeed(DegreesToRadians(1));
-    engine.CreateInstance(cruiser);
+    //var cruiser = new Cruiser(engine, new Transform(0, 0, 0), new CruiserRender());
+    //cruiser.InitWheels();
+    //cruiser.SetSpeed(DegreesToRadians(1));
+    //engine.CreateInstance(cruiser);
+
+    var sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender());
+    sky.SetSpeed(DegreesToRadians(1));
+    engine.CreateInstance(sky);
 
     /*var shapeGeometry = new THREE.CubeGeometry(25, 25, 25, 1, 1, 1);
     var shapeMaterial = new THREE.MeshPhongMaterial( { color:0xff0000, transparent:true, opacity:1 } );
@@ -71,7 +75,7 @@ function CreateScene() {
     );
 
     camera.position.x = 0;
-    camera.position.z = 200;
+    camera.position.z = 500;
     camera.position.y = 0;
 
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
