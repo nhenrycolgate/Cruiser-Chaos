@@ -27,9 +27,9 @@ function init(event) {
 
     engine = new Engine();
 
-    //var world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender());
-    //world.SetSpeed(DegreesToRadians(1));
-    //engine.CreateInstance(world);
+    var world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender());
+    world.SetSpeed(DegreesToRadians(1));
+    engine.CreateInstance(world);
 
     //var cruiser = new Cruiser(engine, new Transform(0, 0, 0), new CruiserRender());
     //cruiser.InitWheels();
@@ -37,7 +37,7 @@ function init(event) {
     //engine.CreateInstance(cruiser);
 
     var sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender());
-    sky.SetSpeed(DegreesToRadians(1));
+    sky.SetSpeed(DegreesToRadians(0.5));
     engine.CreateInstance(sky);
 
     /*var shapeGeometry = new THREE.CubeGeometry(25, 25, 25, 1, 1, 1);
@@ -109,10 +109,10 @@ function CreateLights() {
 
   var ch = new THREE.CameraHelper(shadowLight.shadow.camera);
 
-  //scene.add(ch);
+  // scene.add(ch);
   scene.add(hemisphereLight);
   scene.add(shadowLight);
-  scene.add(ambientLight);
+  // scene.add(ambientLight);
 
 }
 

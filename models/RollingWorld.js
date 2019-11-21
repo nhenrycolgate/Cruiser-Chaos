@@ -35,7 +35,7 @@ function RollingWorldRender() {
     var tiers = 50;
 
     var sphereGeometry = new THREE.OctahedronGeometry( 50, 3 );
-    var sphereMaterial = new THREE.MeshLambertMaterial( { color:COLORS.red } );
+    var sphereMaterial = new THREE.MeshLambertMaterial( { color:COLORS.pink } );
 
     var world = new THREE.Mesh( sphereGeometry, sphereMaterial );
 
