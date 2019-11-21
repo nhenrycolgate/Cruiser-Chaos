@@ -1,4 +1,4 @@
-var skyColorIncrement = -0.005
+var skyOpacityIncrement = 0;
 
 function Sky(engine, transform, render) {
 
@@ -6,29 +6,28 @@ function Sky(engine, transform, render) {
 
     this.SetSpeed = function(speed) {
         this.speed = speed;
+        skyOpacityIncrement = speed/2.5;
     }
 
     this.Update = function() {
         this.render.mesh.rotation.z += this.speed;
 
-        // make this a function of speed;
-        this.render.mesh.material.opacity = getNewSkyColor(this.render.mesh.material.opacity);
+        this.render.mesh.material.opacity = getNewSkyOpacity(this.render.mesh.material.opacity);
     }
 
 }
 
-function getNewSkyColor(currentOpacity) {
-  if (currentOpacity > 1 || currentOpacity < 0) skyColorIncrement *= -1;
-  return currentOpacity + skyColorIncrement;
+function getNewSkyOpacity(currentOpacity) {
+  if (currentOpacity > 1 || currentOpacity < -0.25) skyOpacityIncrement *= -1;
+  return currentOpacity + skyOpacityIncrement;
 }
 
 function SkyRender() {
     var skyGeometry = new THREE.OctahedronGeometry( 1000 , 3 );
-    var skyMaterial = new THREE.MeshBasicMaterial({ color: COLORS.blue , side: THREE.BackSide, opacity: 1 });
+    var skyMaterial = new THREE.MeshBasicMaterial({ color: COLORS.blue , side: THREE.BackSide, opacity: 0.5, transparent: true });
 
     this.mesh = new THREE.Mesh(skyGeometry, skyMaterial);
     this.mesh.name = "SKY";
-
 
     // LIGHT
     var sunGeometry = new THREE.OctahedronGeometry( 10 , 3 );

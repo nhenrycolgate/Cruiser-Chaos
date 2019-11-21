@@ -37,7 +37,7 @@ function init(event) {
     //engine.CreateInstance(cruiser);
 
     var sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender());
-    sky.SetSpeed(DegreesToRadians(0.5));
+    sky.SetSpeed(DegreesToRadians(2));
     engine.CreateInstance(sky);
 
     /*var shapeGeometry = new THREE.CubeGeometry(25, 25, 25, 1, 1, 1);
@@ -66,6 +66,7 @@ function CreateScene() {
     fieldOfView = 50;
     nearPlane = .1;
     farPlane = 10000;
+    scene.background = new THREE.Color( 0x000000 );
 
     camera = new THREE.PerspectiveCamera(
     fieldOfView,
@@ -80,6 +81,7 @@ function CreateScene() {
 
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(WIDTH, HEIGHT);
+    renderer.setClearColor(COLORS.black);
 
     renderer.shadowMap.enabled = true;
 
