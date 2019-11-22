@@ -31,10 +31,10 @@ function init(event) {
     world.SetSpeed(DegreesToRadians(1));
     engine.CreateInstance(world);
 
-    //var cruiser = new Cruiser(engine, new Transform(0, 0, 0), new CruiserRender());
-    //cruiser.InitWheels();
-    //cruiser.SetSpeed(DegreesToRadians(1));
-    //engine.CreateInstance(cruiser);
+    // var cruiser = new Cruiser(engine, new Transform(0, 0, 0), new CruiserRender());
+    // cruiser.InitWheels();
+    // cruiser.SetSpeed(DegreesToRadians(1));
+    // engine.CreateInstance(cruiser);
 
     var sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender());
     sky.SetSpeed(DegreesToRadians(2));
@@ -66,7 +66,6 @@ function CreateScene() {
     fieldOfView = 50;
     nearPlane = .1;
     farPlane = 10000;
-    scene.background = new THREE.Color( 0x000000 );
 
     camera = new THREE.PerspectiveCamera(
     fieldOfView,
