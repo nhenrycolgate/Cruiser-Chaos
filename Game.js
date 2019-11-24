@@ -27,17 +27,17 @@ function init(event) {
 
     engine = new Engine();
 
-    //var world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender());
-    //world.SetSpeed(DegreesToRadians(1));
-    //engine.CreateInstance(world);
+    var world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender());
+    world.SetSpeed(DegreesToRadians(1));
+    engine.CreateInstance(world);
 
-    //var cruiser = new Cruiser(engine, new Transform(0, 0, 0), new CruiserRender());
-    //cruiser.InitWheels();
-    //cruiser.SetSpeed(DegreesToRadians(1));
-    //engine.CreateInstance(cruiser);
+    // var cruiser = new Cruiser(engine, new Transform(0, 0, 0), new CruiserRender());
+    // cruiser.InitWheels();
+    // cruiser.SetSpeed(DegreesToRadians(1));
+    // engine.CreateInstance(cruiser);
 
     var sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender());
-    sky.SetSpeed(DegreesToRadians(1));
+    sky.SetSpeed(DegreesToRadians(2));
     engine.CreateInstance(sky);
 
     /*var shapeGeometry = new THREE.CubeGeometry(25, 25, 25, 1, 1, 1);
@@ -80,6 +80,7 @@ function CreateScene() {
 
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(WIDTH, HEIGHT);
+    renderer.setClearColor(COLORS.black);
 
     renderer.shadowMap.enabled = true;
 
@@ -109,10 +110,10 @@ function CreateLights() {
 
   var ch = new THREE.CameraHelper(shadowLight.shadow.camera);
 
-  //scene.add(ch);
+  // scene.add(ch);
   scene.add(hemisphereLight);
   scene.add(shadowLight);
-  scene.add(ambientLight);
+  // scene.add(ambientLight);
 
 }
 
