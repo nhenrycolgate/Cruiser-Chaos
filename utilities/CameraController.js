@@ -3,6 +3,9 @@ function CameraController(camera, zoom) {
     this.camera = camera;
     this.cameraPosition = {x: 0, y: 0, z: 1};
     this.zoom = zoom;
+    this.zoomMin = 0;
+    this.zoomMax = zoom * 2;
+    this.zoomSpeed = 10;
 
     this.Init = function() {
         var _SetCameraPosition = this.SetCameraPosition;
@@ -32,6 +35,15 @@ function CameraController(camera, zoom) {
         else if (keyEvent.key == "f") {
             cameraController.cameraPosition = {x: 0, y: 0, z: 1};
         }
+
+        if (keyEvent.key == "z") {
+            cameraController.zoom += cameraController.zoomSpeed;
+        }
+
+        else if (keyEvent.key == "x") {
+           cameraController.zoom -= cameraController.zoomSpeed;
+        }
+        cameraController.zoom = Bound(cameraController.zoom, cameraController.zoomMin, cameraController.zoomMax);
 
         console.log(cameraController.cameraPosition);
         console.log(cameraController.zoom);
