@@ -1,10 +1,7 @@
-//TODO: Add to this the camera render and scene handling
-
 function Engine() {
 
     this.objects = new Map();
     this.typeMap = new Map();
-    this.buttons = new Map(); //TODO: should be a map with button enum for key and booleans for values
     this.enabled = true;
 
     this.Add = function(object) {
@@ -67,7 +64,8 @@ function Engine() {
         }
     }
 
-    this.CreateInstance = function(object) {  
+    this.CreateInstance = function(object) {
+        object.Init();
         this.Add(object);
         scene.add(object.render.mesh);
     }
