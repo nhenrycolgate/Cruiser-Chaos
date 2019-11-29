@@ -138,4 +138,41 @@ function loop() { //game loop, game engine updates which updates scene
     requestAnimationFrame(loop);
 }
 
+function handleKeyDown(keyEvent) {
+    // if(jumping)return;
+    // var validMove=true;
+    if ( keyEvent.keyCode === 37) { //left
+      console.log("Left");
+        // if (currentLane == middleLane) {
+        //     currentLane = leftLane;
+        // }else if (currentLane == rightLane) {
+        //     currentLane = middleLane;
+        // } else {
+        //     validMove = false;
+        // }
+    } else if (keyEvent.keyCode === 39) { //right
+      console.log("Right");
+        // if (currentLane == middleLane) {
+        //     currentLane = rightLane;
+        // } else if (currentLane == leftLane) {
+        //     currentLane = middleLane;
+        // } else {
+        //     validMove = false;
+        // }
+    } else if (keyEvent.keyCode === 38) {  //up, jump
+      console.log("Up");
+        //     bounceValue=0.1;
+        //     jumping=true;
+        // }
+        // validMove=false;
+    }
+    // if(validMove){
+    //     jumping=true;
+    //     bounceValue=0.06;
+    // }
+}
+
+
+
 window.addEventListener('load', init, false);
+document.onkeydown = handleKeyDown
