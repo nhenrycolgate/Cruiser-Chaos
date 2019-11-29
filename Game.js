@@ -11,6 +11,8 @@ var HEIGHT, WIDTH;
 
 var ambientLight, hemisphereLight, shadowLight;
 
+var worldRadius = 150;
+
 function handleWindowResize() {
   HEIGHT = window.innerHeight;
   WIDTH = window.innerWidth;
@@ -28,7 +30,7 @@ function init(event) {
 
     engine = new Engine();
 
-    var world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender());
+    var world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender(worldRadius));
     world.SetSpeed(DegreesToRadians(1));
     engine.CreateInstance(world);
 
@@ -38,12 +40,12 @@ function init(event) {
     // cruiser.SetSpeed(DegreesToRadians(1));
     // engine.CreateInstance(cruiser);
 
-    var cruiser = new Cruiser(engine, new Transform(0, 0 + world.radius + 50 / 2, 0), new CruiserRender());
+    var cruiser = new Cruiser(engine, new Transform(0, 0 + worldRadius + 50 / 2, 0), new CruiserRender());
     //cruiser.InitWheels();
     cruiser.SetSpeed(DegreesToRadians(1));
     engine.CreateInstance(cruiser);
 
-    var sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender());
+    var sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender(worldRadius*3));
     sky.SetSpeed(DegreesToRadians(2));
     engine.CreateInstance(sky);
 
