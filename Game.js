@@ -7,6 +7,8 @@ var engine,
     controls;
 var timer;
 
+var world, cruiser, sky;
+
 var HEIGHT, WIDTH;
 
 var ambientLight, hemisphereLight, shadowLight;
@@ -30,7 +32,7 @@ function init(event) {
 
     engine = new Engine();
 
-    var world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender(worldRadius));
+    world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender(worldRadius));
     world.SetSpeed(DegreesToRadians(1));
     engine.CreateInstance(world);
 
@@ -40,12 +42,12 @@ function init(event) {
     // cruiser.SetSpeed(DegreesToRadians(1));
     // engine.CreateInstance(cruiser);
 
-    var cruiser = new Cruiser(engine, new Transform(0, 0 + worldRadius + 50 / 2, 0), new CruiserRender());
+    cruiser = new Cruiser(engine, new Transform(0, 0 + worldRadius + 50 / 2, 0), new CruiserRender());
     //cruiser.InitWheels();
     cruiser.SetSpeed(DegreesToRadians(1));
     engine.CreateInstance(cruiser);
 
-    var sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender(worldRadius*3));
+    sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender(worldRadius*3));
     sky.SetSpeed(DegreesToRadians(2));
     engine.CreateInstance(sky);
 
@@ -140,31 +142,17 @@ function loop() { //game loop, game engine updates which updates scene
 
 function handleKeyDown(keyEvent) {
     // if(jumping)return;
-    // var validMove=true;
     if ( keyEvent.keyCode === 37) { //left
       console.log("Left");
-        // if (currentLane == middleLane) {
-        //     currentLane = leftLane;
-        // }else if (currentLane == rightLane) {
-        //     currentLane = middleLane;
-        // } else {
-        //     validMove = false;
-        // }
+      cruiser.UpdateLane(-1);
     } else if (keyEvent.keyCode === 39) { //right
       console.log("Right");
-        // if (currentLane == middleLane) {
-        //     currentLane = rightLane;
-        // } else if (currentLane == leftLane) {
-        //     currentLane = middleLane;
-        // } else {
-        //     validMove = false;
-        // }
+      cruiser.UpdateLane(1);
     } else if (keyEvent.keyCode === 38) {  //up, jump
       console.log("Up");
         //     bounceValue=0.1;
         //     jumping=true;
         // }
-        // validMove=false;
     }
     // if(validMove){
     //     jumping=true;

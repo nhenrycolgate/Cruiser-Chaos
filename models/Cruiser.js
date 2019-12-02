@@ -9,8 +9,15 @@ function Cruiser(engine, transform, render) {
     //lane = 1 => middle lane
     //lane = 2 => rightmost lane
 
-    //TODO: Set this up with an enum.
+    //TODO: Set this up with an enum. - EDIT: Do we need an enum if we are using the below UpdateLane func?
     this.lane = 1;
+
+    this.UpdateLane = function(input) {
+      var newLane = this.lane + input;
+      if (newLane < 3 && newLane > -1) {
+        this.lane = newLane;
+      }
+    }
 
     this.Update = function(engine) {
 
