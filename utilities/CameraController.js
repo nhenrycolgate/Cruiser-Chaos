@@ -21,10 +21,6 @@ function CameraController(camera, zoom) {
 
     this.SetCameraPosition = function(keyEvent, cameraController) {
 
-        console.log(cameraController);
-
-        console.log(keyEvent.key);
-
         if (keyEvent.key == "t") {
             cameraController.cameraPosition = {x: 0, y: 1, z: 0};
         }
@@ -44,9 +40,6 @@ function CameraController(camera, zoom) {
            cameraController.zoom -= cameraController.zoomSpeed;
         }
         cameraController.zoom = Bound(cameraController.zoom, cameraController.zoomMin, cameraController.zoomMax);
-
-        console.log(cameraController.cameraPosition);
-        console.log(cameraController.zoom);
 
         cameraController.camera.position.x = cameraController.cameraPosition.x * cameraController.zoom;
         cameraController.camera.position.y = cameraController.cameraPosition.y * cameraController.zoom;
