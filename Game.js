@@ -50,7 +50,7 @@ function init(event) {
     sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender(worldRadius*3));
     sky.SetSpeed(DegreesToRadians(2));
     engine.CreateInstance(sky);
-
+    
     /*var shapeGeometry = new THREE.CubeGeometry(25, 25, 25, 1, 1, 1);
     var shapeMaterial = new THREE.MeshPhongMaterial( { color:0xff0000, transparent:true, opacity:1 } );
     var shape = new THREE.Mesh( shapeGeometry, shapeMaterial );
@@ -140,27 +140,4 @@ function loop() { //game loop, game engine updates which updates scene
     requestAnimationFrame(loop);
 }
 
-function handleKeyDown(keyEvent) {
-    // if(jumping)return;
-    if ( keyEvent.keyCode === 37) { //left
-      console.log("Left");
-      cruiser.UpdateLane(-1);
-    } else if (keyEvent.keyCode === 39) { //right
-      console.log("Right");
-      cruiser.UpdateLane(1);
-    } else if (keyEvent.keyCode === 38) {  //up, jump
-      console.log("Up");
-        //     bounceValue=0.1;
-        //     jumping=true;
-        // }
-    }
-    // if(validMove){
-    //     jumping=true;
-    //     bounceValue=0.06;
-    // }
-}
-
-
-
 window.addEventListener('load', init, false);
-document.onkeydown = handleKeyDown

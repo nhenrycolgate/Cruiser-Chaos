@@ -4,12 +4,17 @@ function Cruiser(engine, transform, render) {
     this.wheels = []; //contains the mesh information for the wheels
     this.height = 50;
 
-    //defines the lane the cruiser is currently occupying.  Set to the middle lane by default.
-    //lane = 0 => leftmost lane
-    //lane = 1 => middle lane
-    //lane = 2 => rightmost lane
+    this.Init = function() {
+        console.log("Cruiser init")
+        this.InitWheels();
+        this.render.mesh.rotation.y += DegreesToRadians(90);
+        var _UpdateCruiserPosition = this.UpdateCruiserPosition;
+        var cruiser = this;
+        window.addEventListener('keydown', function(keyEvent) {
+            _UpdateCruiserPosition(keyEvent, cruiser);
+        });
+    }
 
-    //TODO: Set this up with an enum. - EDIT: Do we need an enum if we are using the below UpdateLane func?
     this.lane = 1;
 
     this.UpdateLane = function(input) {
@@ -18,6 +23,27 @@ function Cruiser(engine, transform, render) {
         this.lane = newLane;
       }
     }
+
+     this.UpdateCruiserPosition = function(keyEvent, cruiser) {
+        // if(jumping)return;
+        if ( keyEvent.keyCode === 37) { //left
+          console.log("Left");
+          cruiser.UpdateLane(-1);
+        } else if (keyEvent.keyCode === 39) { //right
+          console.log("Right");
+          cruiser.UpdateLane(1);
+        } else if (keyEvent.keyCode === 38) {  //up, jump
+          console.log("Up");
+            //     bounceValue=0.1;
+            //     jumping=true;
+            // }
+        }
+        // if(validMove){
+        //     jumping=true;
+        //     bounceValue=0.06;
+        // }
+    }
+
 
     this.Update = function(engine) {
 
@@ -38,11 +64,6 @@ function Cruiser(engine, transform, render) {
 
     this.InitWheels = function() {
         this.wheels = render.wheels;
-    }
-
-    this.Init = function() {
-        this.InitWheels();
-        this.render.mesh.rotation.y += DegreesToRadians(90);
     }
 
 }
