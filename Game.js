@@ -2,6 +2,7 @@ var engine,
     scene,
     camera, fieldOfView, aspectRatio, nearPlane, farPlane,
     cameraController,
+    debugGUI,
     renderer,
     container,
     controls;
