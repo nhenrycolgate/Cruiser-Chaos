@@ -1,8 +1,10 @@
-function Engine() {
+function Engine(scene) {
 
     this.objects = new Map();
     this.typeMap = new Map();
+    this.controllers = new Map();
     this.enabled = true;
+    this.scene = scene;
 
     this.Add = function(object) {
         this.objects.set(object.id, object);
@@ -27,6 +29,8 @@ function Engine() {
     }
 
     this.Destroy = function(object) {
+        this.scene.remove(object.render.mesh);
+
         this.objects.delete(object.id);
         if (this.typeMap.has(object.type)) {
             var typeIDMap = this.typeMap.get(object.type);
@@ -34,17 +38,8 @@ function Engine() {
         }
     }
 
-    this.GetInput = function() {
-        return buttons;
-    }
-
-    this.HandleInput = function() {
-        //get input from the user for one frame, setting the buttons map
-    }
-
     this.Update = function() {
         if (this.enabled) {
-            this.HandleInput();
             this.UpdateObjects();
             this.RenderObjects();
         }
@@ -58,25 +53,24 @@ function Engine() {
         }
     }
 
-    this.RenderObjects = function() { //render all objects to scene. 
+    this.RenderObjects = function() {
         for (var object of this.objects.values()) {
             object.Render(this);
         }
     }
 
     this.CreateInstance = function(object) {
-        object.Init();
+        object.Init(engine);
         this.Add(object);
-        scene.add(object.render.mesh);
+        this.scene.add(object.render.mesh);
     }
 
-    this.enable = function() {
-        this.enabled = true;
-    }
+    this.enable = function() { this.enabled = true; }
+    this.disable = function() { this.enabled = false; }
 
-    this.disable = function() {
-        this.enabled = false;
+    this.AddController = function(controller) {
+        this.controllers.set(controller.type, controller);
+        controller.Init();
     }
-
 
 }

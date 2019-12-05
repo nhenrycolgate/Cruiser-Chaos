@@ -1,13 +1,12 @@
-function Spawner(engine, transform, render, type, enemy, timer) {
+function Spawner(engine, transform, render, gameObject, timer) {
 
-    GameObject.call(this, engine, transform, render, type);
-    this.type = "SPAWNER";
-    this.enemy = enemy;
+    GameObject.call(this, engine, transform, render, "SPAWNER");
+    this.gameObject = gameObject;
     this.timer = timer;
     this.enabled = false;
 
     this.Spawn = function(engine) {
-        engine.Add(enemy.Copy());
+        engine.Add(gameObject.Copy());
     }
 
     this.Update = function(engine) {

@@ -28,26 +28,29 @@ function init(event) {
 
     //Variable Initialization//
 
-    engine = new Engine();
+    engine = new Engine(scene);
+    engine.AddController(new CameraController(camera, 1000));
 
-    var world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender(worldRadius));
-    world.SetSpeed(DegreesToRadians(1));
-    engine.CreateInstance(world);
+    var character = new Character(engine, new Transform(0, 0, 0), new CharacterRender());
+    engine.CreateInstance(character);
 
+    //var world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender(worldRadius));
+    //world.SetSpeed(DegreesToRadians(1));
+    //engine.CreateInstance(world);
 
     // var cruiser = new Cruiser(engine, new Transform(0, 0, 0), new CruiserRender());
     // cruiser.InitWheels();
     // cruiser.SetSpeed(DegreesToRadians(1));
     // engine.CreateInstance(cruiser);
 
-    var cruiser = new Cruiser(engine, new Transform(0, 0 + worldRadius + 50 / 2, 0), new CruiserRender());
+    //var cruiser = new Cruiser(engine, new Transform(0, 0 + worldRadius + 50 / 2, 0), new CruiserRender());
     //cruiser.InitWheels();
-    cruiser.SetSpeed(DegreesToRadians(1));
-    engine.CreateInstance(cruiser);
+    //cruiser.SetSpeed(DegreesToRadians(1));
+    //engine.CreateInstance(cruiser);
 
-    var sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender(worldRadius*3));
-    sky.SetSpeed(DegreesToRadians(2));
-    engine.CreateInstance(sky);
+    //var sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender(worldRadius*3));
+    //sky.SetSpeed(DegreesToRadians(2));
+    //engine.CreateInstance(sky);
 
     /*var shapeGeometry = new THREE.CubeGeometry(25, 25, 25, 1, 1, 1);
     var shapeMaterial = new THREE.MeshPhongMaterial( { color:0xff0000, transparent:true, opacity:1 } );
@@ -88,9 +91,6 @@ function CreateScene() {
     camera.position.y = 0;
 
     camera.lookAt(new THREE.Vector3(0, 0, 0));
-
-    cameraController = new CameraController(camera, 1000);
-    cameraController.Init();
 
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(WIDTH, HEIGHT);

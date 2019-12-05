@@ -5,7 +5,11 @@ function RollingWorld(engine, transform, render) {
     //TODO: set up pooling system, which will destroy unloaded assets and allocate created assets.
     this.assets = [];
 
-    this.Init = function() {
+    this.buildingSpawner = null;
+
+    this.Init = function(engine) {
+
+        //buildingSpawner = new Spawner(engine, new Transform(0, 0, 0), );
         this.SetSpeed(DegreesToRadians(1));
     }
 
