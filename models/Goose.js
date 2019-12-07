@@ -1,9 +1,35 @@
 function Goose(engine,transform,render){	
 
 	GameObject.call(this, engine, transform, render, "Goose");
-
+	
+	var destroyed= false;
+	
+	var bodyPos= [render.body.position.x,render.body.position.y,render.body.position.z];
+	var bodyRadius= render.bodyRadius;
+	
+	var particles= [];
+	for (var i=0;i<200;i=i+1){
+		var coords= getPointOnSphere(bodyPos,bodyRadius);
+		var ptcl= new ParticleRender(coords,0xffffff);
+		particles.push(ptcl.particle);
+	}
+	
     this.Update = function(engine) {
-
+		
+		
+		/*if (collision){  //everything dissapears and just shows particles where body used to be 
+			var mesh= render.mesh;
+			
+			//clear everything in mesh
+			for (var i = mesh.children.length - 1; i >= 0; i--) {
+				mesh.remove(mesh.children[i]);
+			}
+			
+			//display particles
+			for (var i=0;i<particles.length;i=i+1){
+				mesh.add(particles[i]);
+			}
+		}*/
     }
 
     this.Init = function() {
@@ -47,11 +73,12 @@ function GooseRender(){
 	leg2.position.set(10,10,0);
 	this.lowerbody.add(leg2);
 	
-	var bodygeometry= new THREE.SphereGeometry(15);
+	this.bodyRadius= 15;
+	var bodygeometry= new THREE.SphereGeometry(this.bodyRadius);
 	var bodymaterial= new THREE.MeshLambertMaterial( {color: 0xaeb5b8 , wireframe:false} );
-	var body= new THREE.Mesh( bodygeometry, bodymaterial);
-	body.position.set(0,25,0); 
-	this.lowerbody.add(body);
+	this.body= new THREE.Mesh( bodygeometry, bodymaterial);
+	this.body.position.set(0,25,0); 
+	this.lowerbody.add(this.body);
 	
 	var winggeometry1 = new THREE.CylinderGeometry(10, 10, 5, 3, 3)
 	var wingmaterial1 = new THREE.MeshLambertMaterial({color: 0x000000});
@@ -95,6 +122,8 @@ function GooseRender(){
 	this.upperbody.add(beak);
 	
 	this.upperbody.rotation.x= Math.PI/9;
+	
+	
 	
 	this.mesh.add(this.lowerbody);
 	this.mesh.add(this.upperbody);
