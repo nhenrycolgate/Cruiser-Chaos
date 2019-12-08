@@ -5,9 +5,8 @@ function Cruiser(engine, transform, render) {
     this.height = 50;
 
     this.Init = function() {
-        console.log("Cruiser init")
         this.InitWheels();
-        this.render.mesh.rotation.y += DegreesToRadians(90);
+        this.render.mesh.rotation.y -= DegreesToRadians(90);
         var _UpdateCruiserPosition = this.UpdateCruiserPosition;
         var cruiser = this;
         window.addEventListener('keydown', function(keyEvent) {

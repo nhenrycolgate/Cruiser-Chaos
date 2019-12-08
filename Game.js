@@ -9,13 +9,15 @@ var engine,
     controls;
 var timer;
 
-var world, cruiser, sky;
+var world, road, cruiser, sky;
 
 var HEIGHT, WIDTH;
 
 var ambientLight, hemisphereLight, shadowLight;
 
-var worldRadius = 150;
+var worldRadius = 500;
+var roadRadius = worldRadius + 5;
+var roadWidth = 210;
 
 function handleWindowResize() {
   HEIGHT = window.innerHeight;
@@ -38,6 +40,10 @@ function init(event) {
     world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender(worldRadius));
     world.SetSpeed(DegreesToRadians(1));
     engine.CreateInstance(world);
+
+    road = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth));
+    road.SetSpeed(DegreesToRadians(1));
+    engine.CreateInstance(road);
 
 
     // var cruiser = new Cruiser(engine, new Transform(0, 0, 0), new CruiserRender());
