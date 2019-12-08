@@ -3,7 +3,6 @@
 function DebugGUI() {
 
     // Add whatever data you need to this GUI
-
     var gui = new dat.GUI();
     var parameters =
     {

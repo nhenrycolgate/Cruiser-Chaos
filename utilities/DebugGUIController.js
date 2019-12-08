@@ -1,4 +1,4 @@
-function DebugGUIController(gui) {
+function DebugGUIController(gui, showStats, hideStats) {
 
     this.gui = gui;
 
@@ -17,10 +17,12 @@ function DebugGUIController(gui) {
           if (debugGUI.open) {
              debugGUI.open = false;
              debugGUI.gui.close();
+             hideStats();
 
           } else {
             debugGUI.open = true;
             debugGUI.gui.open();
+            showStats();
           }
         }
 
