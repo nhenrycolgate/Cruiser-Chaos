@@ -1,22 +1,8 @@
 function Goose(engine,transform,render){	
 
 	GameObject.call(this, engine, transform, render, "Goose");
-	
-	var destroyed= false;
-	
-	var bodyPos= [render.body.position.x,render.body.position.y,render.body.position.z];
-	var bodyRadius= render.bodyRadius;
-	
-	var particles= [];
-	for (var i=0;i<200;i=i+1){
-		var coords= getPointOnSphere(bodyPos,bodyRadius);
-		var ptcl= new ParticleRender(coords,0xffffff);
-		particles.push(ptcl.particle);
-	}
-	
+		
     this.Update = function(engine) {
-		
-		
 		/*if (collision){  //everything dissapears and just shows particles where body used to be 
 			var mesh= render.mesh;
 			
@@ -33,8 +19,17 @@ function Goose(engine,transform,render){
     }
 
     this.Init = function() {
-       
+		var bodyPos= [render.body.position.x,render.body.position.y,render.body.position.z];
+		var bodyRadius= render.bodyRadius;
+		
+		this.particles= [];
+		for (var i=0;i<200;i=i+1){
+			var coords= GetPointOnSphere(bodyPos,bodyRadius);
+			var ptcl= new ParticleRender(coords,0xffffff);
+			this.particles.push(ptcl.particle);
+		}
     }
+	
 	this.Destroy = function(){
 		
 	}

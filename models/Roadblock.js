@@ -3,7 +3,19 @@ function Roadblock(engine,transform,render){
 	GameObject.call(this, engine, transform, render, "Roadblock");
 
     this.Update = function(engine) {
-
+		/*if (collision){
+			render.sign1.rotation.y-= DegreesToRadians(5);
+			render.sign2.rotation.y+= DegreesToRadians(5);
+			
+			render.sign1.position.x+= RandomNumberBtwn(-2,-1);
+			render.sign1.position.y+= RandomNumberBtwn(-2,-1);
+			render.sign2.position.x+= RandomNumberBtwn(-2,-1);
+			render.sign2.position.y+= RandomNumberBtwn(-2,-1);
+			
+			
+			//console.log(render.sign1.rotation.y);
+			
+		} */
     }
 
     this.Init = function() {
@@ -48,13 +60,13 @@ function RoadblockRender(){
 	
 	var signgeometry1 = new THREE.CubeGeometry(20,20,65);
 	var signmaterial1 =  new THREE.MeshLambertMaterial(( { color:0xff0000} ));
-	var sign1 = new THREE.Mesh(signgeometry1,signmaterial1);
-	sign1.position.set(0,54,-82.5);
-	this.mesh.add(sign1);
+	this.sign1 = new THREE.Mesh(signgeometry1,signmaterial1);
+	this.sign1.position.set(0,54,-82.5);
+	this.mesh.add(this.sign1);
 	
 	var signgeometry2 = new THREE.CubeGeometry( 20,20,65);
 	var signmaterial2 =  new THREE.MeshLambertMaterial(( { color:0xff0000} ));
-	var sign2 = new THREE.Mesh(signgeometry2,signmaterial2);
-	sign2.position.set(0,54,-17.5);
-	this.mesh.add(sign2);
+	this.sign2 = new THREE.Mesh(signgeometry2,signmaterial2);
+	this.sign2.position.set(0,54,-17.5);
+	this.mesh.add(this.sign2);
 }
