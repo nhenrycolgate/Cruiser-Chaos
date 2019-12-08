@@ -6,13 +6,13 @@ function Bound(value, min, max) {
     return value < min ? min : value > max ? max : value;
 }
 
-function randomNumberBtwn(a,b){
+function RandomNumberBtwn(a,b){
 	var min= a; var max= b;
 	if (a>b){ min=b;max=a;}
 	return (Math.random()*(max-min))+min;
 }
 
-function getPointOnSphere(position, radius){
+function GetPointOnSphere(position, radius){
 		var u= Math.random();
 		var v= Math.random();
 		var theta= u*2.0*Math.PI;
