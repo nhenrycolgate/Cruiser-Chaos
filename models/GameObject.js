@@ -47,12 +47,18 @@ function GameObject(engine, transform, render, type) {
         this.render.mesh.rotation.z += z;
     }
 
+    //TODO: add a child rotation function
+
     this.Init = function(engine) {}
 
     this.Update = function(engine) {}
 
     this.Destroy = function(engine) {
         engine.Destroy(this);
+    }
+
+    this.DisplayTransform = function(engine) {
+
     }
 
     this.Enable = function(engine) { this.enabled = true; }

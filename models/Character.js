@@ -4,13 +4,14 @@ function Character(engine, transform, render) {
     this.arms = []; //contains the mesh information for the character arms
     this.legs = []; //contains the mesh information for the characters legs
 
-    this.Init = function() {
+    this.Init = function(engine) {
         this.arms = this.render.arms;
         this.speed = DegreesToRadians(1);
     }
 
-    this.Update = function() {
+    this.Update = function(engine) {
 
+        this.Destroy(engine);
 
         for (var i = 0; i < this.arms.length; i++) {
             var arm = this.arms[i];

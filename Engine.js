@@ -30,6 +30,7 @@ function Engine(scene) {
 
     this.Destroy = function(object) {
         this.scene.remove(object.render.mesh);
+        this.scene.remove(object.transform.render.mesh);
 
         this.objects.delete(object.id);
         if (this.typeMap.has(object.type)) {
@@ -63,6 +64,7 @@ function Engine(scene) {
         object.Init(engine);
         this.Add(object);
         this.scene.add(object.render.mesh);
+        this.scene.add(object.transform.render.mesh);
     }
 
     this.enable = function() { this.enabled = true; }
