@@ -15,7 +15,7 @@ function Road(engine, transform, render) {
     }
 }
 
-function RoadRender(radius, width) {
+function RoadRender(radius, width, oppositeDirection) {
 
     this.mesh = new THREE.Object3D();
     this.mesh.name = "Road";
@@ -27,16 +27,22 @@ function RoadRender(radius, width) {
     var laneGeometry = new THREE.CylinderGeometry( radius+5, radius+5, 5, 50 );
     var laneMaterial = new THREE.MeshLambertMaterial( { color:COLORS.yellow } );
     var roadLaneLeft = new THREE.Mesh( laneGeometry, laneMaterial );
-    roadLaneLeft.position.x = -width/6;
     var roadLaneRight = new THREE.Mesh( laneGeometry, laneMaterial );
-    roadLaneRight.position.x = width/6;
+
+    if (oppositeDirection) {
+      roadLaneLeft.position.z = -width/6;
+      roadLaneRight.position.z = width/6;
+    } else {
+      roadLaneLeft.position.x = -width/6;
+      roadLaneRight.position.x = width/6;
+      roadLaneLeft.rotation.z = DegreesToRadians(90);
+      roadLaneRight.rotation.z = DegreesToRadians(90);
+      road.rotation.z = DegreesToRadians(90);
+    }
 
     road.rotation.x = DegreesToRadians(90);
-    road.rotation.z = DegreesToRadians(90);
     roadLaneLeft.rotation.x = DegreesToRadians(90);
-    roadLaneLeft.rotation.z = DegreesToRadians(90);
     roadLaneRight.rotation.x = DegreesToRadians(90);
-    roadLaneRight.rotation.z = DegreesToRadians(90);
 
     var roadParent = new THREE.Object3D();
     roadParent.add(road);

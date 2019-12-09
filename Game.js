@@ -41,9 +41,13 @@ function init(event) {
     world.SetSpeed(DegreesToRadians(1));
     engine.CreateInstance(world);
 
-    road = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth));
+    road = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, false));
     road.SetSpeed(DegreesToRadians(1));
     engine.CreateInstance(road);
+
+    oppositeRoad = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, true));
+    oppositeRoad.SetSpeed(DegreesToRadians(1));
+    engine.CreateInstance(oppositeRoad);
 
 
     // var cruiser = new Cruiser(engine, new Transform(0, 0, 0), new CruiserRender());

@@ -26,10 +26,8 @@ function Cruiser(engine, transform, render) {
      this.UpdateCruiserPosition = function(keyEvent, cruiser) {
         // if(jumping)return;
         if ( keyEvent.keyCode === 37) { //left
-          console.log("Left");
           cruiser.UpdateLane(-1);
         } else if (keyEvent.keyCode === 39) { //right
-          console.log("Right");
           cruiser.UpdateLane(1);
         } else if (keyEvent.keyCode === 38) {  //up, jump
           console.log("Up");
@@ -37,6 +35,13 @@ function Cruiser(engine, transform, render) {
             //     jumping=true;
             // }
         }
+
+        var transform = (cruiser.lane - 1) * 70;
+        var newPosition = cruiser.transform.x + transform;
+        if (newPosition <= 70 && newPosition >= -70) {
+          cruiser.transform.UpdatePosition(transform, 0 ,0);
+        }
+        // }
         // if(validMove){
         //     jumping=true;
         //     bounceValue=0.06;
