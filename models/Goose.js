@@ -1,7 +1,7 @@
 function Goose(engine,transform,render){	
 
 	GameObject.call(this, engine, transform, render, "Goose");
-		
+	
     this.Update = function(engine) {
 		/*if (collision){  //everything dissapears and just shows particles where body used to be 
 			var mesh= render.mesh;
@@ -28,11 +28,24 @@ function Goose(engine,transform,render){
 			var ptcl= new ParticleRender(coords,0xffffff);
 			this.particles.push(ptcl.particle);
 		}
+		
+		this.collisionBox= new CollisionBox(transform,40,80,50,[0,30,8]);
+		
+		//collisionbox drawn out for debugging
+		var geometry = new THREE.CubeGeometry(40,80,50);
+		var colors= [0xffffff,0x000000];
+		var material = new THREE.MeshLambertMaterial({color: colors[Math.round(Math.random())], wireframe: true});
+		var obj = new THREE.Mesh(geometry,material);
+		obj.position.set(0,30,8);
+		render.mesh.add(obj);
+		
     }
 	
 	this.Destroy = function(){
 		
 	}
+	
+	
 	
 }
 
@@ -117,8 +130,6 @@ function GooseRender(){
 	this.upperbody.add(beak);
 	
 	this.upperbody.rotation.x= Math.PI/9;
-	
-	
 	
 	this.mesh.add(this.lowerbody);
 	this.mesh.add(this.upperbody);
