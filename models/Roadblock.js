@@ -69,7 +69,7 @@ function RoadblockRender(){
 	var zDist= (leg1.position.z-(signZSize/2))-(leg2.position.z+(signZSize/2));
 	var signPosZ= leg1.position.z-(zDist/2);
 	
-	console.log(signPosZ);
+	
 	
 	
 	var signgeometry1 = new THREE.CubeGeometry(20,signHeight,signZSize);
