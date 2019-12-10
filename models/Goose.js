@@ -54,8 +54,9 @@ function GooseRender(){
 	this.mesh.name= "Goose";
 	
 	this.lowerbody= new THREE.Object3D();
+	this.upperbody= new THREE.Object3D();
 		
-	var footgeometry1 = new THREE.CylinderGeometry(8, 8, 5, 3, 3)
+	/*var footgeometry1 = new THREE.CylinderGeometry(8, 8, 5, 3, 3)
 	var footmaterial1 = new THREE.MeshLambertMaterial({color: 0xe08c1d});
 	var foot1 = new THREE.Mesh(footgeometry1, footmaterial1);
 	foot1.position.set(-10,2.5,0);
@@ -79,14 +80,14 @@ function GooseRender(){
 	var leg2material = new THREE.MeshLambertMaterial( {color: 0xe08c1d} );
 	var leg2 = new THREE.Mesh( leg2geometry, leg2material);
 	leg2.position.set(10,10,0);
-	this.lowerbody.add(leg2);
+	this.lowerbody.add(leg2);*/
 	
 	this.bodyRadius= 15;
 	var bodygeometry= new THREE.SphereGeometry(this.bodyRadius);
 	var bodymaterial= new THREE.MeshLambertMaterial( {color: 0xaeb5b8 , wireframe:false} );
 	this.body= new THREE.Mesh( bodygeometry, bodymaterial);
 	this.body.position.set(0,25,0); 
-	this.lowerbody.add(this.body);
+	/*this.lowerbody.add(this.body);
 	
 	var winggeometry1 = new THREE.CylinderGeometry(10, 10, 5, 3, 3)
 	var wingmaterial1 = new THREE.MeshLambertMaterial({color: 0x000000});
@@ -129,7 +130,7 @@ function GooseRender(){
 	beak.rotation.x = Math.PI/2;
 	this.upperbody.add(beak);
 	
-	this.upperbody.rotation.x= Math.PI/9;
+	this.upperbody.rotation.x= Math.PI/9;*/
 	
 	this.mesh.add(this.lowerbody);
 	this.mesh.add(this.upperbody);
