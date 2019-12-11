@@ -82,6 +82,8 @@ function CruiserRender() {
     this.mesh.name = "Cruiser";
     this.wheels = [];
 
+    this.mesh.rotation.x = 20;
+
     //Body
 
     var bodyWidth = 100;

@@ -55,7 +55,7 @@ function init(event) {
     // cruiser.SetSpeed(DegreesToRadians(1));
     // engine.CreateInstance(cruiser);
 
-    cruiser = new Cruiser(engine, new Transform(0, 0 + worldRadius + 50 / 2, 0), new CruiserRender());
+    cruiser = new Cruiser(engine, new Transform(0, worldRadius/3, worldRadius + 15), new CruiserRender());
     //cruiser.InitWheels();
     cruiser.SetSpeed(DegreesToRadians(1));
     engine.CreateInstance(cruiser);
@@ -98,10 +98,9 @@ function CreateScene() {
     );
 
     camera.position.x = 0;
-    camera.position.z = 1000;
-    camera.position.y = 0;
-
-    camera.lookAt(new THREE.Vector3(0, 0, 0));
+    camera.position.z = 900;
+    camera.position.y = 100;
+    camera.lookAt(new THREE.Vector3(0, 400, 0));
 
     cameraController = new CameraController(camera, 1000);
     cameraController.Init();
