@@ -30,8 +30,25 @@ function init(event) {
     engine = new Engine(scene);
     engine.AddController(new CameraController(camera, 1000));
 
-    var character = new Character(engine, new Transform(0, 0, 0), new CharacterRender());
-    engine.CreateInstance(character);
+    //------------------------------------------------------------------------------------------------------------------
+
+    var emptyGameObject = new GameObject(engine, new Transform(0, 0, 0), new GameObjectRender());
+    emptyGameObject.AddComponent("PRINT_TIMER", new Timer(30));
+    var timer = emptyGameObject.GetComponent("PRINT_TIMER");
+    timer.Enable();
+    timer.RegisterOnClockExpired( () => console.log("This should loop!") );
+    timer.RegisterOnClockExpired( (_self) => _self.Restart() );
+
+    emptyGameObject.AddComponent("OTHER_TIMER", new Timer(30));
+    var timer = emptyGameObject.GetComponent("OTHER_TIMER");
+    timer.Enable();
+    timer.RegisterOnClockExpired( () => console.log("This should also loop!") );
+    timer.RegisterOnClockExpired( (_self) => _self.Restart() );
+
+    engine.CreateInstance(emptyGameObject);
+
+    //var character = new Character(engine, new Transform(0, 0, 0), new CharacterRender());
+    //engine.CreateInstance(character);
 
     //var world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender(worldRadius));
     //world.SetSpeed(DegreesToRadians(1));

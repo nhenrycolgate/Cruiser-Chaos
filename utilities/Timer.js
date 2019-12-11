@@ -1,47 +1,35 @@
 function Timer(time) {
 
+    Component.call(this, "TIMER");
+
     this.time = time;
     this.left = time;
-    this.enabled = false;
+    this.enabled = true;
 
-    this.Enable = function() {
-        this.enabled = true;
-    }
+    this.Reset = function() { this.Refresh(); this.Disable(); }
+    this.Restart = function() { this.Refresh(); this.Enable(); }
+    this.Refresh = function() { this.left = time; }
+    this.Expired = function() { return this.left == 0; }
 
-    this.Disable = function() {
-        this.enabled = false;
-    }
-
-    this.Reset = function() {
-        this.Refresh();
-        this.Disable();
-    }
-
-    this.Refresh = function() {
-        this.left = time;
-    }
-
-    this.Expired = function() {
-        return this.left == 0;
-    }
-
-    this.Tick = function() {
+    this.Update = function() {
         if (!this.enabled) {
             return;
         }
-        this.left--;
-		if (this.left == 0){
-			this.enabled =! this.enabled;
+        else {
+            this.left--;
+            if (this.left <= 0) {
+                this.left = 0;
+                this.enabled =! this.enabled;
+                this.callbackHandler.Invoke("CLOCK_EXPIRED");
+            }
 		}
     }
 
-    this.toString = function() {
-		//second format
-		return "[Max time: " + this.time + "][Time left: " + this.left + "][enabled:" + this.enabled + "]";
-
-		//minute:second format
-        //return "[Max time: " + Math.floor(this.time/60) +":" + this.time%60 + "][Time left: " + Math.floor(this.left/60) + ":" + this.left%60+ "][enabled:" + this.enabled + "]";
-		
+    this.toString = function() { return "[Max time: " + this.time + "][Time left: " + this.left + "][enabled:" + this.enabled + "]"; }
+    this.RegisterOnClockExpired = function(cb) { this.callbackHandler.AddCallback("CLOCK_EXPIRED", cb); }
+    this.UnregisterOnClockExpired = function(cb) {
+        //fixme
     }
+
 
 }

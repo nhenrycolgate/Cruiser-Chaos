@@ -11,7 +11,9 @@ function Character(engine, transform, render) {
 
     this.Update = function(engine) {
 
-        this.Destroy(engine);
+        this.render.mesh.position.x += 1;
+
+        //this.Destroy(engine);
 
         for (var i = 0; i < this.arms.length; i++) {
             var arm = this.arms[i];

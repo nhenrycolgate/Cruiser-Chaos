@@ -3,6 +3,8 @@ function Engine(scene) {
     this.objects = new Map();
     this.typeMap = new Map();
     this.controllers = new Map();
+    this.callbackHandlers = new Map();
+
     this.enabled = true;
     this.scene = scene;
 
@@ -20,7 +22,16 @@ function Engine(scene) {
         }
     }
 
-    this.GetNextID = function() {
+    this.GetObjectsOfType = function(type) {
+        var objectsOfType = [];
+        var typeIDMap =new Map();
+        if (this.typeMap.has(type)) {
+            typeIDMap = this.typeMap.get(object.type);
+        }
+        return typeIDMap.values();
+    }
+
+    this.GetNextGameObjectID = function() {
         var id = 0;
         while (this.objects.has(id)) {
             id++;
@@ -50,6 +61,9 @@ function Engine(scene) {
         for (var object of this.objects.values()) {
             if (object.enabled) {
                 object.Update(this);
+                if (object.componentsByName.length != 0) {
+                    object.ComponentUpdate();
+                }
             }
         }
     }
@@ -61,10 +75,16 @@ function Engine(scene) {
     }
 
     this.CreateInstance = function(object) {
+        object.FixedInit(engine);
         object.Init(engine);
         this.Add(object);
         this.scene.add(object.render.mesh);
         this.scene.add(object.transform.render.mesh);
+
+        //TODO: make sure the collision is active
+        if (object.collision != null) {
+            this.scene.add(object.collision.render.mesh);
+        }
     }
 
     this.enable = function() { this.enabled = true; }

@@ -11,6 +11,8 @@ function RollingWorld(engine, transform, render) {
 
         //buildingSpawner = new Spawner(engine, new Transform(0, 0, 0), );
         this.SetSpeed(DegreesToRadians(1));
+
+        //this.addCollider(Despawn collider)
     }
 
     this.SetSpeed = function(speed) {

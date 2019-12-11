@@ -1,22 +1,46 @@
 function GameObject(engine, transform, render, type) {
 
-    this.id = engine.GetNextID();
+    this.id = engine.GetNextGameObjectID();
     this.render = render;
     this.transform = transform;
     this.type = type;
     this.enabled = true;
+    this.tag = "GAME_OBJECT";
+    this.callbackHandler = null;
 
-    this.SetRender = function(render) {
-        this.render = render;
+    this.componentsByName = new Map();
+    this.componentNameByID = new Map();
+
+    this.AddComponent = function(name, component) {
+        component.PinToGameObject(this);
+        this.componentsByName.set(name, component);
+        this.componentNameByID.set(component.id, name);
     }
 
-    this.SetTransform = function(transform) {
-        this.transform = transform;
+    this.RemoveComponent = function(name) {
+
     }
 
-    this.SetType = function(type) {
-        this.type = type;
+    this.GetNextComponentID = function() {
+        var id = 0;
+        while (this.componentNameByID.has(id)) {
+            id++;
+        }
+        return id++;
     }
+
+    this.GetComponent = function(name) {
+        if (this.componentsByName.has(name)) {
+            return this.componentsByName.get(name);
+        }
+        else {
+            return null;
+        }
+    }
+
+    this.SetRender = function(render) { this.render = render; }
+    this.SetTransform = function(transform) { this.transform = transform; }
+    this.SetType = function(type) { this.type = type; }
 
     this.Render = function(engine) {
         if (render == null) {
@@ -29,44 +53,53 @@ function GameObject(engine, transform, render, type) {
 
     this.GlobalTranslate = function(engine, x, y, z) {
         var children = this.render.mesh.children;
-        for (var i = 0; i < children.length; i++) {
-            var child = children[i];
-            this.Translate(child, x, y, z);
+        for (var child of children) {
+            this.TranslateChild(child, x, y, z);
         }
     }
 
-    this.Translate = function(child, x, y, z) {
+    this.TranslateChild = function(child, x, y, z) {
         child.position.x = x;
         child.position.y = y;
         child.position.z = z;
     }
 
-    this.RotateMesh = function(x, y, z) {
-        this.render.mesh.rotation.x += x;
-        this.render.mesh.rotation.y += y;
-        this.render.mesh.rotation.z += z;
+    this.GlobalMesh = function(x, y, z) {
+        var children = this.render.mesh.children;
+        for (var child of children) {
+            this.RotateChild(child, x, y, z);
+        }
     }
 
-    //TODO: add a child rotation function
+    this.RotateChild = function(child, x, y, z) {
+        child.rotation.x += x;
+        child.rotation.y += y;
+        child.rotation.z += z;
+    }
+
+    this.ComponentUpdate = function(engine) {
+        for (var component of this.componentsByName.values()) {
+            component.Update();
+        }
+    }
+
+    this.FixedInit = function(engine) {
+        callbackHandler = new CallbackHandler(this);
+        callbackHandler.FixedInit();
+    }
 
     this.Init = function(engine) {}
-
     this.Update = function(engine) {}
-
-    this.Destroy = function(engine) {
-        engine.Destroy(this);
-    }
-
-    this.DisplayTransform = function(engine) {
-
-    }
-
+    this.Destroy = function(engine) { engine.Destroy(this); }
     this.Enable = function(engine) { this.enabled = true; }
-
     this.Disable = function(engine) { this.enabled = false; }
 
-    this.toString = function(engine) {
-        return "[object id:" + this.id + "][object type:" + this.type + "]";
-    }
+    this.ToString = function(engine) { return "[GameObject id:" + this.id + "][GameObject type:" + this.type + "]"; }
+    this.GetCallbackLabel = function() { return "[GameObject ID:" + this.id + "]"; }
 
+}
+
+function GameObjectRender() {
+    this.mesh = new THREE.Object3D();
+    this.mesh.name = "GAME_OBJECT";
 }
