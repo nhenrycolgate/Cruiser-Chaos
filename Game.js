@@ -40,15 +40,15 @@ function init(event) {
 
     world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender(worldRadius));
     world.SetSpeed(DegreesToRadians(worldSpeed));
-    engine.CreateInstance(world);
+    //engine.CreateInstance(world);
 
     road = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, false));
     road.SetSpeed(DegreesToRadians(worldSpeed));
-    engine.CreateInstance(road);
+    //engine.CreateInstance(road);
 
     oppositeRoad = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, true));
     oppositeRoad.SetSpeed(DegreesToRadians(worldSpeed));
-    engine.CreateInstance(oppositeRoad);
+    //engine.CreateInstance(oppositeRoad);
 
 
     // var cruiser = new Cruiser(engine, new Transform(0, 0, 0), new CruiserRender());
@@ -63,7 +63,7 @@ function init(event) {
 
     sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender(worldRadius*3));
     sky.SetSpeed(DegreesToRadians(worldSpeed/8));
-    engine.CreateInstance(sky);
+    //engine.CreateInstance(sky);
 
     /*var shapeGeometry = new THREE.CubeGeometry(25, 25, 25, 1, 1, 1);
     var shapeMaterial = new THREE.MeshPhongMaterial( { color:0xff0000, transparent:true, opacity:1 } );
@@ -99,9 +99,9 @@ function CreateScene() {
     );
 
     camera.position.x = 0;
-    camera.position.y = 200;
-    camera.position.z = 1300;
-    camera.lookAt(new THREE.Vector3(0, 1200, 0));
+    camera.position.y = 0;
+    camera.position.z = 0;
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     cameraController = new CameraController(camera, 1000);
     cameraController.Init();
