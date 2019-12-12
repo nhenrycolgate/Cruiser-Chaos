@@ -1,16 +1,24 @@
 var engine,
     scene,
     camera, fieldOfView, aspectRatio, nearPlane, farPlane,
+
+    debugGUI,
+    stats,
+
     renderer,
     container,
     controls;
 var timer;
 
+var world, road, cruiser, sky;
+
 var HEIGHT, WIDTH;
 
 var ambientLight, hemisphereLight, shadowLight;
 
-var worldRadius = 150;
+var worldRadius = 500;
+var roadRadius = worldRadius + 5;
+var roadWidth = 210;
 
 function handleWindowResize() {
   HEIGHT = window.innerHeight;
@@ -24,6 +32,7 @@ function init(event) {
 
     CreateScene();
     CreateLights();
+    CreateStats();
 
     //Variable Initialization//
 
@@ -63,12 +72,27 @@ function init(event) {
     //world.SetSpeed(DegreesToRadians(1));
     //engine.CreateInstance(world);
 
+    world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender(worldRadius));
+    world.SetSpeed(DegreesToRadians(1));
+    engine.CreateInstance(world);
+
+    road = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, false));
+    road.SetSpeed(DegreesToRadians(1));
+    engine.CreateInstance(road);
+
+    oppositeRoad = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, true));
+    oppositeRoad.SetSpeed(DegreesToRadians(1));
+    engine.CreateInstance(oppositeRoad);
+
     // var cruiser = new Cruiser(engine, new Transform(0, 0, 0), new CruiserRender());
     // cruiser.InitWheels();
     // cruiser.SetSpeed(DegreesToRadians(1));
     // engine.CreateInstance(cruiser);
 
     //var cruiser = new Cruiser(engine, new Transform(0, 0 + worldRadius + 50 / 2, 0), new CruiserRender());
+
+    //cruiser = new Cruiser(engine, new Transform(0, worldRadius/3, worldRadius + 15), new CruiserRender());
+
     //cruiser.InitWheels();
     //cruiser.SetSpeed(DegreesToRadians(1));
     //engine.CreateInstance(cruiser);
@@ -76,6 +100,7 @@ function init(event) {
     //var sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender(worldRadius*3));
     //sky.SetSpeed(DegreesToRadians(2));
     //engine.CreateInstance(sky);
+
 
     /*var shapeGeometry = new THREE.CubeGeometry(25, 25, 25, 1, 1, 1);
     var shapeMaterial = new THREE.MeshPhongMaterial( { color:0xff0000, transparent:true, opacity:1 } );
@@ -89,7 +114,6 @@ function init(event) {
 
     //var rolling_world_render = new THREE.Mesh( sphereGeometry, sphereMaterial );
     //scene.add(rolling_world_render);
-
     loop();
 }
 
@@ -112,10 +136,16 @@ function CreateScene() {
     );
 
     camera.position.x = 0;
-    camera.position.z = 1000;
-    camera.position.y = 0;
+    camera.position.z = 900;
+    camera.position.y = 100;
+    camera.lookAt(new THREE.Vector3(0, 400, 0));
 
-    camera.lookAt(new THREE.Vector3(0, 0, 0));
+    //cameraController = new CameraController(camera, 1000);
+    //cameraController.Init();
+
+    //gui = DebugGUI();
+    //debugGUIController = new DebugGUIController(gui, ShowStats, HideStats);
+    //debugGUIController.Init();
 
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(WIDTH, HEIGHT);
@@ -127,6 +157,21 @@ function CreateScene() {
     container.appendChild(renderer.domElement);
 
     window.addEventListener('resize', handleWindowResize, false);
+}
+
+function CreateStats() {
+  stats = new Stats();
+  stats.domElement.style.position = 'absolute';
+  stats.domElement.style.left = '0';
+  stats.domElement.style.top = '0';
+}
+
+function ShowStats() {
+  document.body.appendChild(stats.domElement);
+}
+
+function HideStats() {
+  document.body.removeChild(stats.domElement);
 }
 
 function CreateLights() {
@@ -160,44 +205,8 @@ function loop() { //game loop, game engine updates which updates scene
 
     engine.Update();
     renderer.render(scene, camera);
+    stats.update();
     requestAnimationFrame(loop);
 }
 
-function handleKeyDown(keyEvent) {
-    // if(jumping)return;
-    // var validMove=true;
-    if ( keyEvent.keyCode === 37) { //left
-      console.log("Left");
-        // if (currentLane == middleLane) {
-        //     currentLane = leftLane;
-        // }else if (currentLane == rightLane) {
-        //     currentLane = middleLane;
-        // } else {
-        //     validMove = false;
-        // }
-    } else if (keyEvent.keyCode === 39) { //right
-      console.log("Right");
-        // if (currentLane == middleLane) {
-        //     currentLane = rightLane;
-        // } else if (currentLane == leftLane) {
-        //     currentLane = middleLane;
-        // } else {
-        //     validMove = false;
-        // }
-    } else if (keyEvent.keyCode === 38) {  //up, jump
-      console.log("Up");
-        //     bounceValue=0.1;
-        //     jumping=true;
-        // }
-        // validMove=false;
-    }
-    // if(validMove){
-    //     jumping=true;
-    //     bounceValue=0.06;
-    // }
-}
-
-
-
 window.addEventListener('load', init, false);
-document.onkeydown = handleKeyDown

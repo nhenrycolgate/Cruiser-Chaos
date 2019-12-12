@@ -7,4 +7,5 @@ var COLORS = {
     pink:0xF5986E,
     yellow:0xf4ce93,
     blue:0x68c3c0,
+    gray:0x343330
 };
