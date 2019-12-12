@@ -4,11 +4,18 @@ function RollingWorld(engine, transform, render) {
 
     //TODO: set up pooling system, which will destroy unloaded assets and allocate created assets.
     this.assets = [];
-    this.radius = 100;
 
-    this.Init = function() {
+    this.buildingSpawner = null;
+
+    this.Init = function(engine) {
+
+        //buildingSpawner = new Spawner(engine, new Transform(0, 0, 0), );
         this.SetSpeed(DegreesToRadians(1));
+
+        //this.addCollider(Despawn collider)
     }
+
+    this.Init = function() {}
 
     this.SetSpeed = function(speed) {
         this.speed = speed;
@@ -30,14 +37,12 @@ function RollingWorld(engine, transform, render) {
     }
 }
 
-function RollingWorldRender() {
+function RollingWorldRender(radius) {
 
     this.mesh = new THREE.Object3D();
     this.mesh.name = "RollingWorld";
 
-    var worldRadius = 100;
-
-    var sphereGeometry = new THREE.OctahedronGeometry( worldRadius, 3 );
+    var sphereGeometry = new THREE.OctahedronGeometry( radius, 3 );
     var sphereMaterial = new THREE.MeshLambertMaterial( { color:COLORS.red } );
 
     var world = new THREE.Mesh( sphereGeometry, sphereMaterial );
