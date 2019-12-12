@@ -1,24 +1,22 @@
-function ParticleSystem(engine, transform, render) {
+function ParticleSystem(engine, transform, render, particle, timer) {
 
-    GameObject.call(this, engine, transform, render, "ParticleSystem");
-    this.particles = [];
-    this.spawner = new Spawner();
+    GameObject.call(this, engine, transform, render, "PARTICLE_SYSTEM");
+    this.particle = particle;
+    this.timer = timer;
 
     this.Init = function(engine) {
+        var _particleSystem = this;
 
+        this.AddComponent("PARTICLE_TIMER", this.timer);
+        var particleTimer = this.GetComponent("PARTICLE_TIMER");
+
+        particleTimer.Restart();
+        particleTimer.RegisterOnClockExpired( (_timer) => _particleSystem.GenerateParticle(engine) );
+        particleTimer.RegisterOnClockExpired( (_timer) => _timer.Restart() );
     }
 
-
-    this.Update = function(engine) {
-        for (var i = 0; i < particles.length; i++) {
-            var particle = this.particles[i];
-
-        }
+    this.GenerateParticle = function(engine) {
+        engine.CreateInstance(particle.Copy(engine));
     }
-
-    this.CreateParticle = function(engine) {
-        var particle = new GameObject(engine, this.transform, this.render);
-    }
-
 
 }

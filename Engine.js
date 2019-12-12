@@ -8,7 +8,7 @@ function Engine(scene) {
     this.enabled = true;
     this.scene = scene;
 
-    this.Add = function(object) {
+    this.AddGameObject = function(object) {
         this.objects.set(object.id, object);
         if (this.typeMap.has(object.type)) {
             var typeIDMap = this.typeMap.get(object.type);
@@ -62,7 +62,7 @@ function Engine(scene) {
             if (object.enabled) {
                 object.Update(this);
                 if (object.componentsByName.length != 0) {
-                    object.ComponentUpdate();
+                    object.UpdateComponents(this);
                 }
             }
         }
@@ -75,11 +75,10 @@ function Engine(scene) {
     }
 
     this.CreateInstance = function(object) {
-        object.FixedInit(engine);
-        object.Init(engine);
-        this.Add(object);
+        object.Init(this);
+        this.AddGameObject(object);
         this.scene.add(object.render.mesh);
-        this.scene.add(object.transform.render.mesh);
+        //this.scene.add(object.transform.render.mesh);
 
         //TODO: make sure the collision is active
         if (object.collision != null) {

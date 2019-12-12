@@ -32,20 +32,29 @@ function init(event) {
 
     //------------------------------------------------------------------------------------------------------------------
 
+/*
     var emptyGameObject = new GameObject(engine, new Transform(0, 0, 0), new GameObjectRender());
     emptyGameObject.AddComponent("PRINT_TIMER", new Timer(30));
     var timer = emptyGameObject.GetComponent("PRINT_TIMER");
     timer.Enable();
     timer.RegisterOnClockExpired( () => console.log("This should loop!") );
-    timer.RegisterOnClockExpired( (_self) => _self.Restart() );
+    timer.RegisterOnClockExpired( (_timer) => _timer.Restart() );
 
     emptyGameObject.AddComponent("OTHER_TIMER", new Timer(30));
     var timer = emptyGameObject.GetComponent("OTHER_TIMER");
     timer.Enable();
     timer.RegisterOnClockExpired( () => console.log("This should also loop!") );
-    timer.RegisterOnClockExpired( (_self) => _self.Restart() );
+    timer.RegisterOnClockExpired( (_timer) => _timer.Restart() );
+    //engine.CreateInstance(emptyGameObject);
 
-    engine.CreateInstance(emptyGameObject);
+    var spawner = new Spawner(engine, DefaultTransform(), new GameObjectRender(), new GameObjectRender(), new Timer(30));
+    engine.CreateInstance(spawner);
+*/
+
+    var particle = new Particle(engine, DefaultTransform(), new ParticleRender(), new Timer(200));
+    var particleSystem = new ParticleSystem(engine, DefaultTransform(), new GameObjectRender(), particle, new Timer(10));
+
+    engine.CreateInstance(particleSystem);
 
     //var character = new Character(engine, new Transform(0, 0, 0), new CharacterRender());
     //engine.CreateInstance(character);

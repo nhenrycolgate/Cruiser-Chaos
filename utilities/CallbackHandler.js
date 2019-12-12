@@ -1,64 +1,58 @@
-function CallbackHandler(parent) {
+function CallbackHandler(entity) {
 
-    this.parent = parent;
-    this.label = null;
+    this.entity = entity;
     this.callbacks = new Map();
 
-    this.FixedInit = function() {
-        this.label = this.GetCallbackLabel(parent);
-    }
-
-    this.RemoveAllCallbacks = function() {
-        for (var name of callbacks.keys()) {
-            //window.removeEventListener(name, callback.func);
-        }
-    }
-
     this.AddCallback = function (event, cb) {
-        var _event = this.InvocationTag(event);
-
-        if (this.callbacks.has(_event)) {
-            var callbackEventSet = this.callbacks.get(_event);
-            callbackEventSet.add(cb);
-            this.callbacks.set(_event, callbackEventSet);
+        var callback = new Callback(cb);
+        if (this.callbacks.has(event)) {
+            var callbackEventSet = this.callbacks.get(event);
+            if ( !callbackEventSet.has(callback) ) {
+                callbackEventSet.add(callback);
+                this.callbacks.set(event, callbackEventSet);
+            }
+            else {
+                console.log("Callback:[" + cbObject + "] already subscribed to event {" + event + "}");
+            }
         }
         else {
             var callbackEventSet = new Set();
-            callbackEventSet.add(cb);
-            this.callbacks.set(_event, callbackEventSet);
+            callbackEventSet.add(callback);
+            this.callbacks.set(event, callbackEventSet);
         }
-
-        window.addEventListener(_event, cb);
     }
 
     this.RemoveCallback = function (event, cb) {
-        var _event = this.InvocationTag(event);
-
-        if (this.callbacks.has(_event)) {
-            var callback = callbacks.get(_event);
-            //window.removeEventListener(tag, callback.cb);
+        var callback = new Callback(cb);
+        if (this.callbacks.has(event)) {
+            var callbackEventSet = this.callbacks.get(event);
+            callbackEventSet.remove(callback);
+            this.callbacks.set(event, callbackEventSet);
         }
     }
 
     this.Invoke = function(event) {
-        var _event = this.InvocationTag(event);
-
-        if (this.callbacks.has(_event)) {
-            for (var callback of this.callbacks.get(_event)) {
-                callback(parent);
+        if (this.callbacks.has(event)) {
+            for (var callback of this.callbacks.get(event)) {
+                callback.func(entity);
             }
-            //window.DispatchEvent(tag);
         }
     }
 
-    //FIXME: Need to remove getCallbackLabel from objects, so that this can be created dynamically rather than via a FixedInit()
-    this.GetCallbackLabel = function(parent) { return parent.GetCallbackLabel(); }
-    this.InvocationTag = function(event) { return "CBHandler:" + this.label + "." + event; }
+    this.Copy = function() {
+        var callbackHandlerCopy = new CallbackHandler(this.entity);
+        callbackHandlerCopy.callbacks = new Map();
+        for (var event of this.callbacks.keys()) {
 
+            var callbackEventSetCopy = new Set();
+            var callbackEventSet = this.callbacks.get(event);
+            for (var callback of callbackEventSet) {
+                callbackEventSetCopy.add(callback.Copy());
+            }
+
+            callbackHandlerCopy.set(event, callbackEventSetCopy);
+        }
+
+        return callbackHandlerCopy;
+    }
 }
-
-//each game object and component have a callback handler.
-//callback handler=>
-//callback.add("EVENT", func1);
-//callback.add("EVENT", func2);
-//label.EVENT => {func1, func2}

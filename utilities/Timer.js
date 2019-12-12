@@ -6,7 +6,7 @@ function Timer(time) {
     this.left = time;
     this.enabled = true;
 
-    this.Reset = function() { this.Refresh(); this.Disable(); }
+    this.Reset =   function() { this.Refresh(); this.Disable(); }
     this.Restart = function() { this.Refresh(); this.Enable(); }
     this.Refresh = function() { this.left = time; }
     this.Expired = function() { return this.left == 0; }
@@ -25,11 +25,19 @@ function Timer(time) {
 		}
     }
 
-    this.toString = function() { return "[Max time: " + this.time + "][Time left: " + this.left + "][enabled:" + this.enabled + "]"; }
-    this.RegisterOnClockExpired = function(cb) { this.callbackHandler.AddCallback("CLOCK_EXPIRED", cb); }
-    this.UnregisterOnClockExpired = function(cb) {
-        //fixme
+    this.Copy = function(engine) {
+        var timerCopy = new Timer(this.time);
+        timerCopy.left = this.left;
+        timerCopy.enabled = this.enabled;
+        timerCopy.callbackHandler = this.callbackHandler.Copy();
+
+        return timerCopy;
     }
+
+    this.toString = function() { return "[Max time: " + this.time + "][Time left: " + this.left + "][enabled:" + this.enabled + "]"; }
+
+    this.RegisterOnClockExpired = function(cb) { this.callbackHandler.AddCallback("CLOCK_EXPIRED", cb); }
+    this.UnregisterOnClockExpired = function(cb) { }
 
 
 }

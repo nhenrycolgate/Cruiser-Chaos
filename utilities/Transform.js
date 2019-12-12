@@ -28,6 +28,11 @@ function Transform(x, y, z) {
     this.Copy = function() {
         return new Transform(this.x, this.y, this.z);
     }
+
+}
+
+function DefaultTransform() {
+    return new Transform(0, 0, 0);
 }
 
 function TransformRender() {

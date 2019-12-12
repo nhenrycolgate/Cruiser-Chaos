@@ -6,13 +6,13 @@ function GameObject(engine, transform, render, type) {
     this.type = type;
     this.enabled = true;
     this.tag = "GAME_OBJECT";
-    this.callbackHandler = null;
+    this.callbackHandler = new CallbackHandler(this);
 
     this.componentsByName = new Map();
     this.componentNameByID = new Map();
 
     this.AddComponent = function(name, component) {
-        component.PinToGameObject(this);
+        component.AttachToGameObject(this);
         this.componentsByName.set(name, component);
         this.componentNameByID.set(component.id, name);
     }
@@ -77,15 +77,10 @@ function GameObject(engine, transform, render, type) {
         child.rotation.z += z;
     }
 
-    this.ComponentUpdate = function(engine) {
+    this.UpdateComponents = function(engine) {
         for (var component of this.componentsByName.values()) {
             component.Update();
         }
-    }
-
-    this.FixedInit = function(engine) {
-        callbackHandler = new CallbackHandler(this);
-        callbackHandler.FixedInit();
     }
 
     this.Init = function(engine) {}
@@ -94,8 +89,34 @@ function GameObject(engine, transform, render, type) {
     this.Enable = function(engine) { this.enabled = true; }
     this.Disable = function(engine) { this.enabled = false; }
 
+//Source from https://www.w3schools.com/js/js_object_prototypes.asp
+//todo: see if this works and makes deep copies
+/*
+    this.Copy = function() {
+        var cloneObj = this;
+        if(this.__isClone) {
+          cloneObj = this.__clonedFrom;
+        }
+
+        var temp = function() { return cloneObj.apply(this, arguments); };
+
+        for(var key in this) {
+            if (this[key].hasOwnProperty("Copy")) {
+                temp[key] = key.Copy();
+            }
+            else {
+                temp[key] = this[key];
+            }
+        }
+
+        temp.__isClone = true;
+        temp.__clonedFrom = cloneObj;
+
+        return temp;
+    }
+*/
+
     this.ToString = function(engine) { return "[GameObject id:" + this.id + "][GameObject type:" + this.type + "]"; }
-    this.GetCallbackLabel = function() { return "[GameObject ID:" + this.id + "]"; }
 
 }
 
