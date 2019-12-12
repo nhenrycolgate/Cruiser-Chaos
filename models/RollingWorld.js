@@ -15,6 +15,8 @@ function RollingWorld(engine, transform, render) {
         //this.addCollider(Despawn collider)
     }
 
+    this.Init = function() {}
+
     this.SetSpeed = function(speed) {
         this.speed = speed;
     }

@@ -16,9 +16,10 @@ var HEIGHT, WIDTH;
 
 var ambientLight, hemisphereLight, shadowLight;
 
-var worldRadius = 500;
+var worldRadius = 1000;
 var roadRadius = worldRadius + 5;
 var roadWidth = 210;
+var worldSpeed = 0.6;
 
 function handleWindowResize() {
   HEIGHT = window.innerHeight;
@@ -73,16 +74,27 @@ function init(event) {
     //engine.CreateInstance(world);
 
     world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender(worldRadius));
-    world.SetSpeed(DegreesToRadians(1));
+    //world.SetSpeed(DegreesToRadians(1));
     //engine.CreateInstance(world);
 
-    road = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, false));
-    road.SetSpeed(DegreesToRadians(1));
+    //road = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, false));
+    //road.SetSpeed(DegreesToRadians(1));
     //engine.CreateInstance(road);
 
-    oppositeRoad = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, true));
-    oppositeRoad.SetSpeed(DegreesToRadians(1));
+    //oppositeRoad = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, true));
+    //oppositeRoad.SetSpeed(DegreesToRadians(1));
     //engine.CreateInstance(oppositeRoad);
+    world.SetSpeed(DegreesToRadians(worldSpeed));
+    engine.CreateInstance(world);
+
+    road = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, false));
+    road.SetSpeed(DegreesToRadians(worldSpeed));
+    engine.CreateInstance(road);
+
+    oppositeRoad = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, true));
+    oppositeRoad.SetSpeed(DegreesToRadians(worldSpeed));
+    engine.CreateInstance(oppositeRoad);
+
 
     // var cruiser = new Cruiser(engine, new Transform(0, 0, 0), new CruiserRender());
     // cruiser.InitWheels();
@@ -101,6 +113,9 @@ function init(event) {
     //sky.SetSpeed(DegreesToRadians(2));
     //engine.CreateInstance(sky);
 
+    sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender(worldRadius*3));
+    sky.SetSpeed(DegreesToRadians(worldSpeed/8));
+    engine.CreateInstance(sky);
 
     /*var shapeGeometry = new THREE.CubeGeometry(25, 25, 25, 1, 1, 1);
     var shapeMaterial = new THREE.MeshPhongMaterial( { color:0xff0000, transparent:true, opacity:1 } );
@@ -136,9 +151,9 @@ function CreateScene() {
     );
 
     camera.position.x = 0;
-    camera.position.z = 900;
-    camera.position.y = 100;
-    camera.lookAt(new THREE.Vector3(0, 400, 0));
+    camera.position.y = 200;
+    camera.position.z = 1300;
+    camera.lookAt(new THREE.Vector3(0, 1200, 0));
 
     //cameraController = new CameraController(camera, 1000);
     //cameraController.Init();

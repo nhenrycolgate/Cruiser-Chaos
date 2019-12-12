@@ -2,9 +2,7 @@ function Road(engine, transform, render) {
 
     GameObject.call(this, engine, transform, render, "ROAD");
 
-    this.Init = function() {
-        this.SetSpeed(DegreesToRadians(1));
-    }
+    this.Init = function() {}
 
     this.SetSpeed = function(speed) {
         this.speed = speed;
