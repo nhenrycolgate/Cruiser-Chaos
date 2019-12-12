@@ -21,8 +21,8 @@ var roadWidth = 210;
 var worldSpeed = 0.6;
 
 function handleWindowResize() {
-  HEIGHT = window.innerHeight;
-  WIDTH = window.innerWidth;
+  HEIGHT = window.innerHeight-20;
+  WIDTH = window.innerWidth-20;
   renderer.setSize(WIDTH, HEIGHT);
   camera.aspect = WIDTH / HEIGHT;
   camera.updateProjectionMatrix();
@@ -77,13 +77,15 @@ function init(event) {
 
     //var rolling_world_render = new THREE.Mesh( sphereGeometry, sphereMaterial );
     //scene.add(rolling_world_render);
+
+    THREEx.FullScreen.bindKey({ charCode : 'l'.charCodeAt(0)}); // Credit: Leo
     loop();
 }
 
 function CreateScene() {
 
-    HEIGHT = window.innerHeight;
-    WIDTH = window.innerWidth;
+    HEIGHT = window.innerHeight-20;
+    WIDTH = window.innerWidth-20;
 
     scene = new THREE.Scene();
     aspectRatio = WIDTH / HEIGHT;
@@ -173,3 +175,11 @@ function loop() { //game loop, game engine updates which updates scene
 }
 
 window.addEventListener('load', init, false);
+
+function handleKeyDown(keyEvent){
+  if (keyEvent.keyCode === 32) { //space
+    console.log("space");
+  }
+}
+
+document.onkeydown = handleKeyDown;
