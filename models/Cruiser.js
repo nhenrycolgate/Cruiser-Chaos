@@ -4,52 +4,13 @@ function Cruiser(engine, transform, render) {
     this.wheels = []; //contains the mesh information for the wheels
     this.height = 50;
 
-    this.Init = function() {
-        this.InitWheels();
-        this.render.mesh.rotation.y -= DegreesToRadians(90);
-        var _UpdateCruiserPosition = this.UpdateCruiserPosition;
-        var cruiser = this;
-        window.addEventListener('keydown', function(keyEvent) {
-            _UpdateCruiserPosition(keyEvent, cruiser);
-        });
-    }
+    //defines the lane the cruiser is currently occupying.  Set to the middle lane by default.
+    //lane = 0 => leftmost lane
+    //lane = 1 => middle lane
+    //lane = 2 => rightmost lane
 
+    //TODO: Set this up with an enum.
     this.lane = 1;
-
-    this.UpdateLane = function(input) {
-      var newLane = this.lane + input;
-      if (newLane < 3 && newLane > -1) {
-        this.lane = newLane;
-      }
-    }
-
-     this.UpdateCruiserPosition = function(keyEvent, cruiser) {
-        // if(jumping)return;
-        var transform = 0;
-        if ( keyEvent.keyCode === 65) { //left 'a'
-          cruiser.UpdateLane(-1);
-          transform = -70;
-        } else if (keyEvent.keyCode === 68) { //right 'd'
-          cruiser.UpdateLane(1);
-          transform = 70;
-        } else if (keyEvent.keyCode === 87) {  //up/jump 'w'
-          console.log("Up");
-            //     bounceValue=0.1;
-            //     jumping=true;
-            // }
-        }
-
-        var newPosition = cruiser.transform.x + transform;
-        if (newPosition <= 70 && newPosition >= -70) {
-          cruiser.transform.UpdatePosition(transform, 0 ,0);
-        }
-        // }
-        // if(validMove){
-        //     jumping=true;
-        //     bounceValue=0.06;
-        // }
-    }
-
 
     this.Update = function(engine) {
 
@@ -72,6 +33,11 @@ function Cruiser(engine, transform, render) {
         this.wheels = render.wheels;
     }
 
+    this.Init = function() {
+        this.InitWheels();
+        this.render.mesh.rotation.y += DegreesToRadians(90);
+    }
+
 }
 
 
@@ -81,8 +47,6 @@ function CruiserRender() {
     this.mesh = new THREE.Object3D();
     this.mesh.name = "Cruiser";
     this.wheels = [];
-
-    this.mesh.rotation.x = 20;
 
     //Body
 

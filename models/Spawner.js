@@ -1,25 +1,34 @@
-function Spawner(engine, transform, render, spawnTarget, timer) {
+function Spawner(engine, transform, render, type, enemy, timer) {
 
-    GameObject.call(this, engine, transform, render, "SPAWNER");
-    this.spawnTarget = spawnTarget;
+    GameObject.call(this, engine, transform, render, type);
+    this.type = "SPAWNER";
+    this.enemy = enemy;
     this.timer = timer;
-
-    this.Init = function(engine) {
-    }
-
-    this.SetAsDefaultSpawner = function(engine) {
-        var _spawner = this;
-
-        this.AddComponent("SPAWN_TIMER", this.timer);
-        var spawnTimer = this.GetComponent("SPAWN_TIMER");
-
-        spawnTimer.Restart();
-        spawnTimer.RegisterOnClockExpired( (_timer) => _spawner.Spawn(engine) );
-        spawnTimer.RegisterOnClockExpired( (_timer) => _timer.Restart() );
-    }
+    this.enabled = false;
 
     this.Spawn = function(engine) {
-        console.log("Spawn");
-        //engine.CreateInstance(spawnTarget.Copy());
+        engine.Add(enemy.Copy());
     }
+
+    this.Update = function(engine) {
+        if (timer.Expired()) {
+            this.Spawn(engine);
+            timer.Refresh();
+        }
+        else {
+            timer.Tick();
+        }
+    }
+
+    this.Enable = function(engine) {
+        enabled = true;
+        timer.Start();
+    }
+
+    this.Disable = function(engine) {
+        enabled = false;
+        timer.Stop();
+    }
+
+
 }
