@@ -1,14 +1,10 @@
-function Engine(scene) {
+function Engine() {
 
     this.objects = new Map();
     this.typeMap = new Map();
-    this.controllers = new Map();
-    this.callbackHandlers = new Map();
-
     this.enabled = true;
-    this.scene = scene;
 
-    this.AddGameObject = function(object) {
+    this.Add = function(object) {
         this.objects.set(object.id, object);
         if (this.typeMap.has(object.type)) {
             var typeIDMap = this.typeMap.get(object.type);
@@ -22,16 +18,7 @@ function Engine(scene) {
         }
     }
 
-    this.GetObjectsOfType = function(type) {
-        var objectsOfType = [];
-        var typeIDMap =new Map();
-        if (this.typeMap.has(type)) {
-            typeIDMap = this.typeMap.get(object.type);
-        }
-        return typeIDMap.values();
-    }
-
-    this.GetNextGameObjectID = function() {
+    this.GetNextID = function() {
         var id = 0;
         while (this.objects.has(id)) {
             id++;
@@ -40,9 +27,6 @@ function Engine(scene) {
     }
 
     this.Destroy = function(object) {
-        this.scene.remove(object.render.mesh);
-        this.scene.remove(object.transform.render.mesh);
-
         this.objects.delete(object.id);
         if (this.typeMap.has(object.type)) {
             var typeIDMap = this.typeMap.get(object.type);
@@ -50,8 +34,17 @@ function Engine(scene) {
         }
     }
 
+    this.GetInput = function() {
+        return buttons;
+    }
+
+    this.HandleInput = function() {
+        //get input from the user for one frame, setting the buttons map
+    }
+
     this.Update = function() {
         if (this.enabled) {
+            this.HandleInput();
             this.UpdateObjects();
             this.RenderObjects();
         }
@@ -61,37 +54,29 @@ function Engine(scene) {
         for (var object of this.objects.values()) {
             if (object.enabled) {
                 object.Update(this);
-                if (object.componentsByName.length != 0) {
-                    object.UpdateComponents(this);
-                }
             }
         }
     }
 
-    this.RenderObjects = function() {
+    this.RenderObjects = function() { //render all objects to scene. 
         for (var object of this.objects.values()) {
             object.Render(this);
         }
     }
 
     this.CreateInstance = function(object) {
-        object.Init(this);
-        this.AddGameObject(object);
-        this.scene.add(object.render.mesh);
-        //this.scene.add(object.transform.render.mesh);
-
-        //TODO: make sure the collision is active
-        if (object.collision != null) {
-            this.scene.add(object.collision.render.mesh);
-        }
+        object.Init();
+        this.Add(object);
+        scene.add(object.render.mesh);
     }
 
-    this.enable = function() { this.enabled = true; }
-    this.disable = function() { this.enabled = false; }
-
-    this.AddController = function(controller) {
-        this.controllers.set(controller.type, controller);
-        controller.Init();
+    this.enable = function() {
+        this.enabled = true;
     }
+
+    this.disable = function() {
+        this.enabled = false;
+    }
+
 
 }
