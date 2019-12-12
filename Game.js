@@ -1,9 +1,10 @@
 var engine,
     scene,
     camera, fieldOfView, aspectRatio, nearPlane, farPlane,
-    cameraController,
+
     debugGUI,
     stats,
+
     renderer,
     container,
     controls;
@@ -36,9 +37,53 @@ function init(event) {
 
     //Variable Initialization//
 
-    engine = new Engine();
+    engine = new Engine(scene);
+    engine.AddController(new CameraController(camera, 1000));
+
+    //------------------------------------------------------------------------------------------------------------------
+
+/*
+    var emptyGameObject = new GameObject(engine, new Transform(0, 0, 0), new GameObjectRender());
+    emptyGameObject.AddComponent("PRINT_TIMER", new Timer(30));
+    var timer = emptyGameObject.GetComponent("PRINT_TIMER");
+    timer.Enable();
+    timer.RegisterOnClockExpired( () => console.log("This should loop!") );
+    timer.RegisterOnClockExpired( (_timer) => _timer.Restart() );
+
+    emptyGameObject.AddComponent("OTHER_TIMER", new Timer(30));
+    var timer = emptyGameObject.GetComponent("OTHER_TIMER");
+    timer.Enable();
+    timer.RegisterOnClockExpired( () => console.log("This should also loop!") );
+    timer.RegisterOnClockExpired( (_timer) => _timer.Restart() );
+    //engine.CreateInstance(emptyGameObject);
+
+    var spawner = new Spawner(engine, DefaultTransform(), new GameObjectRender(), new GameObjectRender(), new Timer(30));
+    engine.CreateInstance(spawner);
+*/
+
+    var particle = new Particle(engine, DefaultTransform(), new ParticleRender(), new Timer(200));
+    var particleSystem = new ParticleSystem(engine, DefaultTransform(), new GameObjectRender(), particle, new Timer(10));
+
+    engine.CreateInstance(particleSystem);
+
+    //var character = new Character(engine, new Transform(0, 0, 0), new CharacterRender());
+    //engine.CreateInstance(character);
+
+    //var world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender(worldRadius));
+    //world.SetSpeed(DegreesToRadians(1));
+    //engine.CreateInstance(world);
 
     world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender(worldRadius));
+    //world.SetSpeed(DegreesToRadians(1));
+    //engine.CreateInstance(world);
+
+    //road = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, false));
+    //road.SetSpeed(DegreesToRadians(1));
+    //engine.CreateInstance(road);
+
+    //oppositeRoad = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, true));
+    //oppositeRoad.SetSpeed(DegreesToRadians(1));
+    //engine.CreateInstance(oppositeRoad);
     world.SetSpeed(DegreesToRadians(worldSpeed));
     engine.CreateInstance(world);
 
@@ -56,10 +101,17 @@ function init(event) {
     // cruiser.SetSpeed(DegreesToRadians(1));
     // engine.CreateInstance(cruiser);
 
-    cruiser = new Cruiser(engine, new Transform(0, worldRadius/3, worldRadius + 15), new CruiserRender());
+    //var cruiser = new Cruiser(engine, new Transform(0, 0 + worldRadius + 50 / 2, 0), new CruiserRender());
+
+    //cruiser = new Cruiser(engine, new Transform(0, worldRadius/3, worldRadius + 15), new CruiserRender());
+
     //cruiser.InitWheels();
-    cruiser.SetSpeed(DegreesToRadians(1));
-    engine.CreateInstance(cruiser);
+    //cruiser.SetSpeed(DegreesToRadians(1));
+    //engine.CreateInstance(cruiser);
+
+    //var sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender(worldRadius*3));
+    //sky.SetSpeed(DegreesToRadians(2));
+    //engine.CreateInstance(sky);
 
     sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender(worldRadius*3));
     sky.SetSpeed(DegreesToRadians(worldSpeed/8));
@@ -105,12 +157,12 @@ function CreateScene() {
     camera.position.z = 1300;
     camera.lookAt(new THREE.Vector3(0, 1200, 0));
 
-    cameraController = new CameraController(camera, 1000);
-    cameraController.Init();
+    //cameraController = new CameraController(camera, 1000);
+    //cameraController.Init();
 
-    gui = DebugGUI();
-    debugGUIController = new DebugGUIController(gui, ShowStats, HideStats);
-    debugGUIController.Init();
+    //gui = DebugGUI();
+    //debugGUIController = new DebugGUIController(gui, ShowStats, HideStats);
+    //debugGUIController.Init();
 
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(WIDTH, HEIGHT);
