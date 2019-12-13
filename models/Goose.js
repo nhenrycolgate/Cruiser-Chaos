@@ -3,40 +3,24 @@ function Goose(engine,transform,render){
 	GameObject.call(this, engine, transform, render, "Goose");
 	
     this.Update = function(engine) {
-		/*if (collision){  //everything dissapears and just shows particles where body used to be 
-			var mesh= render.mesh;
-			
-			//clear everything in mesh
-			for (var i = mesh.children.length - 1; i >= 0; i--) {
-				mesh.remove(mesh.children[i]);
-			}
-			
-			//display particles
-			for (var i=0;i<particles.length;i=i+1){
-				mesh.add(particles[i]);
-			}
-		}*/
+		
     }
 
     this.Init = function() {
 		var bodyPos= [render.body.position.x,render.body.position.y,render.body.position.z];
 		var bodyRadius= render.bodyRadius;
 		
-		this.particles= [];
-		for (var i=0;i<200;i=i+1){
-			var coords= GetPointOnSphere(bodyPos,bodyRadius);
-			var ptcl= new ParticleRender(coords,0xffffff);
-			this.particles.push(ptcl.particle);
-		}
+		var collisionX= 53;
+		var collisionY= 100;
+		var collisionZ= 55;
 		
-		this.collisionBox= new CollisionBox(transform,40,80,50,[0,0,0]);
+		this.collisionBox= new CollisionBox(transform,collisionX,collisionY,collisionZ,[0,0,0]);
 		
 		//collisionbox drawn out for debugging
-		var geometry = new THREE.CubeGeometry(55,80,55);
+		var geometry = new THREE.CubeGeometry(collisionX,collisionY,collisionZ);
 		var colors= [0xffffff,0x000000];
 		var material = new THREE.MeshLambertMaterial({color: colors[Math.round(Math.random())], wireframe: true});
 		var obj = new THREE.Mesh(geometry,material);
-		obj.position.set(0,0,0);
 		render.mesh.add(obj);
 		
     }

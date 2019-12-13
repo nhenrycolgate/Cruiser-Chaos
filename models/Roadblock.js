@@ -20,6 +20,19 @@ function Roadblock(engine,transform,render){
 
     this.Init = function() {
 		//TODO: create collisionbox
+		
+		var collisionX= 100;
+		var collisionY= 80;
+		var collisionZ= 120;
+		
+		this.collisionBox= new CollisionBox(transform,collisionX,collisionY,collisionZ,[0,0,0]);
+		
+		//collisionbox drawn out for debugging
+		var geometry = new THREE.CubeGeometry(collisionX,30,collisionZ);
+		var colors= [0xffffff,0x000000];
+		var material = new THREE.MeshLambertMaterial({color: colors[Math.round(Math.random())], wireframe: true});
+		var obj = new THREE.Mesh(geometry,material);
+		render.mesh.add(obj);
     }
 	this.Destroy = function(){
 		
@@ -83,4 +96,6 @@ function RoadblockRender(){
 	this.sign2 = new THREE.Mesh(signgeometry2,signmaterial2);
 	this.sign2.position.set(0,signPosY,-signPosZ);
 	this.mesh.add(this.sign2);
+	
+	this.mesh.rotation.y+=DegreesToRadians(90);
 }
