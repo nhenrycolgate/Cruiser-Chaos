@@ -1,6 +1,6 @@
 function Trigger(engine,transform,render){
 	
-	GameObject.call(this, engine, transform, render, "Roadblock");
+	GameObject.call(this, engine, transform, render, "Trigger");
 
     this.Update = function(engine) {
 		render.mesh.rotation.x+=DegreesToRadians(90);
