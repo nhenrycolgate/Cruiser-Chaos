@@ -1,4 +1,4 @@
-function GameObject(engine, transform, render, type) {
+function GameObject(engine, transform, render, type = "GAME_OBJECT") {
 
     this.id = engine.GetNextGameObjectID();
     this.render = render;
@@ -43,12 +43,17 @@ function GameObject(engine, transform, render, type) {
     this.SetType = function(type) { this.type = type; }
 
     this.Render = function(engine) {
-        if (render == null) {
+        if (this.render == null) {
             return;
         }
-        this.render.mesh.position.x = transform.x;
-        this.render.mesh.position.y = transform.y;
-        this.render.mesh.position.z = transform.z;
+        this.render.mesh.position.x = this.transform.x;
+        this.render.mesh.position.y = this.transform.y;
+        this.render.mesh.position.z = this.transform.z;
+
+        if (this.transform.render == null) {
+            return;
+        }
+        this.transform.Render(engine);
     }
 
     this.GlobalTranslate = function(engine, x, y, z) {
@@ -79,19 +84,25 @@ function GameObject(engine, transform, render, type) {
 
     this.UpdateComponents = function(engine) {
         for (var component of this.componentsByName.values()) {
-            component.Update();
+            component.Update(engine);
+            component.Render(engine);
         }
     }
 
     this.Init = function(engine) {}
     this.Update = function(engine) {}
-    this.Destroy = function(engine) { engine.Destroy(this); }
+    this.Destroy = function(engine) {
+        for (var component of this.componentsByName.values()) {
+            console.log(component);
+            component.Destroy(engine);
+        }
+        engine.Destroy(this);
+
+    }
     this.Enable = function(engine) { this.enabled = true; }
     this.Disable = function(engine) { this.enabled = false; }
 
 //Source from https://www.w3schools.com/js/js_object_prototypes.asp
-//todo: see if this works and makes deep copies
-/*
     this.Copy = function() {
         var cloneObj = this;
         if(this.__isClone) {
@@ -114,13 +125,18 @@ function GameObject(engine, transform, render, type) {
 
         return temp;
     }
-*/
 
     this.ToString = function(engine) { return "[GameObject id:" + this.id + "][GameObject type:" + this.type + "]"; }
+
+    this.RegisterOnLateUpdate = function(callback) {
+        this.callbackHandler.AddCallback("LATE_UPDATE", callback);
+    }
 
 }
 
 function GameObjectRender() {
-    this.mesh = new THREE.Object3D();
+
+    Render.call(this);
     this.mesh.name = "GAME_OBJECT";
+
 }

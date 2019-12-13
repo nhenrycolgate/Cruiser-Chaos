@@ -6,11 +6,35 @@ function Component(type) {
     this.callbackHandler = new CallbackHandler(this);
     this.enabled = true;
     this.tag = "COMPONENT";
+    this.render = null;
+    this.inScene = false;
 
     this.AttachToGameObject = function(gameObject) {
         this.gameObject = gameObject;
         this.id = gameObject.GetNextComponentID();
         this.Init();
+        if (this.render != null) {
+            this.render.Init();
+        }
+    }
+
+    this.Render = function(engine) {
+        if (this.render == null) {
+            return;
+        }
+        if (!this.inScene) {
+            engine.scene.add(this.render.mesh);
+            this.inScene = true;
+        }
+        this.render.mesh.position.x = this.gameObject.transform.x;
+        this.render.mesh.position.y = this.gameObject.transform.y;
+        this.render.mesh.position.z = this.gameObject.transform.z;
+    }
+
+    this.Destroy = function(engine) {
+        if (this.render != null && this.inScene) {
+            engine.scene.remove(this.render.mesh);
+        }
     }
 
     this.Init = function() {}
@@ -21,7 +45,7 @@ function Component(type) {
 
 //Source from https://www.w3schools.com/js/js_object_prototypes.asp
 //todo: see if this works and makes deep copies
-/*
+
     this.Copy = function() {
         var cloneObj = this;
         if(this.__isClone) {
@@ -44,5 +68,4 @@ function Component(type) {
 
         return temp;
     }
-*/
 }

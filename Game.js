@@ -2,7 +2,7 @@ var engine,
     scene,
     camera, fieldOfView, aspectRatio, nearPlane, farPlane,
 
-    debugGUI,
+    gui,
     stats,
 
     renderer,
@@ -39,6 +39,7 @@ function init(event) {
 
     engine = new Engine(scene);
     engine.AddController(new CameraController(camera, 1000));
+    engine.AddController(new DebugGUIController(gui, ShowStats, HideStats));
 
     //------------------------------------------------------------------------------------------------------------------
 
@@ -61,33 +62,24 @@ function init(event) {
     engine.CreateInstance(spawner);
 */
 
-    var particle = new Particle(engine, DefaultTransform(), new ParticleRender(), new Timer(200));
-    var particleSystem = new ParticleSystem(engine, DefaultTransform(), new GameObjectRender(), particle, new Timer(10));
-
+    var particle = new Particle(engine, DefaultTransform(), new ParticleRender(), new Timer(20));
+    var particleSystem = new ParticleSystem(engine, DefaultTransform(), new GameObjectRender(), particle, new Timer(1));
     engine.CreateInstance(particleSystem);
 
-    world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender(worldRadius));
-    world.SetSpeed(DegreesToRadians(worldSpeed));
-    engine.CreateInstance(world);
+    var emptyGameObject = new GameObject(engine, DefaultTransform(), new GameObjectRender());
+    emptyGameObject.RegisterOnLateUpdate( (_obj) => _obj.transform.UpdatePosition(5, 0, 0) );
+    emptyGameObject.AddComponent("BOX_COLLIDER", new BoxCollider(100, 100, 100) );
+    emptyGameObject.GetComponent("BOX_COLLIDER").RegisterOnCollision( (_collider) => emptyGameObject.Destroy(engine) );
+    engine.CreateInstance(emptyGameObject);
 
-    road = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, false));
-    road.SetSpeed(DegreesToRadians(worldSpeed));
-    engine.CreateInstance(road);
 
-    oppositeRoad = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, true));
-    oppositeRoad.SetSpeed(DegreesToRadians(worldSpeed));
-    engine.CreateInstance(oppositeRoad);
+    var target = new GameObject(engine, new Transform(1000, 0, 0), new GameObjectRender());
+    target.RegisterOnLateUpdate( (_obj) => _obj.transform.UpdatePosition(-1, 0, 0) );
+    target.AddComponent("BOX_COLLIDER", new BoxCollider(100, 100, 100, new Transform(+100, -100, 0)) );
+    engine.CreateInstance(target);
 
-    var cruiser = new Cruiser(engine, new Transform(0, worldRadius/3, worldRadius + 15), new CruiserRender());
-    cruiser.InitWheels();
-    cruiser.SetSpeed(DegreesToRadians(1));
-    engine.CreateInstance(cruiser);
+    //THREEx.FullScreen.bindKey({ charCode : 'l'.charCodeAt(0)}); // Credit: Leo
 
-    sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender(worldRadius*3));
-    sky.SetSpeed(DegreesToRadians(worldSpeed/8));
-    engine.CreateInstance(sky);
-
-    THREEx.FullScreen.bindKey({ charCode : 'l'.charCodeAt(0)}); // Credit: Leo
     loop();
 }
 
@@ -112,14 +104,9 @@ function CreateScene() {
     camera.position.x = 0;
     camera.position.y = 200;
     camera.position.z = 1300;
-    camera.lookAt(new THREE.Vector3(0, 1200, 0));
-
-    //cameraController = new CameraController(camera, 1000);
-    //cameraController.Init();
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     gui = DebugGUI();
-    debugGUIController = new DebugGUIController(gui, ShowStats, HideStats);
-    debugGUIController.Init();
 
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(WIDTH, HEIGHT);

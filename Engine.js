@@ -1,14 +1,12 @@
 function Engine(scene) {
 
-    this.objects = new Map();
-    this.typeMap = new Map();
-    this.controllers = new Map();
-    this.callbackHandlers = new Map();
+    this.objects = new Map(); //GameObjects in the current scene
+    this.typeMap = new Map(); //Map from GameObject Type to GameObjects
+    this.controllers = new Map(); //All the controllers that exist within the scene
+    this.enabled = true; //Current state of the engine
+    this.scene = scene; //current scene which the engine operates on
 
-    this.enabled = true;
-    this.scene = scene;
-
-    this.AddGameObject = function(object) {
+    this.AddGameObject = function(object) { //Add an object to the engine data set
         this.objects.set(object.id, object);
         if (this.typeMap.has(object.type)) {
             var typeIDMap = this.typeMap.get(object.type);
@@ -22,16 +20,25 @@ function Engine(scene) {
         }
     }
 
-    this.GetObjectsOfType = function(type) {
+    this.GetObjectsOfType = function(type) { //Returns a set of the objects within the engine of a specific type
         var objectsOfType = [];
-        var typeIDMap =new Map();
+        var typeIDMap = new Map();
         if (this.typeMap.has(type)) {
-            typeIDMap = this.typeMap.get(object.type);
+            typeIDMap = this.typeMap.get(type);
+            var objects = [];
+            for (var object of typeIDMap.values()) {
+                objects.push(object);
+            }
+            return objects;
         }
-        return typeIDMap.values();
+        else {
+            console.log("No objects of type " + type);
+            var array = [];
+            return array;
+        }
     }
 
-    this.GetNextGameObjectID = function() {
+    this.GetNextGameObjectID = function() { //
         var id = 0;
         while (this.objects.has(id)) {
             id++;
@@ -39,7 +46,7 @@ function Engine(scene) {
         return id++;
     }
 
-    this.Destroy = function(object) {
+    this.Destroy = function(object) { //
         this.scene.remove(object.render.mesh);
         this.scene.remove(object.transform.render.mesh);
 
@@ -50,17 +57,18 @@ function Engine(scene) {
         }
     }
 
-    this.Update = function() {
+    this.Update = function() { //
         if (this.enabled) {
             this.UpdateObjects();
             this.RenderObjects();
         }
     }
 
-    this.UpdateObjects = function() {
+    this.UpdateObjects = function() { //
         for (var object of this.objects.values()) {
             if (object.enabled) {
                 object.Update(this);
+                object.callbackHandler.Invoke("LATE_UPDATE");
                 if (object.componentsByName.length != 0) {
                     object.UpdateComponents(this);
                 }
@@ -68,28 +76,30 @@ function Engine(scene) {
         }
     }
 
-    this.RenderObjects = function() {
+    this.RenderObjects = function() { //
         for (var object of this.objects.values()) {
             object.Render(this);
         }
     }
 
-    this.CreateInstance = function(object) {
+    this.CreateInstance = function(object) { //
         object.Init(this);
         this.AddGameObject(object);
-        this.scene.add(object.render.mesh);
-        //this.scene.add(object.transform.render.mesh);
-
-        //TODO: make sure the collision is active
-        if (object.collision != null) {
-            this.scene.add(object.collision.render.mesh);
+        if ( !object.render.loaded) {
+            object.render.Init();
         }
+        this.scene.add(object.render.mesh);
+        if ( !object.transform.render.loaded) {
+            object.transform.render.Init();
+        }
+        this.scene.add(object.transform.render.mesh);
+
     }
 
-    this.enable = function() { this.enabled = true; }
-    this.disable = function() { this.enabled = false; }
+    this.Enable = function() { this.enabled = true; } //Enable the engine
+    this.Disable = function() { this.enabled = false; } //Disable the engine
 
-    this.AddController = function(controller) {
+    this.AddController = function(controller) { //Attach a controller to the game engine
         this.controllers.set(controller.type, controller);
         controller.Init();
     }

@@ -16,18 +16,19 @@ function Transform(x, y, z) {
         this.x += x;
         this.y += y;
         this.z += z;
-        this.UpdateTransformRender(this.x, this.y, this.z);
     }
 
-    this.UpdateTransformRender = function(x, y, z) {
-        this.render.mesh.position.x = x;
-        this.render.mesh.position.y = y;
-        this.render.mesh.position.z = z;
+    this.Render = function() {
+        this.render.mesh.position.x = this.x;
+        this.render.mesh.position.y = this.y;
+        this.render.mesh.position.z = this.z;
     }
 
     this.Copy = function() {
         return new Transform(this.x, this.y, this.z);
     }
+
+    this.Destroy = function() {}
 
 }
 
@@ -36,39 +37,40 @@ function DefaultTransform() {
 }
 
 function TransformRender() {
-    this.mesh = new THREE.Object3D();
-    this.mesh.name = "TRANSFORM";
 
-    var XWidth = 100;
-    var XHeight = 1;
-    var XDepth = 1;
+    Render.call(this);
 
-    var XGeometry = new THREE.BoxGeometry(XWidth, XHeight, XDepth, 1, 1, 1);
-    var XMaterial = new THREE.MeshLambertMaterial({color:COLORS.red});
-    var X = new THREE.Mesh(XGeometry, XMaterial);
+    this.Init = function() {
+    
+        this.mesh.name = "TRANSFORM";
+        var XWidth = 100;
+        var XHeight = 1;
+        var XDepth = 1;
 
-    X.position.x += XWidth / 2;
-    this.mesh.add(X);
+        var XGeometry = new THREE.BoxGeometry(XWidth, XHeight, XDepth, 1, 1, 1);
+        var XMaterial = new THREE.MeshLambertMaterial({color:COLORS.red, transparent: true, opacity: .5});
+        var X = new THREE.Mesh(XGeometry, XMaterial);
 
-    var YWidth = 1;
-    var YHeight = 100;
-    var YDepth = 1;
+        this.mesh.add(X);
 
-    var YGeometry = new THREE.BoxGeometry(YWidth, YHeight, YDepth, 1, 1, 1);
-    var YMaterial = new THREE.MeshLambertMaterial({color:COLORS.blue});
-    var Y = new THREE.Mesh(YGeometry, YMaterial);
+        var YWidth = 1;
+        var YHeight = 100;
+        var YDepth = 1;
 
-    Y.position.y += YHeight / 2;
-    this.mesh.add(Y);
+        var YGeometry = new THREE.BoxGeometry(YWidth, YHeight, YDepth, 1, 1, 1);
+        var YMaterial = new THREE.MeshLambertMaterial({color:COLORS.blue, transparent: true, opacity: .5});
+        var Y = new THREE.Mesh(YGeometry, YMaterial);
 
-    var ZWidth = 1;
-    var ZHeight = 1;
-    var ZDepth = 100;
+        this.mesh.add(Y);
 
-    var ZGeometry = new THREE.BoxGeometry(ZWidth, ZHeight, ZDepth, 1, 1, 1);
-    var ZMaterial = new THREE.MeshLambertMaterial({color:COLORS.yellow});
-    var Z = new THREE.Mesh(ZGeometry, ZMaterial);
+        var ZWidth = 1;
+        var ZHeight = 1;
+        var ZDepth = 100;
 
-    Z.position.z += ZDepth / 2;
-    this.mesh.add(Z);
+        var ZGeometry = new THREE.BoxGeometry(ZWidth, ZHeight, ZDepth, 1, 1, 1);
+        var ZMaterial = new THREE.MeshLambertMaterial({color:COLORS.yellow, transparent: true, opacity: .5});
+        var Z = new THREE.Mesh(ZGeometry, ZMaterial);
+
+        this.mesh.add(Z);
+    }
 }

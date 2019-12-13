@@ -5,6 +5,9 @@ function Particle(engine, transform, render, timer) {
 
     this.Init = function(engine) {
         var _particles = this;
+        this.x = 10 * Math.random() - 5;
+        this.y = 10 * Math.random() - 5;
+        this.z = 10 * Math.random() - 5;
 
         this.AddComponent("DESPAWN_TIMER", this.timer);
         var despawnTimer = this.GetComponent("DESPAWN_TIMER");
@@ -14,33 +17,34 @@ function Particle(engine, transform, render, timer) {
     }
 
     this.Update = function() {
-        this.transform.UpdatePosition(10 * Math.random() - 5, 10 * Math.random() - 5, 10 * Math.random() - 5);
+        this.transform.UpdatePosition(this.x, this.y, this.z);
         this.render.particle.material.transparent = true;
-        this.render.particle.material.opacity -= .01;
+        this.render.particle.material.opacity -= 1 / this.timer.time;
     }
 
     this.Copy = function(engine) {
-        console.log("this.render.mesh.name = " + this.render.mesh.name);
-        var renderCopy = {};
-        renderCopy.mesh = this.render.mesh.clone();
-        return new Particle(engine, this.transform.Copy(), new ParticleRender(), this.timer.Copy());
+        //var renderCopy = {};
+        //renderCopy.mesh = this.render.mesh.clone();
+        return new Particle(engine, this.transform.Copy(), this.render.Copy(), this.timer.Copy());
     }
 }
 
 function ParticleRender() {
 
-    this.mesh = new THREE.Object3D();
-    this.mesh.name = "PARTICLE";
+    Render.call(this);
 
-    var particleWidth = 10;
-    var particleHeight = 10;
-    var particleDepth = 10;
+    this.Init = function() {
+        this.mesh.name = "PARTICLE";
 
-    var particleGeometry = new THREE.BoxGeometry(particleWidth, particleHeight, particleDepth, 1, 1, 1);
-    var particleMaterial = new THREE.MeshLambertMaterial({color:COLORS.red});
-    particleMaterial.opacity = 1;
-    this.particle = new THREE.Mesh(particleGeometry, particleMaterial);
+        var particleWidth = 10;
+        var particleHeight = 10;
+        var particleDepth = 10;
 
-    this.mesh.add(this.particle);
+        var particleGeometry = new THREE.BoxGeometry(particleWidth, particleHeight, particleDepth, 1, 1, 1);
+        var particleMaterial = new THREE.MeshLambertMaterial({color:COLORS.red});
+        particleMaterial.opacity = 1;
+        this.particle = new THREE.Mesh(particleGeometry, particleMaterial);
 
+        this.mesh.add(this.particle);
+    }
 }

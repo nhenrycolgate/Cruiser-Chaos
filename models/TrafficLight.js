@@ -7,7 +7,7 @@ function TrafficLight(engine,transform,render){
     }
 
     this.Init = function() {
-       this.signal= render.signal;
+       this.signal = render.signal;
     }
 	this.Destroy = function(){
 		
