@@ -8,14 +8,14 @@ function RollingWorld(engine, transform, render) {
     this.buildingSpawner = null;
 
     this.Init = function(engine) {
-
+      if (!this.render.loaded) {
+        this.render.Init();
+      }
         //buildingSpawner = new Spawner(engine, new Transform(0, 0, 0), );
         this.SetSpeed(DegreesToRadians(1));
 
         //this.addCollider(Despawn collider)
     }
-
-    this.Init = function() {}
 
     this.SetSpeed = function(speed) {
         this.speed = speed;
@@ -39,6 +39,10 @@ function RollingWorld(engine, transform, render) {
 
 function RollingWorldRender(radius) {
 
+  Render.call(this);
+
+  this.Init = function() {
+
     this.mesh = new THREE.Object3D();
     this.mesh.name = "RollingWorld";
 
@@ -48,4 +52,5 @@ function RollingWorldRender(radius) {
     var world = new THREE.Mesh( sphereGeometry, sphereMaterial );
 
     this.mesh.add(world);
+  }
 }

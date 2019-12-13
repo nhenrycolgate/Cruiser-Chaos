@@ -61,7 +61,7 @@ function CameraController(camera, zoom) {
         cameraController.camera.position.x = cameraController.cameraPosition.x * cameraController.zoom;
         cameraController.camera.position.y = cameraController.cameraPosition.y * cameraController.zoom;
         cameraController.camera.position.z = cameraController.cameraPosition.z * cameraController.zoom;
-        cameraController.camera.lookAt(new THREE.Vector3(0, 0, 0));
+        cameraController.camera.lookAt(new THREE.Vector3(0, 1200, 0));
 
     }
 

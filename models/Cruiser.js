@@ -3,9 +3,16 @@ function Cruiser(engine, transform, render) {
     GameObject.call(this, engine, transform, render, "Cruiser");
     this.wheels = []; //contains the mesh information for the wheels
     this.height = 50;
+    this.distance = 0
+
+    var distanceElement = document.getElementById("distance");
 
     this.Init = function() {
+        if (!this.render.loaded) {
+          this.render.Init();
+        }
         this.InitWheels();
+
         this.render.mesh.rotation.y -= DegreesToRadians(90);
         var _UpdateCruiserPosition = this.UpdateCruiserPosition;
         var cruiser = this;
@@ -52,7 +59,8 @@ function Cruiser(engine, transform, render) {
 
 
     this.Update = function(engine) {
-
+        this.distance += 1;
+        distanceElement.innerHTML = Math.floor(this.distance*this.speed*20);
         for (var i = 0; i < this.wheels.length; i++) {
             var wheel = this.wheels[i];
             this.WheelUpdate(engine, wheel);
@@ -69,7 +77,11 @@ function Cruiser(engine, transform, render) {
     }
 
     this.InitWheels = function() {
-        this.wheels = render.wheels;
+      this.wheels = this.render.wheels;
+    }
+
+    this.DemoMode = function() {
+      this.mesh.rotation.y += 10;
     }
 
 }
@@ -77,6 +89,10 @@ function Cruiser(engine, transform, render) {
 
 //Create the model for the cruiser.
 function CruiserRender() {
+
+  Render.call(this);
+
+  this.Init = function() {
 
     this.mesh = new THREE.Object3D();
     this.mesh.name = "Cruiser";
@@ -237,4 +253,7 @@ function CruiserRender() {
 
     this.mesh.add(wheelCopy);
     this.wheels.push(wheelCopy);
+
+    this.mesh.rotation.y = DegreesToRadians(-90);
+  }
 }

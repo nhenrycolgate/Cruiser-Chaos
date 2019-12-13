@@ -93,7 +93,7 @@ function GameObject(engine, transform, render, type = "GAME_OBJECT") {
     this.Update = function(engine) {}
     this.Destroy = function(engine) {
         for (var component of this.componentsByName.values()) {
-            console.log(component);
+            // console.log(component);
             component.Destroy(engine);
         }
         engine.Destroy(this);
