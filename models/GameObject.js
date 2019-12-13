@@ -81,6 +81,27 @@ function GameObject(engine, transform, render, type = "GAME_OBJECT") {
         child.rotation.y += y;
         child.rotation.z += z;
     }
+	
+	this.RotateAbout = function(x,y,z,rx,ry,rz){
+		var prevTransform= new THREE.Vector3(this.transform.x,this.transform.y,this.transform.z);
+		
+		transformationMatrix = new THREE.Matrix4().makeTranslation(x,y,z);
+		prevTransform.applyMatrix4(transformationMatrix);
+		
+		transformationMatrix= new THREE.Matrix4().makeRotationX(DegreesToRadians(rx));
+		prevTransform.applyMatrix4(transformationMatrix);
+		
+		transformationMatrix= new THREE.Matrix4().makeRotationY(DegreesToRadians(ry));
+		prevTransform.applyMatrix4(transformationMatrix);
+		
+		transformationMatrix= new THREE.Matrix4().makeRotationZ(DegreesToRadians(rz));
+		prevTransform.applyMatrix4(transformationMatrix);
+		
+		transformationMatrix = new THREE.Matrix4().makeTranslation(-x,-y,-z);
+		prevTransform.applyMatrix4(transformationMatrix);
+		
+		this.transform.SetPosition(prevTransform.x,prevTransform.y,prevTransform.z);
+	}
 
     this.UpdateComponents = function(engine) {
         for (var component of this.componentsByName.values()) {
@@ -93,7 +114,7 @@ function GameObject(engine, transform, render, type = "GAME_OBJECT") {
     this.Update = function(engine) {}
     this.Destroy = function(engine) {
         for (var component of this.componentsByName.values()) {
-            // console.log(component);
+            console.log(component);
             component.Destroy(engine);
         }
         engine.Destroy(this);
