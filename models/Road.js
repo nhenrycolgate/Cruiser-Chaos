@@ -2,7 +2,11 @@ function Road(engine, transform, render) {
 
     GameObject.call(this, engine, transform, render, "ROAD");
 
-    this.Init = function() {}
+    this.Init = function() {
+      if (!this.render.loaded) {
+        this.render.Init();
+      }
+    }
 
     this.SetSpeed = function(speed) {
         this.speed = speed;
@@ -14,6 +18,10 @@ function Road(engine, transform, render) {
 }
 
 function RoadRender(radius, width, oppositeDirection) {
+
+  Render.call(this);
+
+  this.Init = function() {
 
     this.mesh = new THREE.Object3D();
     this.mesh.name = "Road";
@@ -48,4 +56,5 @@ function RoadRender(radius, width, oppositeDirection) {
     roadParent.add(roadLaneRight);
 
     this.mesh.add(roadParent);
+  }
 }

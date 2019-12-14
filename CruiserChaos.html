@@ -41,10 +41,24 @@
         <script src="models/BoxCollider.js"></script>
         <script src="models/RollingWorld.js"></script>
         <script src="models/Road.js"></script>
+
+        <link href="style.css" rel="stylesheet">
+
     </head>
 
 <body>
-    <div class="world" id="world"></div>
+    <div class="world" id="world">
+      <div class="show" id="beginGameMenu">
+        <div id="gameTitle">Cruiser Chaos</div>
+        <div id="rules">Rules</div>
+        <div id="begin">Press any key to begin</div>
+      </div>
+      <div id="gameOverMenu">Game Over</div>
+      <div id="dist">
+        <div class="label">Distance</div>
+        <div id="distance">000</div>
+      </div>
+    </div>
 </body>
 
 </html>

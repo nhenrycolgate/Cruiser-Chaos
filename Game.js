@@ -10,7 +10,7 @@ var engine,
     controls;
 var timer;
 
-var world, road, cruiser, sky;
+var gameInProgress = true; // Link to completing objectives
 
 var HEIGHT, WIDTH;
 
@@ -31,10 +31,12 @@ function handleWindowResize() {
 
 function init(event) {
 
+    beginGameMenu = document.getElementById("beginGameMenu");
+    gameOverMenu = document.getElementById("gameOverMenu");
+
     CreateScene();
     CreateLights();
     CreateStats();
-
     //Variable Initialization//
 
     engine = new Engine(scene);
@@ -61,6 +63,21 @@ function init(event) {
     var spawner = new Spawner(engine, DefaultTransform(), new GameObjectRender(), new GameObjectRender(), new Timer(30));
     engine.CreateInstance(spawner);
 */
+    var world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender(worldRadius));
+    world.SetSpeed(DegreesToRadians(worldSpeed));
+    engine.CreateInstance(world);
+
+    road = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, false));
+    road.SetSpeed(DegreesToRadians(worldSpeed));
+    engine.CreateInstance(road);
+
+    oppositeRoad = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, true));
+    oppositeRoad.SetSpeed(DegreesToRadians(worldSpeed));
+    engine.CreateInstance(oppositeRoad);
+
+    var cruiser = new Cruiser(engine, new Transform(0, worldRadius/3, worldRadius + 15), new CruiserRender());
+    cruiser.SetSpeed(DegreesToRadians(1));
+    engine.CreateInstance(cruiser);
 
     var particle = new Particle(engine, DefaultTransform(), new ParticleRender(), new Timer(20));
     var particleSystem = new ParticleSystem(engine, DefaultTransform(), new GameObjectRender(), particle, new Timer(1));
@@ -81,8 +98,11 @@ function init(event) {
     //var spawner = new Spawner(engine, DefaultTransform(), new GameObjectRender(), spawn, new Timer(30));
     //engine.CreateInstance(spawner);
 
-    //THREEx.FullScreen.bindKey({ charCode : 'l'.charCodeAt(0)}); // Credit: Leo
+    var sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender(worldRadius*3));
+    sky.SetSpeed(DegreesToRadians(worldSpeed/8));
+    engine.CreateInstance(sky);
 
+    THREEx.FullScreen.bindKey({ charCode : 'l'.charCodeAt(0)}); // Credit: Leo
     loop();
 }
 
@@ -107,7 +127,7 @@ function CreateScene() {
     camera.position.x = 0;
     camera.position.y = 200;
     camera.position.z = 1300;
-    camera.lookAt(new THREE.Vector3(0, 0, 0));
+    camera.lookAt(new THREE.Vector3(0, 1200, 0));
 
     gui = DebugGUI();
 
@@ -165,9 +185,19 @@ function CreateLights() {
 
 }
 
-function loop() { //game loop, game engine updates which updates scene
+function ShowBeginGameMenu(show) {
+  beginGameMenu.className = show ? "show" : "";
+  // cruiser.
+}
 
+function ShowGameOverMenu(show) {
+  gameOverMenu.className = show ? "show" : "";
+}
+
+function loop() { //game loop, game engine updates which updates scene
+  if (gameInProgress) {
     engine.Update();
+  }
     renderer.render(scene, camera);
     stats.update();
     requestAnimationFrame(loop);
@@ -175,9 +205,15 @@ function loop() { //game loop, game engine updates which updates scene
 
 window.addEventListener('load', init, false);
 
-function handleKeyDown(keyEvent){
+function handleKeyDown(keyEvent) {
+  ShowBeginGameMenu(false);
   if (keyEvent.keyCode === 32) { //space
-    console.log("space");
+    ShowGameOverMenu(false);
+    gameInProgress = true;
+  } else if (keyEvent.keyCode === 188) { // Just for testing GameOverMenu
+    ShowBeginGameMenu(false);
+    ShowGameOverMenu(true);
+    gameInProgress = false;
   }
 }
 
