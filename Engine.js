@@ -63,7 +63,7 @@ function Engine(scene) {
         for (var object of currentObjects) {
             objects.push(object);
         }
-        console.log("Current gameObjects = " + objects.length);
+        // console.log("Current gameObjects = " + objects.length);
         if (this.enabled) {
             this.UpdateObjects();
             this.RenderObjects();

@@ -206,7 +206,11 @@ function loop() { //game loop, game engine updates which updates scene
 window.addEventListener('load', init, false);
 
 function handleKeyDown(keyEvent) {
-  ShowBeginGameMenu(false);
+  if (gameInProgress) {
+    ShowBeginGameMenu(false);
+    ShowGameOverMenu(false);
+  }
+
   if (keyEvent.keyCode === 32) { //space
     ShowGameOverMenu(false);
     gameInProgress = true;

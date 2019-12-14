@@ -47,7 +47,7 @@ function RollingWorldRender(radius) {
     this.mesh.name = "RollingWorld";
 
     var sphereGeometry = new THREE.OctahedronGeometry( radius, 3 );
-    var sphereMaterial = new THREE.MeshLambertMaterial( { color:COLORS.red } );
+    var sphereMaterial = new THREE.MeshLambertMaterial( { color:COLORS.green } );
 
     var world = new THREE.Mesh( sphereGeometry, sphereMaterial );
 
