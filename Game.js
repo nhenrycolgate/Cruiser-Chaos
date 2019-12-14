@@ -10,6 +10,8 @@ var engine,
     controls;
 var timer;
 
+var gameInProgress = true; // Link to completing objectives
+
 var HEIGHT, WIDTH;
 
 var ambientLight, hemisphereLight, shadowLight;
@@ -28,12 +30,13 @@ function handleWindowResize() {
 }
 
 function init(event) {
-    GameOver();
+
+    beginGameMenu = document.getElementById("beginGameMenu");
+    gameOverMenu = document.getElementById("gameOverMenu");
 
     CreateScene();
     CreateLights();
     CreateStats();
-
     //Variable Initialization//
 
     engine = new Engine(scene);
@@ -91,8 +94,6 @@ function init(event) {
     target.RegisterOnLateUpdate( (_obj) => _obj.transform.UpdatePosition(-1, 0, 0) );
     target.AddComponent("BOX_COLLIDER", new BoxCollider(100, 100, 100, new Transform(+100, -100, 0)) );
     engine.CreateInstance(target);
-
-    //THREEx.FullScreen.bindKey({ charCode : 'l'.charCodeAt(0)}); // Credit: Leo
 
     var sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender(worldRadius*3));
     sky.SetSpeed(DegreesToRadians(worldSpeed/8));
@@ -181,9 +182,19 @@ function CreateLights() {
 
 }
 
-function loop() { //game loop, game engine updates which updates scene
+function ShowBeginGameMenu(show) {
+  beginGameMenu.className = show ? "show" : "";
+  // cruiser.
+}
 
+function ShowGameOverMenu(show) {
+  gameOverMenu.className = show ? "show" : "";
+}
+
+function loop() { //game loop, game engine updates which updates scene
+  if (gameInProgress) {
     engine.Update();
+  }
     renderer.render(scene, camera);
     stats.update();
     requestAnimationFrame(loop);
@@ -191,10 +202,15 @@ function loop() { //game loop, game engine updates which updates scene
 
 window.addEventListener('load', init, false);
 
-function handleKeyDown(keyEvent){
+function handleKeyDown(keyEvent) {
+  ShowBeginGameMenu(false);
   if (keyEvent.keyCode === 32) { //space
-    engine.enabled = !engine.enabled;
-    console.log("Game Begin");
+    ShowGameOverMenu(false);
+    gameInProgress = true;
+  } else if (keyEvent.keyCode === 188) { // Just for testing GameOverMenu
+    ShowBeginGameMenu(false);
+    ShowGameOverMenu(true);
+    gameInProgress = false;
   }
 }
 

@@ -37,7 +37,7 @@ function CameraController(camera, zoom) {
         }
         else if (keyEvent.key == "d") {
             cameraController.direction *= -1;
-            console.log("direction = " + cameraController.direction);
+            // console.log("direction = " + cameraController.direction);
         }
         else if (keyEvent.key == "[") {
             console.log("do");

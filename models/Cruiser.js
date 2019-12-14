@@ -79,11 +79,6 @@ function Cruiser(engine, transform, render) {
     this.InitWheels = function() {
       this.wheels = this.render.wheels;
     }
-
-    this.DemoMode = function() {
-      this.mesh.rotation.y += 10;
-    }
-
 }
 
 
