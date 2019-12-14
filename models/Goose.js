@@ -2,8 +2,17 @@ function Goose(engine,transform,render){
 
 	GameObject.call(this, engine, transform, render, "Goose");
 	
+	
     this.Update = function(engine) {
-		this.RotateAbout(0,0,0,2,0,0);
+		var rotationSpeed= 1
+
+		//if passes cruiser position 
+		if (this.transform.z<=(worldRadius)){
+			this.RotateAbout(0,0,0,rotationSpeed,0,0);
+		}
+		else{
+			//engine.Destroy(this);
+		}		
     }
 
     this.Init = function() {
@@ -11,6 +20,9 @@ function Goose(engine,transform,render){
 		if (!this.render.loaded) {
 			this.render.Init();
 		}
+	
+		//console.log(this.transform.x + " " + this.transform.y + " " + this.transform.z);
+		
 		var bodyPos= [render.body.position.x,render.body.position.y,render.body.position.z];
 		var bodyRadius= render.bodyRadius;
 		
@@ -18,9 +30,16 @@ function Goose(engine,transform,render){
 		var collisionY= 100;
 		var collisionZ= 55;
 		
-		this.collisionBox= new BoxCollider(collisionX,collisionY,collisionZ,transform);
+		/*this.collisionBox= new BoxCollider(collisionX,collisionY,collisionZ,transform);
+		this.AddComponent("BOX_COLLIDER",this.collisionBox);*/
+	
 		
 		
+		/*
+		var bcRender= new BoxColliderRender(collisionX,collisionY,collisionZ);
+		bcRender.Init();
+		this.render.mesh.add(bcRender.mesh);
+		console.log(this.render.mesh);*/
 		
     }
 	
