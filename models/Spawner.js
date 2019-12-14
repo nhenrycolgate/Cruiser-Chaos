@@ -21,7 +21,7 @@ function Spawner(engine, transform, render, spawnTarget, timer) {
     }
 
     this.Spawn = function(engine) {
-        //console.log("Spawn");
-        engine.CreateInstance(spawnTarget.Copy());
+        var spawnObject= spawnTarget[Math.floor(Math.random()*spawnTarget.length)];
+        engine.CreateInstance(spawnObject.Copy()); //issue with copy method 
     }
 }

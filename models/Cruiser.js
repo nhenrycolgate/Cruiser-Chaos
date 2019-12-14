@@ -54,6 +54,12 @@ function Cruiser(engine, transform, render) {
             var wheel = this.wheels[i];
             this.WheelUpdate(engine, wheel);
         }
+		
+		/*var obstacleTypes= ["Goose","Roadblock"];
+		for (var i=0;i<obstacleTypes.length;i=i+1){
+			var boxCollider= this.GetComponent("BOX_COLLIDER")
+			boxCollider.CheckCollision(obstacleTypes[i]);
+		}*/	
     }
 
     this.WheelUpdate = function(engine, wheel) {
