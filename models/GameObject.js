@@ -1,6 +1,6 @@
 function GameObject(engine, transform, render, type = "GAME_OBJECT") {
 
-    this.id = engine.GetNextGameObjectID();
+    this.id = -1;
     this.render = render;
     this.transform = transform;
     this.type = type;
@@ -113,7 +113,7 @@ function GameObject(engine, transform, render, type = "GAME_OBJECT") {
 
         for(var key in this) {
             if (this[key].hasOwnProperty("Copy")) {
-                temp[key] = key.Copy();
+                temp[key] = this[key].Copy();
             }
             else {
                 temp[key] = this[key];

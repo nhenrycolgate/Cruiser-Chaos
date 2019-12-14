@@ -58,6 +58,12 @@ function Engine(scene) {
     }
 
     this.Update = function() { //
+        var currentObjects = this.objects.values();
+        var objects = [];
+        for (var object of currentObjects) {
+            objects.push(object);
+        }
+        console.log("Current gameObjects = " + objects.length);
         if (this.enabled) {
             this.UpdateObjects();
             this.RenderObjects();
@@ -83,6 +89,10 @@ function Engine(scene) {
     }
 
     this.CreateInstance = function(object) { //
+        if (object.id == -1) {
+            object.id = engine.GetNextGameObjectID();
+        }
+
         object.Init(this);
         this.AddGameObject(object);
         if ( !object.render.loaded) {

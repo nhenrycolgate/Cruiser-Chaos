@@ -5,9 +5,6 @@ function Spawner(engine, transform, render, spawnTarget, timer) {
     this.timer = timer;
 
     this.Init = function(engine) {
-    }
-
-    this.SetAsDefaultSpawner = function(engine) {
         var _spawner = this;
 
         this.AddComponent("SPAWN_TIMER", this.timer);
@@ -16,10 +13,15 @@ function Spawner(engine, transform, render, spawnTarget, timer) {
         spawnTimer.Restart();
         spawnTimer.RegisterOnClockExpired( (_timer) => _spawner.Spawn(engine) );
         spawnTimer.RegisterOnClockExpired( (_timer) => _timer.Restart() );
+        spawnTimer.RegisterOnClockExpired( (_timer) => console.log("SPAWN") );
+    }
+
+    this.SetAsDefaultSpawner = function(engine) {
+
     }
 
     this.Spawn = function(engine) {
-        console.log("Spawn");
-        //engine.CreateInstance(spawnTarget.Copy());
+        //console.log("Spawn");
+        engine.CreateInstance(spawnTarget.Copy());
     }
 }

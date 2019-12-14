@@ -66,17 +66,20 @@ function init(event) {
     var particleSystem = new ParticleSystem(engine, DefaultTransform(), new GameObjectRender(), particle, new Timer(1));
     engine.CreateInstance(particleSystem);
 
-    var emptyGameObject = new GameObject(engine, DefaultTransform(), new GameObjectRender());
-    emptyGameObject.RegisterOnLateUpdate( (_obj) => _obj.transform.UpdatePosition(5, 0, 0) );
-    emptyGameObject.AddComponent("BOX_COLLIDER", new BoxCollider(100, 100, 100) );
-    emptyGameObject.GetComponent("BOX_COLLIDER").RegisterOnCollision( (_collider) => emptyGameObject.Destroy(engine) );
-    engine.CreateInstance(emptyGameObject);
+    //var emptyGameObject = new GameObject(engine, DefaultTransform(), new GameObjectRender());
+    //emptyGameObject.RegisterOnLateUpdate( (_obj) => _obj.transform.UpdatePosition(5, 0, 0) );
+    //emptyGameObject.AddComponent("BOX_COLLIDER", new BoxCollider(100, 100, 100) );
+    //emptyGameObject.GetComponent("BOX_COLLIDER").RegisterOnCollision( (_collider) => emptyGameObject.Destroy(engine) );
+    //engine.CreateInstance(emptyGameObject);
 
+    //var target = new GameObject(engine, new Transform(1000, 0, 0), new GameObjectRender());
+    //target.RegisterOnLateUpdate( (_obj) => _obj.transform.UpdatePosition(-1, 0, 0) );
+    //target.AddComponent("BOX_COLLIDER", new BoxCollider(100, 100, 100, new Transform(+100, -100, 0)) );
+    //engine.CreateInstance(target);
 
-    var target = new GameObject(engine, new Transform(1000, 0, 0), new GameObjectRender());
-    target.RegisterOnLateUpdate( (_obj) => _obj.transform.UpdatePosition(-1, 0, 0) );
-    target.AddComponent("BOX_COLLIDER", new BoxCollider(100, 100, 100, new Transform(+100, -100, 0)) );
-    engine.CreateInstance(target);
+    //var spawn = new GameObject(engine, new Transform(10, 10, 10), new GameObjectRender());
+    //var spawner = new Spawner(engine, DefaultTransform(), new GameObjectRender(), spawn, new Timer(30));
+    //engine.CreateInstance(spawner);
 
     //THREEx.FullScreen.bindKey({ charCode : 'l'.charCodeAt(0)}); // Credit: Leo
 

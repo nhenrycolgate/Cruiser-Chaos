@@ -17,7 +17,7 @@ function Render(Init) {
 
         for(var key in this) {
             if (this[key].hasOwnProperty("Copy")) {
-                temp[key] = key.Copy();
+                temp[key] = this[key].Copy();
             }
             else {
                 temp[key] = this[key];
