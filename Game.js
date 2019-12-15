@@ -77,9 +77,20 @@ function init(event) {
     oppositeRoad.SetSpeed(DegreesToRadians(worldSpeed));
     engine.CreateInstance(oppositeRoad);
 
-    var cruiser = new Cruiser(engine, new Transform(0, worldRadius+50, 0), new CruiserRender());
+    var cruiser = new Cruiser(engine, new Transform(0, worldRadius+50, 0), new CruiserRender(), new Timer(30));
     cruiser.SetSpeed(DegreesToRadians(1));
+
+    cruiser.RegisterOnHit( (_cruiser) =>  _cruiser.GetComponent("INV_TIMER").Restart() );
+    cruiser.RegisterOnHit( (_cruiser) =>  _cruiser.GetComponent("HURT_BOX").Disable() );
+
+    cruiser.RegisterOnDeath( (_cruiser) =>  _cruiser.Destroy(engine) );
     engine.CreateInstance(cruiser);
+
+    var empty = new GameObject();
+    empty.AddComponent("TIMER", new Timer(200));
+    empty.GetComponent("TIMER").RegisterOnClockExpired( (_timer) => cruiser.TakeDamage(engine) );
+    empty.GetComponent("TIMER").RegisterOnClockExpired( (_timer) => _timer.Restart() );
+    engine.CreateInstance(empty);
 
     var particle = new Particle(engine, DefaultTransform(), new ParticleRender(), new Timer(20));
     var particleSystem = new ParticleSystem(engine, DefaultTransform(), new GameObjectRender(), particle, new Timer(1));

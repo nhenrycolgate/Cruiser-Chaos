@@ -1,4 +1,4 @@
-function GameObject(engine, transform, render, type = "GAME_OBJECT") {
+function GameObject(engine, transform = DefaultTransform(), render = new GameObjectRender(), type = "GAME_OBJECT") {
 
     this.id = -1;
     this.render = render;
@@ -20,8 +20,8 @@ function GameObject(engine, transform, render, type = "GAME_OBJECT") {
 
         if (this.componentsByType.has(component.type)) {
             var typeIDMap = this.componentsByType.get(component.type);
-            typeIDMap.set(object.id, object);
-            this.typeMap.set(component.type, typeIDMap);
+            typeIDMap.set(component.id, component);
+            this.componentsByType.set(component.type, typeIDMap);
         }
         else {
             var typeIDMap = new Map();
@@ -113,10 +113,10 @@ function GameObject(engine, transform, render, type = "GAME_OBJECT") {
         child.rotation.z += z;
     }
 
-	this.RotateAbout = function(x,y,z,rx,ry,rz){
-		var prevTransform= new THREE.Vector3(this.transform.x,this.transform.y,this.transform.z);
+	this.RotateAbout = function(x, y, z, rx, ry, rz){
+		var prevTransform= new THREE.Vector3(this.transform.x, this.transform.y, this.transform.z);
 
-		transformationMatrix = new THREE.Matrix4().makeTranslation(x,y,z);
+		transformationMatrix = new THREE.Matrix4().makeTranslation(x, y, z);
 		prevTransform.applyMatrix4(transformationMatrix);
 
 		transformationMatrix= new THREE.Matrix4().makeRotationX(DegreesToRadians(rx));
@@ -128,24 +128,26 @@ function GameObject(engine, transform, render, type = "GAME_OBJECT") {
 		transformationMatrix= new THREE.Matrix4().makeRotationZ(DegreesToRadians(rz));
 		prevTransform.applyMatrix4(transformationMatrix);
 
-		transformationMatrix = new THREE.Matrix4().makeTranslation(-x,-y,-z);
+		transformationMatrix = new THREE.Matrix4().makeTranslation(-x, -y, -z);
 		prevTransform.applyMatrix4(transformationMatrix);
 
-		this.transform.SetPosition(prevTransform.x,prevTransform.y,prevTransform.z);
+		this.transform.SetPosition(prevTransform.x, prevTransform.y, prevTransform.z);
 	}
 
     this.UpdateComponents = function(engine) {
         for (var component of this.componentsByName.values()) {
-            component.Update(engine);
-            component.Render(engine);
+            if (component.enabled) {
+                component.Update(engine);
+                component.Render(engine);
+            }
         }
     }
 
     this.Init = function(engine) {}
     this.Update = function(engine) {}
+
     this.Destroy = function(engine) {
         for (var component of this.componentsByName.values()) {
-            // console.log(component);
             component.Destroy(engine);
         }
         engine.Destroy(this);

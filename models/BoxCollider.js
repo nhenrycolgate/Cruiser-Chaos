@@ -1,11 +1,12 @@
-function BoxCollider(width, height, depth, offsetTransform = DefaultTransform()) {
+function BoxCollider(width, height, depth, offsetTransform = DefaultTransform(), _color = COLORS.red) {
 
     Component.call(this, "BOX_COLLIDER");
 
     this.width = width;
     this.height = height;
     this.depth = depth;
-    this.render = new BoxColliderRender(width, height, depth);
+    this._color = _color;
+    this.render = new BoxColliderRender(width, height, depth, _color);
 	this.offsetTransform = offsetTransform;
 	this.mask = "GAME_OBJECT";
 
@@ -37,6 +38,16 @@ function BoxCollider(width, height, depth, offsetTransform = DefaultTransform())
                }
            }
        }
+    }
+
+    this.Disable = function() {
+        this.enabled = false;
+        this.render.box.material.opacity = 0;
+    }
+
+    this.Enable = function() {
+        this.enabled = true;
+        this.render.box.material.opacity = 0.5;
     }
 
     this.Update = function(engine) {
@@ -78,15 +89,15 @@ function CheckCollision(box1, box2) {
 			(box1_info.zMin <= box2_info.zMax && box1_info.zMax >= box2_info.zMin);
 }
 
-function BoxColliderRender(width, height, depth) {
+function BoxColliderRender(width, height, depth, _color) {
 
     Render.call(this);
 
     this.Init = function() {
         this.mesh.name = "BOX_COLLIDER";
         var geometry = new THREE.BoxGeometry(width, height, depth, 1, 1, 1);
-        var material = new THREE.MeshLambertMaterial({color:COLORS.red, transparent: true, opacity: .5, wireframe: true});
-        var box = new THREE.Mesh(geometry, material);
-        this.mesh.add(box);
+        var material = new THREE.MeshLambertMaterial({color: _color, transparent: true, opacity: .5, wireframe: true});
+        this.box = new THREE.Mesh(geometry, material);
+        this.mesh.add(this.box);
     }
 }

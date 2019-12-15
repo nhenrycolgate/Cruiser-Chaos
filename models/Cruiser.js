@@ -18,9 +18,16 @@ function Cruiser(engine, transform, render, invTimer) {
 
         var _cruiser = this;
 
-        //this.AddComponent( "HURT_BOX", new BoxCollider(...) );
-        //this.AddComponent("INV_TIMER", this.timer);
-        //this.GetComponent("INV_TIMER").RegisterOnClockExpired( (_timer) =>  _cruiser.GetComponent("HURT_BOX").Enable() );
+        this.AddComponent( "HURT_BOX", new BoxCollider(70, this.height, 100) );
+        this.AddComponent( "GRAB_BOX_L", new BoxCollider(70, this.height, 100, new Transform(-70, 0, 0), COLORS.yellow) );
+        this.AddComponent( "GRAB_BOX_R", new BoxCollider(70, this.height, 100, new Transform(70, 0, 0), COLORS.blue) );
+
+        this.AddComponent("INV_TIMER", this.invTimer);
+        this.GetComponent("INV_TIMER").RegisterOnClockExpired( (_timer) =>  _cruiser.GetComponent("HURT_BOX").Enable() );
+
+        this.RegisterOnHit( (_this) => _this.hp-- );
+        this.RegisterOnHit( (_this) => console.log("OUCH") );
+        this.RegisterOnDeath( (_this) => console.log("I AM DEAD") );
 
         var _UpdateCruiserPosition = this.UpdateCruiserPosition;
         var cruiser = this;
@@ -29,13 +36,12 @@ function Cruiser(engine, transform, render, invTimer) {
         });
     }
 
-    this.TakeDamage = function() {
-        this.hp--;
+    this.TakeDamage = function(engine) {
 
-        invTimer.Restart();
-        this.GetComponent("HURT_BOX").Disable();
+        this.callbackHandler.Invoke("HIT");
 
-        if (hp == 0) {
+
+        if (this.hp == 0) {
             this.callbackHandler.Invoke("DEATH");
         }
     }
@@ -44,31 +50,21 @@ function Cruiser(engine, transform, render, invTimer) {
         this.hp++;
     }
 
-    this.UpdateLane = function(input) {
-      var newLane = this.lane + input;
-      if (newLane < 3 && newLane > -1) {
-        this.lane = newLane;
-      }
-    }
+    //TryChangingLanes
+    this.TryChangingLane = function(input) {
+        var oldLane = this.lane;
+        var newLane = this.lane + input;
 
-     this.UpdateCruiserPosition = function(keyEvent, cruiser) {
-
-        var transform = 0;
-        if ( keyEvent.keyCode === 65) { //left 'a'
-          cruiser.UpdateLane(-1);
-          transform = -70;
-        } else if (keyEvent.keyCode === 68) { //right 'd'
-          cruiser.UpdateLane(1);
-          transform = 70;
+        if (this.CanMove(newLane) && oldLane != newLane) {
+            this.lane = newLane;
+            this.callbackHandler.Invoke("CHANGE_LANE");
+            return true;
         }
 
-        var newPosition = cruiser.transform.x + transform;
-        if (newPosition <= 70 && newPosition >= -70) {
-          cruiser.transform.UpdatePosition(transform, 0 ,0);
-        }
-
+        return false;
     }
 
+    this.CanMove = function(newLane) { return newLane >= 0 && newLane < 3; }
 
     this.Update = function(engine) {
 
@@ -95,6 +91,33 @@ function Cruiser(engine, transform, render, invTimer) {
     this.InitWheels = function() { this.wheels = this.render.wheels; }
 
     this.RegisterOnDeath = function(callback) { this.callbackHandler.AddCallback("DEATH", callback); }
+    this.RegisterOnHit = function(callback) { this.callbackHandler.AddCallback("HIT", callback); }
+
+     this.UpdateCruiserPosition = function(keyEvent, cruiser) {
+
+        var offset = 0;
+        var check = false;
+        var input = 0;
+
+        if ( keyEvent.keyCode === 65) { //left 'a'
+          input = -1;
+          offset = -70;
+          //todo switch to be worldController.roadWidth
+        }
+        else if (keyEvent.keyCode === 68) { //right 'd'
+          input = 1;
+          offset = 70;
+        }
+
+        check = cruiser.TryChangingLane(input);
+
+        var newPosition = cruiser.transform.x + offset;
+
+        if (check) {
+          cruiser.transform.UpdatePosition(offset, 0 ,0);
+        }
+
+    }
 
 }
 
