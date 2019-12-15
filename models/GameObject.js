@@ -113,23 +113,25 @@ function GameObject(engine, transform = DefaultTransform(), render = new GameObj
         child.rotation.z += z;
     }
 
-	this.RotateAbout = function(x, y, z, rx, ry, rz){
-		var prevTransform= new THREE.Vector3(this.transform.x, this.transform.y, this.transform.z);
+	this.RotateAbout = function(x, y, z, rx, ry, rz) {
+		var prevTransform = new THREE.Vector3(this.transform.x, this.transform.y, this.transform.z);
 
 		transformationMatrix = new THREE.Matrix4().makeTranslation(x, y, z);
 		prevTransform.applyMatrix4(transformationMatrix);
 
-		transformationMatrix= new THREE.Matrix4().makeRotationX(DegreesToRadians(rx));
+		transformationMatrix = new THREE.Matrix4().makeRotationX(DegreesToRadians(rx));
 		prevTransform.applyMatrix4(transformationMatrix);
 
-		transformationMatrix= new THREE.Matrix4().makeRotationY(DegreesToRadians(ry));
+		transformationMatrix = new THREE.Matrix4().makeRotationY(DegreesToRadians(ry));
 		prevTransform.applyMatrix4(transformationMatrix);
 
-		transformationMatrix= new THREE.Matrix4().makeRotationZ(DegreesToRadians(rz));
+		transformationMatrix = new THREE.Matrix4().makeRotationZ(DegreesToRadians(rz));
 		prevTransform.applyMatrix4(transformationMatrix);
 
 		transformationMatrix = new THREE.Matrix4().makeTranslation(-x, -y, -z);
 		prevTransform.applyMatrix4(transformationMatrix);
+
+		console.log(prevTransform.x + ":" +  prevTransform.y + ":" + prevTransform.z);
 
 		this.transform.SetPosition(prevTransform.x, prevTransform.y, prevTransform.z);
 	}

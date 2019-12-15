@@ -10,7 +10,6 @@ function Transform(x, y, z, scale = 10000) {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.UpdateTransformRender(this.x, this.y, this.z);
     }
 
     this.UpdatePosition = function(x, y, z) {
@@ -31,9 +30,10 @@ function Transform(x, y, z, scale = 10000) {
 
 function DefaultTransform(scale) { return new Transform(0, 0, 0); }
 
-function TransformRender() {
+function TransformRender(scale) {
 
     Render.call(this);
+    this.scale = scale;
 
     this.Init = function() {
         this.mesh.name = "TRANSFORM";

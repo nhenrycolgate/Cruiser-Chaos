@@ -90,11 +90,25 @@ function init(event) {
     empty.AddComponent("TIMER", new Timer(200));
     empty.GetComponent("TIMER").RegisterOnClockExpired( (_timer) => cruiser.TakeDamage(engine) );
     empty.GetComponent("TIMER").RegisterOnClockExpired( (_timer) => _timer.Restart() );
-    engine.CreateInstance(empty);
+    //engine.CreateInstance(empty);
 
     var particle = new Particle(engine, DefaultTransform(), new ParticleRender(), new Timer(20));
     var particleSystem = new ParticleSystem(engine, DefaultTransform(), new GameObjectRender(), particle, new Timer(1));
     // engine.CreateInstance(particleSystem);
+
+    var trigger = new GameObject(engine, new Transform( 0, worldRadius, 0 ));
+    trigger.AddComponent( "TRIGGER_0", new BoxCollider(roadWidth, 100, roadWidth) );
+    trigger.RegisterOnLateUpdate( (_this) => _this.RotateAbout(0, 0, 0, worldSpeed, 0, 0) );
+
+    engine.CreateInstance( trigger );
+
+    var trigger = new GameObject(engine, new Transform( 0, -worldRadius, 0 ));
+    trigger.AddComponent( "TRIGGER_0", new BoxCollider(roadWidth, 100, roadWidth) );
+    trigger.RegisterOnLateUpdate( (_this) => _this.RotateAbout(0, 0, 0, worldSpeed, 0, 0) );
+
+    engine.CreateInstance( trigger );
+
+
 
     //var emptyGameObject = new GameObject(engine, DefaultTransform(), new GameObjectRender());
     //emptyGameObject.RegisterOnLateUpdate( (_obj) => _obj.transform.UpdatePosition(5, 0, 0) );
@@ -108,10 +122,7 @@ function init(event) {
     //engine.CreateInstance(target);
 
     //var spawn = new TestGameObject(engine);
-    var spawn = new Goose(engine);
 
-    var spawner = new Spawner(engine, DefaultTransform(), new GameObjectRender(), spawn, new Timer(30));
-    engine.CreateInstance(spawner);
 
     var sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender(worldRadius*3));
     sky.SetSpeed(DegreesToRadians(worldSpeed/8));
