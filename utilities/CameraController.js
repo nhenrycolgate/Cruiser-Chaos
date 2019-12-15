@@ -3,7 +3,7 @@ function CameraController(camera, zoom) {
     Controller.call(this, "CAMERA_CONTROLLER");
 
     this.camera = camera;
-    this.cameraPosition = {x: 0, y: 0.2, z: 1.3};
+    this.cameraPosition = {x: 0, y: 1.3, z: 0.3};
     this.zoom = zoom;
     this.zoomMin = 0;
     this.zoomMax = zoom * 2;
@@ -27,13 +27,13 @@ function CameraController(camera, zoom) {
 
     this.SetCameraPosition = function(keyEvent, cameraController) {
         if (keyEvent.key == "t") {
-            cameraController.cameraPosition = {x: 0, y: 0.7, z: 3.5};
+            cameraController.cameraPosition = {x: 0, y: 2, z: 1};
         }
         else if (keyEvent.key == "s") {
-            cameraController.cameraPosition = {x: 1.8, y: -0.2, z: 1};
+            cameraController.cameraPosition = {x: 2, y: 1, z: 1};
         }
         else if (keyEvent.key == "f") {
-            cameraController.cameraPosition = {x: 0, y:0.2, z: 1.3};
+            cameraController.cameraPosition = {x: 0, y:1.3, z: 0.3};
         }
         else if (keyEvent.key == "d") {
             cameraController.direction *= -1;
@@ -61,7 +61,7 @@ function CameraController(camera, zoom) {
         cameraController.camera.position.x = cameraController.cameraPosition.x * cameraController.zoom;
         cameraController.camera.position.y = cameraController.cameraPosition.y * cameraController.zoom;
         cameraController.camera.position.z = cameraController.cameraPosition.z * cameraController.zoom;
-        cameraController.camera.lookAt(new THREE.Vector3(0, 1200, 0));
+        cameraController.camera.lookAt(new THREE.Vector3(0, 0, -1500));
 
     }
 

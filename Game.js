@@ -75,7 +75,7 @@ function init(event) {
     oppositeRoad.SetSpeed(DegreesToRadians(worldSpeed));
     engine.CreateInstance(oppositeRoad);
 
-    var cruiser = new Cruiser(engine, new Transform(0, worldRadius/3, worldRadius + 15), new CruiserRender());
+    var cruiser = new Cruiser(engine, new Transform(0, worldRadius+50, 0), new CruiserRender());
     cruiser.SetSpeed(DegreesToRadians(1));
     engine.CreateInstance(cruiser);
 
@@ -125,9 +125,9 @@ function CreateScene() {
     );
 
     camera.position.x = 0;
-    camera.position.y = 200;
-    camera.position.z = 1300;
-    camera.lookAt(new THREE.Vector3(0, 1200, 0));
+    camera.position.y = 1300;
+    camera.position.z = 300;
+    camera.lookAt(new THREE.Vector3(0, 0, -1500));
 
     gui = DebugGUI();
 

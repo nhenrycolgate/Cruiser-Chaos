@@ -54,12 +54,12 @@ function Cruiser(engine, transform, render) {
             var wheel = this.wheels[i];
             this.WheelUpdate(engine, wheel);
         }
-		
+
 		/*var obstacleTypes= ["Goose","Roadblock"];
 		for (var i=0;i<obstacleTypes.length;i=i+1){
 			var boxCollider= this.GetComponent("BOX_COLLIDER")
 			boxCollider.CheckCollision(obstacleTypes[i]);
-		}*/	
+		}*/
     }
 
     this.WheelUpdate = function(engine, wheel) {
@@ -87,8 +87,6 @@ function CruiserRender() {
     this.mesh = new THREE.Object3D();
     this.mesh.name = "Cruiser";
     this.wheels = [];
-
-    this.mesh.rotation.x = 20;
 
     //Body
 
@@ -244,6 +242,6 @@ function CruiserRender() {
     this.mesh.add(wheelCopy);
     this.wheels.push(wheelCopy);
 
-    this.mesh.rotation.y = DegreesToRadians(-90);
+    this.mesh.rotateY(DegreesToRadians(-90));
   }
 }
