@@ -3,6 +3,8 @@ function GameController() {
 
     Controller.call(this, "GAME_CONTROLLER");
 
+    this.direction = null;
+
     this.Init = function() {
 
     }

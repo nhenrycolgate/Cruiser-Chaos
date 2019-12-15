@@ -42,7 +42,7 @@ function init(event) {
     //Variable Initialization//
 
     engine = new Engine(scene);
-    engine.AddController(new CameraController(camera, 1000));
+    //engine.AddController(new CameraController(camera, 1000));
     engine.AddController(new DebugGUIController(gui, ShowStats, HideStats));
 
     //------------------------------------------------------------------------------------------------------------------
@@ -75,7 +75,7 @@ function init(event) {
 
     oppositeRoad = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, true));
     oppositeRoad.SetSpeed(DegreesToRadians(worldSpeed));
-    engine.CreateInstance(oppositeRoad);
+    //engine.CreateInstance(oppositeRoad);
 
     var cruiser = new Cruiser(engine, new Transform(0, worldRadius+50, 0), new CruiserRender(), new Timer(30));
     cruiser.SetSpeed(DegreesToRadians(1));
@@ -96,17 +96,39 @@ function init(event) {
     var particleSystem = new ParticleSystem(engine, DefaultTransform(), new GameObjectRender(), particle, new Timer(1));
     // engine.CreateInstance(particleSystem);
 
+    //todo add NESW triggers at the trigger
     var trigger = new GameObject(engine, new Transform( 0, worldRadius, 0 ));
     trigger.AddComponent( "TRIGGER_0", new BoxCollider(roadWidth, 100, roadWidth) );
-    trigger.RegisterOnLateUpdate( (_this) => _this.RotateAbout(0, 0, 0, worldSpeed, 0, 0) );
+    trigger.AddComponent( "REFRESH_TIMER", new Timer(200) );
 
+    var timer = trigger.GetComponent("REFRESH_TIMER");
+    timer.Reset();
+
+    var collider = trigger.GetComponent("TRIGGER_0");
+    collider.RegisterOnCollision( (_collider) => road.TurnRight() );
+    collider.RegisterOnCollision( (_collider) => _collider.Disable() );
+    collider.RegisterOnCollision( (_collider) => timer.Restart() );
+    timer.RegisterOnClockExpired( (_timer) => collider.Enable() );
+
+    collider.Update = function(engine) {
+        if ( collider.Collision(cruiser.GetComponent("HURT_BOX")) ) {
+            collider.callbackHandler.Invoke("COLLISION");
+        }
+    }
+    trigger.RegisterOnLateUpdate( (_this) => _this.RotateAbout(0, 0, 0, worldSpeed, 0, 0) );
+    collider.Disable();
     engine.CreateInstance( trigger );
+
+    var startTimer = new GameObject();
+    startTimer.AddComponent("START_TIMER", new Timer(200));
+    startTimer.GetComponent("START_TIMER").RegisterOnClockExpired( (_timer) => collider.Enable() );
+    startTimer.GetComponent("START_TIMER").RegisterOnClockExpired( (_timer) => _timer.Destroy() );
+    engine.CreateInstance( startTimer );
 
     var trigger = new GameObject(engine, new Transform( 0, -worldRadius, 0 ));
     trigger.AddComponent( "TRIGGER_0", new BoxCollider(roadWidth, 100, roadWidth) );
     trigger.RegisterOnLateUpdate( (_this) => _this.RotateAbout(0, 0, 0, worldSpeed, 0, 0) );
-
-    engine.CreateInstance( trigger );
+    //engine.CreateInstance( trigger );
 
 
 
@@ -150,10 +172,16 @@ function CreateScene() {
     farPlane
     );
 
+    //game position
+    //camera.position.x = 0;
+    //camera.position.y = 1300;
+    //camera.position.z = 300;
+    //camera.lookAt(new THREE.Vector3(0, 0, -1500));
+
     camera.position.x = 0;
-    camera.position.y = 1300;
-    camera.position.z = 300;
-    camera.lookAt(new THREE.Vector3(0, 0, -1500));
+    camera.position.y = 5000;
+    camera.position.z = 1;
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     gui = DebugGUI();
 
@@ -240,7 +268,9 @@ function handleKeyDown(keyEvent) {
   if (keyEvent.keyCode === 32) { //space
     ShowGameOverMenu(false);
     gameInProgress = true;
-  } else if (keyEvent.keyCode === 188) { // Just for testing GameOverMenu
+  }
+  /*
+  else if (keyEvent.keyCode === 188) { // Just for testing GameOverMenu
     ShowBeginGameMenu(false);
     ShowGameOverMenu(true);
     gameInProgress = false;
@@ -252,7 +282,7 @@ function handleKeyDown(keyEvent) {
     // world.TurnRight();
     road.TurnRight();
     oppositeRoad.TurnRight();
-  }
+  }*/
 }
 
 document.onkeydown = handleKeyDown;

@@ -1,6 +1,7 @@
 function Cruiser(engine, transform, render, invTimer) {
 
     GameObject.call(this, engine, transform, render, "Cruiser");
+
     this.height = 50;
     this.distance = 0;
     this.hp = 3;

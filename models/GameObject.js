@@ -131,8 +131,6 @@ function GameObject(engine, transform = DefaultTransform(), render = new GameObj
 		transformationMatrix = new THREE.Matrix4().makeTranslation(-x, -y, -z);
 		prevTransform.applyMatrix4(transformationMatrix);
 
-		console.log(prevTransform.x + ":" +  prevTransform.y + ":" + prevTransform.z);
-
 		this.transform.SetPosition(prevTransform.x, prevTransform.y, prevTransform.z);
 	}
 

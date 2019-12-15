@@ -1,10 +1,10 @@
-function Transform(x, y, z, scale = 10000) {
+function Transform(x, y, z, scale = 1000) {
 
     this.x = x;
     this.y = y;
     this.z = z;
     this.scale = scale;
-    this.render = new TransformRender(10000);
+    this.render = new TransformRender(scale);
 
     this.SetPosition = function(x, y, z) {
         this.x = x;

@@ -50,7 +50,12 @@ function Road(engine, transform, render) {
       this.direction = (this.direction + 1) % 4;
       // render.mesh.rotation.z += DegreesToRadians(90);
       console.log("right" + this.direction);
+      if (this.render.mesh.rotation.x != 0) {
+        this.render.mesh.rotation.x = 0;
+      }
       this.render.mesh.rotateY(DegreesToRadians(-90));
+      //this.render.mesh.rotation.y += DegreesToRadians(-90);
+
       switch (this.direction) {
         case directions.N:
           vector = new THREE.Vector3(1,0,0);
@@ -62,20 +67,20 @@ function Road(engine, transform, render) {
           break;
         case directions.S:
           vector = new THREE.Vector3(1,0,0);
-          multiplier = -1
+          //multiplier = -1
           break;
         case directions.W:
           vector = new THREE.Vector3(0,0,1);
-          multiplier = -1
+          //multiplier = -1
           break;
       }
     }
 
     this.Update = function() {
 
-      // this.render.mesh.rotateOnAxis(new THREE.Vector3(1,0,0), multiplier * this.speed);
-
-      this.render.mesh.rotateX(this.speed);
+      //this.render.mesh.rotateOnAxis(new THREE.Vector3(1,0,0), multiplier * this.speed);
+      //this.render.mesh.rotateX(this.speed);
+      //console.log("rot?" + this.render.mesh.rotation.x);
 
       // switch (this.direction) {
       //   case directions.N
@@ -119,31 +124,35 @@ function RoadRender(radius, width, oppositeDirection) {
     var cylinderMaterial = new THREE.MeshLambertMaterial( { color:COLORS.gray } );
     var road = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
 
-    var laneGeometry = new THREE.CylinderGeometry( radius+5, radius+5, 5, 50 );
-    var laneMaterial = new THREE.MeshLambertMaterial( { color:COLORS.yellow } );
-    var roadLaneLeft = new THREE.Mesh( laneGeometry, laneMaterial );
-    var roadLaneRight = new THREE.Mesh( laneGeometry, laneMaterial );
+    //var laneGeometry = new THREE.CylinderGeometry( radius+5, radius+5, 5, 50 );
+    //var laneMaterial = new THREE.MeshLambertMaterial( { color:COLORS.yellow } );
+    //var roadLaneLeft = new THREE.Mesh( laneGeometry, laneMaterial );
+    //var roadLaneRight = new THREE.Mesh( laneGeometry, laneMaterial );
 
+    /*
     if (oppositeDirection) {
       roadLaneLeft.position.z = -width/6;
       roadLaneRight.position.z = width/6;
       roadLaneLeft.rotateX(DegreesToRadians(90));
       roadLaneRight.rotateX(DegreesToRadians(90));
       road.rotateX(DegreesToRadians(90));
-    } else {
+    }
+    else {
       roadLaneLeft.position.x = -width/6;
       roadLaneRight.position.x = width/6;
       roadLaneLeft.rotateZ(DegreesToRadians(90));
       roadLaneRight.rotateZ(DegreesToRadians(90));
       road.rotateZ(DegreesToRadians(90));
-    }
+    }*/
 
 
-    var roadParent = new THREE.Object3D();
-    roadParent.add(road);
-    roadParent.add(roadLaneLeft);
-    roadParent.add(roadLaneRight);
+    //var roadParent = new THREE.Object3D();
+    //roadParent.add(road);
+    //roadParent.add(roadLaneLeft);
+    //roadParent.add(roadLaneRight);
+    road.rotateX(DegreesToRadians(90));
+    road.rotateZ(DegreesToRadians(90));
 
-    this.mesh.add(roadParent);
+    this.mesh.add(road);
   }
 }
