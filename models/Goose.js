@@ -1,10 +1,10 @@
-function Goose(engine,transform,render){	
+function Goose(engine, transform = DefaultTransform(), render = new GooseRender()){
 
-	GameObject.call(this, engine, transform, render, "Goose");
+	GameObject.call(this, engine, transform, render, "GOOSE");
 	
 	
     this.Update = function(engine) {
-		var rotationSpeed= 1
+		var rotationSpeed = 1;
 
 		//if passes cruiser position 
 		if (this.transform.z<=(worldRadius)){
@@ -16,19 +16,16 @@ function Goose(engine,transform,render){
     }
 
     this.Init = function() {
-		
-		if (!this.render.loaded) {
-			this.render.Init();
-		}
+		this.render.EarlyLoad();
 	
 		//console.log(this.transform.x + " " + this.transform.y + " " + this.transform.z);
 		
-		var bodyPos= [render.body.position.x,render.body.position.y,render.body.position.z];
-		var bodyRadius= render.bodyRadius;
+		//this.bodyPos = [render.mesh.middlebody.body.position.x, render.mesh.middlebody.body.position.y, render.mesh.middlebody.body.position.z];
+		//this.bodyRadius= render.bodyRadius;
 		
-		var collisionX= 53;
-		var collisionY= 100;
-		var collisionZ= 55;
+		//this.collisionX= 53;
+		//this.collisionY= 100;
+		//this.collisionZ= 55;
 		
 		/*this.collisionBox= new BoxCollider(collisionX,collisionY,collisionZ,transform);
 		this.AddComponent("BOX_COLLIDER",this.collisionBox);*/
@@ -55,8 +52,8 @@ function GooseRender(){
 	Render.call(this);
 	
 	this.Init = function() {
-		this.mesh= new THREE.Object3D();
-		this.mesh.name= "Goose";
+
+		this.mesh.name = "Goose";
 		
 		this.lowerbody= new THREE.Object3D();
 		this.middlebody= new THREE.Object3D();

@@ -26,6 +26,9 @@ function Render(Init) {
             if (this[key].hasOwnProperty("Copy")) {
                 temp[key] = this[key].Copy();
             }
+            else if (this[key].hasOwnProperty("clone")) {
+                temp[key] = this[key].clone();
+            }
             else {
                 temp[key] = this[key];
             }

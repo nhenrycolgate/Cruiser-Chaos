@@ -1,7 +1,7 @@
-function Spawner(engine, transform, render, spawnTarget, timer) {
+function Spawner(engine, transform, render, prefab, timer) {
 
     GameObject.call(this, engine, transform, render, "SPAWNER");
-    this.spawnTarget = spawnTarget;
+    this.prefab = prefab;
     this.timer = timer;
 
     this.Init = function(engine) {
@@ -21,7 +21,39 @@ function Spawner(engine, transform, render, spawnTarget, timer) {
     }
 
     this.Spawn = function(engine) {
-        var spawnObject= spawnTarget[Math.floor(Math.random()*spawnTarget.length)];
-        engine.CreateInstance(spawnObject.Copy()); //issue with copy method 
+        //var spawnObject = spawnTarget[Math.floor(Math.random() * spawnTarget.length)];
+        var copy = prefab.Copy();
+        console.log("target" + copy);
+        engine.CreateInstance(prefab.Copy());
     }
+}
+
+function TestGameObject(engine, transform = DefaultTransform(), render = new TestRender()) {
+
+    GameObject.call(this, engine, transform, render, "TEST");
+
+    this.Init = function() {
+        this.render.EarlyLoad();
+    }
+
+    this.Update = function() {
+
+        var body = render.mesh.body;
+
+    }
+}
+
+function TestRender() {
+
+    Render.call(this);
+
+    this.Init = function() {
+        this.mesh.name = "TEST";
+
+        this.body = new THREE.Object3D();
+
+        this.mesh.add(this.body);
+
+    }
+
 }

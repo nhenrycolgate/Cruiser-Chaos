@@ -107,9 +107,11 @@ function init(event) {
     //target.AddComponent("BOX_COLLIDER", new BoxCollider(100, 100, 100, new Transform(+100, -100, 0)) );
     //engine.CreateInstance(target);
 
-    //var spawn = new GameObject(engine, new Transform(10, 10, 10), new GameObjectRender());
-    //var spawner = new Spawner(engine, DefaultTransform(), new GameObjectRender(), spawn, new Timer(30));
-    //engine.CreateInstance(spawner);
+    //var spawn = new TestGameObject(engine);
+    var spawn = new Goose(engine);
+
+    var spawner = new Spawner(engine, DefaultTransform(), new GameObjectRender(), spawn, new Timer(30));
+    engine.CreateInstance(spawner);
 
     var sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender(worldRadius*3));
     sky.SetSpeed(DegreesToRadians(worldSpeed/8));
