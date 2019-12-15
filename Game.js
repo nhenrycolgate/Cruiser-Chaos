@@ -1,99 +1,87 @@
-var engine,
-    scene,
-    camera, fieldOfView, aspectRatio, nearPlane, farPlane,
+var engine, //reference to the engine
+    scene, //reference to the scene
+    camera, fieldOfView, aspectRatio, nearPlane, farPlane, //cameraData
 
-    gui,
-    stats,
+    gui, //Gui data
+    stats, //gui fields
 
-    renderer,
-    container,
-    controls;
-var timer;
-
-var world, road, oppositeRoad;
+    renderer; //scene renderer
 
 var gameInProgress = true; // Link to completing objectives
 
-var HEIGHT, WIDTH;
+var HEIGHT, WIDTH; //display size
 
-var ambientLight, hemisphereLight, shadowLight;
+var ambientLight, hemisphereLight, shadowLight; //lighting
 
-var worldRadius = 1000;
-var roadRadius = worldRadius + 5;
-var roadWidth = 210;
-var worldSpeed = 0.6;
-
-function handleWindowResize() {
-  HEIGHT = window.innerHeight-20;
-  WIDTH = window.innerWidth-20;
-  renderer.setSize(WIDTH, HEIGHT);
-  camera.aspect = WIDTH / HEIGHT;
-  camera.updateProjectionMatrix();
-}
-
-function init(event) {
+function init(event) { //initializer
 
     beginGameMenu = document.getElementById("beginGameMenu");
     gameOverMenu = document.getElementById("gameOverMenu");
 
-    CreateScene();
-    CreateLights();
-    CreateStats();
-    //Variable Initialization//
+    //Global Initializer
+
+    CreateScene(); //build scene
+    CreateLights(); //build lighting
+    CreateStats(); //build ui stats
+
+    //Initialize engine and engine data
 
     engine = new Engine(scene);
     //engine.AddController(new CameraController(camera, 1000));
     engine.AddController(new DebugGUIController(gui, ShowStats, HideStats));
+    engine.AddController( new GameController() );
 
     //------------------------------------------------------------------------------------------------------------------
 
-/*
-    var emptyGameObject = new GameObject(engine, new Transform(0, 0, 0), new GameObjectRender());
-    emptyGameObject.AddComponent("PRINT_TIMER", new Timer(30));
-    var timer = emptyGameObject.GetComponent("PRINT_TIMER");
-    timer.Enable();
-    timer.RegisterOnClockExpired( () => console.log("This should loop!") );
-    timer.RegisterOnClockExpired( (_timer) => _timer.Restart() );
+    var worldRadius = 1000;
+    var roadHeight = 5;
+    var roadRadius = worldRadius + roadHeight;
+    var laneRadius = roadRadius + 5;
+    var laneLineWidth = 5;
+    var roadWidth = 210;
+    var laneWidth = roadWidth / 3;
+    var worldSpeed = 0.6;
 
-    emptyGameObject.AddComponent("OTHER_TIMER", new Timer(30));
-    var timer = emptyGameObject.GetComponent("OTHER_TIMER");
-    timer.Enable();
-    timer.RegisterOnClockExpired( () => console.log("This should also loop!") );
-    timer.RegisterOnClockExpired( (_timer) => _timer.Restart() );
-    //engine.CreateInstance(emptyGameObject);
+    var cruiserWidth = 100;
+    var cruiserHeight = 50;
+    var cruiserDepth = 50;
 
-    var spawner = new Spawner(engine, DefaultTransform(), new GameObjectRender(), new GameObjectRender(), new Timer(30));
-    engine.CreateInstance(spawner);
-*/
+    //------------------------------------------------------------------------------------------------------------------
+
     world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender(worldRadius));
     world.SetSpeed(DegreesToRadians(worldSpeed));
     engine.CreateInstance(world);
 
-    road = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, false));
+    road = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, laneRadius, laneLineWidth, false));
     road.SetSpeed(DegreesToRadians(worldSpeed));
     engine.CreateInstance(road);
 
-    oppositeRoad = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, true));
-    oppositeRoad.SetSpeed(DegreesToRadians(worldSpeed));
+    //oppositeRoad = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, true));
+    //oppositeRoad.SetSpeed(DegreesToRadians(worldSpeed));
     //engine.CreateInstance(oppositeRoad);
 
-    var cruiser = new Cruiser(engine, new Transform(0, worldRadius+50, 0), new CruiserRender(), new Timer(30));
-    cruiser.SetSpeed(DegreesToRadians(1));
+    //todo fix hard code
+    var cruiser = new Cruiser(engine,
+        new Transform(0, (cruiserHeight / 2) + roadRadius, 0),
+        new CruiserRender(cruiserWidth, cruiserHeight, cruiserDepth),
+        new Timer(30));
 
+    cruiser.SetLaneWidth(laneWidth);
+
+    cruiser.SetSpeed(DegreesToRadians(worldSpeed));
     cruiser.RegisterOnHit( (_cruiser) =>  _cruiser.GetComponent("INV_TIMER").Restart() );
     cruiser.RegisterOnHit( (_cruiser) =>  _cruiser.GetComponent("HURT_BOX").Disable() );
-
     cruiser.RegisterOnDeath( (_cruiser) =>  _cruiser.Destroy(engine) );
     engine.CreateInstance(cruiser);
 
-    var empty = new GameObject();
-    empty.AddComponent("TIMER", new Timer(200));
-    empty.GetComponent("TIMER").RegisterOnClockExpired( (_timer) => cruiser.TakeDamage(engine) );
-    empty.GetComponent("TIMER").RegisterOnClockExpired( (_timer) => _timer.Restart() );
+    //var empty = new GameObject();
+    //empty.AddComponent("TIMER", new Timer(200));
+    //empty.GetComponent("TIMER").RegisterOnClockExpired( (_timer) => cruiser.TakeDamage(engine) );
+    //empty.GetComponent("TIMER").RegisterOnClockExpired( (_timer) => _timer.Restart() );
     //engine.CreateInstance(empty);
 
-    var particle = new Particle(engine, DefaultTransform(), new ParticleRender(), new Timer(20));
-    var particleSystem = new ParticleSystem(engine, DefaultTransform(), new GameObjectRender(), particle, new Timer(1));
+    //var particle = new Particle(engine, DefaultTransform(), new ParticleRender(), new Timer(20));
+    //var particleSystem = new ParticleSystem(engine, DefaultTransform(), new GameObjectRender(), particle, new Timer(1));
     // engine.CreateInstance(particleSystem);
 
     //todo add NESW triggers at the trigger
@@ -125,12 +113,10 @@ function init(event) {
     startTimer.GetComponent("START_TIMER").RegisterOnClockExpired( (_timer) => _timer.Destroy() );
     engine.CreateInstance( startTimer );
 
-    var trigger = new GameObject(engine, new Transform( 0, -worldRadius, 0 ));
-    trigger.AddComponent( "TRIGGER_0", new BoxCollider(roadWidth, 100, roadWidth) );
-    trigger.RegisterOnLateUpdate( (_this) => _this.RotateAbout(0, 0, 0, worldSpeed, 0, 0) );
+    //var trigger = new GameObject(engine, new Transform( 0, -worldRadius, 0 ));
+    //trigger.AddComponent( "TRIGGER_0", new BoxCollider(roadWidth, 100, roadWidth) );
+    //trigger.RegisterOnLateUpdate( (_this) => _this.RotateAbout(0, 0, 0, worldSpeed, 0, 0) );
     //engine.CreateInstance( trigger );
-
-
 
     //var emptyGameObject = new GameObject(engine, DefaultTransform(), new GameObjectRender());
     //emptyGameObject.RegisterOnLateUpdate( (_obj) => _obj.transform.UpdatePosition(5, 0, 0) );
@@ -145,19 +131,41 @@ function init(event) {
 
     //var spawn = new TestGameObject(engine);
 
+/*
+    var emptyGameObject = new GameObject(engine, new Transform(0, 0, 0), new GameObjectRender());
+    emptyGameObject.AddComponent("PRINT_TIMER", new Timer(30));
+    var timer = emptyGameObject.GetComponent("PRINT_TIMER");
+    timer.Enable();
+    timer.RegisterOnClockExpired( () => console.log("This should loop!") );
+    timer.RegisterOnClockExpired( (_timer) => _timer.Restart() );
 
-    var sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender(worldRadius*3));
-    sky.SetSpeed(DegreesToRadians(worldSpeed/8));
+    emptyGameObject.AddComponent("OTHER_TIMER", new Timer(30));
+    var timer = emptyGameObject.GetComponent("OTHER_TIMER");
+    timer.Enable();
+    timer.RegisterOnClockExpired( () => console.log("This should also loop!") );
+    timer.RegisterOnClockExpired( (_timer) => _timer.Restart() );
+    //engine.CreateInstance(emptyGameObject);
+
+    var spawner = new Spawner(engine, DefaultTransform(), new GameObjectRender(), new GameObjectRender(), new Timer(30));
+    engine.CreateInstance(spawner);
+*/
+
+
+    var sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender(worldRadius * 3));
+    sky.SetSpeed(DegreesToRadians(worldSpeed / 8));
     engine.CreateInstance(sky);
 
     THREEx.FullScreen.bindKey({ charCode : 'l'.charCodeAt(0)}); // Credit: Leo
+
+//----------------------------------------------------------------------------------------------------------------------
+
     loop();
 }
 
 function CreateScene() {
 
-    HEIGHT = window.innerHeight-20;
-    WIDTH = window.innerWidth-20;
+    HEIGHT = window.innerHeight - 20;
+    WIDTH = window.innerWidth - 20;
 
     scene = new THREE.Scene();
     aspectRatio = WIDTH / HEIGHT;
@@ -173,15 +181,17 @@ function CreateScene() {
     );
 
     //game position
-    //camera.position.x = 0;
-    //camera.position.y = 1300;
-    //camera.position.z = 300;
-    //camera.lookAt(new THREE.Vector3(0, 0, -1500));
-
     camera.position.x = 0;
-    camera.position.y = 5000;
-    camera.position.z = 1;
-    camera.lookAt(new THREE.Vector3(0, 0, 0));
+    camera.position.y = 1300;
+    camera.position.z = 300;
+    camera.lookAt(new THREE.Vector3(0, 0, -1500));
+
+    //DEBUG MODE
+
+    //camera.position.x = 0;
+    //camera.position.y = 2000;
+    //camera.position.z = 1;
+    //camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     gui = DebugGUI();
 
@@ -193,8 +203,6 @@ function CreateScene() {
 
     container = document.getElementById('world');
     container.appendChild(renderer.domElement);
-
-    window.addEventListener('resize', handleWindowResize, false);
 }
 
 function CreateStats() {
@@ -202,14 +210,6 @@ function CreateStats() {
   stats.domElement.style.position = 'absolute';
   stats.domElement.style.left = '0';
   stats.domElement.style.top = '0';
-}
-
-function ShowStats() {
-  document.body.appendChild(stats.domElement);
-}
-
-function HideStats() {
-  document.body.removeChild(stats.domElement);
 }
 
 function CreateLights() {
@@ -230,24 +230,19 @@ function CreateLights() {
   shadowLight.shadow.mapSize.width = 4096;
   shadowLight.shadow.mapSize.height = 4096;
 
-  var ch = new THREE.CameraHelper(shadowLight.shadow.camera);
+  //var ch = new THREE.CameraHelper(shadowLight.shadow.camera);
 
   // scene.add(ch);
   scene.add(hemisphereLight);
   scene.add(shadowLight);
   // scene.add(ambientLight);
-
 }
 
-function ShowBeginGameMenu(show) {
-  beginGameMenu.className = show ? "show" : "";
-  // cruiser.
-}
+function ShowStats() { document.body.appendChild(stats.domElement); }
+function HideStats() { document.body.removeChild(stats.domElement); }
 
-function ShowGameOverMenu(show) {
-  gameOverMenu.className = show ? "show" : "";
-}
-
+function ShowBeginGameMenu(show) { beginGameMenu.className = show ? "show" : ""; }
+function ShowGameOverMenu(show) { gameOverMenu.className = show ? "show" : ""; }
 function loop() { //game loop, game engine updates which updates scene
   if (gameInProgress) {
     engine.Update();
@@ -256,9 +251,6 @@ function loop() { //game loop, game engine updates which updates scene
     stats.update();
     requestAnimationFrame(loop);
 }
-
-window.addEventListener('load', init, false);
-
 function handleKeyDown(keyEvent) {
   if (gameInProgress) {
     ShowBeginGameMenu(false);
@@ -284,5 +276,14 @@ function handleKeyDown(keyEvent) {
     oppositeRoad.TurnRight();
   }*/
 }
+function handleWindowResize() {
+  HEIGHT = window.innerHeight - 20;
+  WIDTH = window.innerWidth - 20;
+  renderer.setSize(WIDTH, HEIGHT);
+  camera.aspect = WIDTH / HEIGHT;
+  camera.updateProjectionMatrix();
+}
 
+window.addEventListener('load', init, false);
+window.addEventListener('resize', handleWindowResize, false);
 document.onkeydown = handleKeyDown;

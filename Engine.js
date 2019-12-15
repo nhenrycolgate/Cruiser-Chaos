@@ -56,13 +56,8 @@ function Engine(scene) {
     }
 
     this.Update = function() { //
-        var currentObjects = this.objects.values();
-        var objects = [];
-        for (var object of currentObjects) {
-            objects.push(object);
-        }
-        // console.log("Current gameObjects = " + objects.length);
         if (this.enabled) {
+            this.UpdateControllers();
             this.UpdateObjects();
             this.RenderObjects();
         }
@@ -111,7 +106,25 @@ function Engine(scene) {
 
     this.AddController = function(controller) { //Attach a controller to the game engine
         this.controllers.set(controller.type, controller);
-        controller.Init();
+        controller.Init(this);
+    }
+
+    this.GetController = function(type) {
+        if (this.controller.has(type)) {
+            return this.controller.get(type);
+        }
+        else {
+            console.log("No controller of type :" + type);
+            return null;
+        }
+    }
+
+    this.UpdateControllers = function() {
+        for (var controller of this.controllers.values()) {
+            if (controller.enabled) {
+                controller.Update(this);
+            }
+        }
     }
 
 }

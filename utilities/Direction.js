@@ -1,19 +1,18 @@
-//REFACTOR TO HAVE A Z AXIS
-var DIRECTION = {
-    N: {
-        x : 0;
-        y : 1;
-    }
-    S: {
-        x : 0;
-        y : -1;
-    }
-    E: {
-        x : 1;
-        y : 0;
-    }
-    W: {
-        x : -1;
-        y : 0;
-    }
+var Direction = {
+    NORTH: {
+        x : 0,
+        y : 1,
+    },
+    EAST: {
+        x : 1,
+        y : 0,
+    },
+    SOUTH: {
+        x : 0,
+        y : -1,
+    },
+    WEST: {
+        x : -1,
+        y : 0,
+    },
 }

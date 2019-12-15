@@ -1,54 +1,75 @@
-function Cruiser(engine, transform, render, invTimer) {
+//Cruiser logic
+function Cruiser(engine, transform, render = new CruiserRender(), invTimer) {
 
     GameObject.call(this, engine, transform, render, "Cruiser");
 
-    this.height = 50;
-    this.distance = 0;
-    this.hp = 3;
+    this.maxHp = 3;
+    this.hp = this.maxHp;
+
     this.lane = 1;
     this.invTimer = invTimer; //invulnerability timer
 
+    this.width = 0;
+    this.height = 0;
+    this.depth = 0;
+    this.laneWidth = 0;
+
     this.wheels = []; //contains the mesh information for the wheels
 
-    //todo: move outside
-    var distanceElement = document.getElementById("distance");
+    this.SetLaneWidth = function(laneWidth) { this.laneWidth = laneWidth; }
 
-    this.Init = function() {
+    this.Init = function(engine) {
         this.render.EarlyLoad();
+
+        this.width = this.render.width;
+        this.height = this.render.height;
+        this.depth = this.render.depth;
+
         this.InitWheels();
 
         var _cruiser = this;
 
-        this.AddComponent( "HURT_BOX", new BoxCollider(70, this.height, 100) );
-        this.AddComponent( "GRAB_BOX_L", new BoxCollider(70, this.height, 100, new Transform(-70, 0, 0), COLORS.yellow) );
-        this.AddComponent( "GRAB_BOX_R", new BoxCollider(70, this.height, 100, new Transform(70, 0, 0), COLORS.blue) );
+        //for damage + pickup power ups
+        this.AddComponent( "HURT_BOX", new BoxCollider(this.width, this.height, this.depth) );
 
+        //for student pickup
+        this.AddComponent( "GRAB_BOX_L", new BoxCollider(this.width, this.height, this.depth,
+            new Transform(-this.laneWidth, 0, 0), COLORS.yellow) );
+        this.AddComponent( "GRAB_BOX_R", new BoxCollider(this.width, this.height, this.depth,
+            new Transform(this.laneWidth, 0, 0), COLORS.blue) );
+
+        //Invulnerability Timer
         this.AddComponent("INV_TIMER", this.invTimer);
         this.GetComponent("INV_TIMER").RegisterOnClockExpired( (_timer) =>  _cruiser.GetComponent("HURT_BOX").Enable() );
 
         this.RegisterOnHit( (_this) => _this.hp-- );
-        this.RegisterOnHit( (_this) => console.log("OUCH") );
-        this.RegisterOnDeath( (_this) => console.log("I AM DEAD") );
+        this.RegisterOnDeath( (_this) => engine.GetController("GAME_CONTROLLER").GameOver() );
+
+        //todo, grab reference to student for amount???
+        this.RegisterOnExtraStudent( (_this) => engine.GetController("GAME_CONTROLLER").UpdateScore(1000) );
+
 
         var _UpdateCruiserPosition = this.UpdateCruiserPosition;
-        var cruiser = this;
+
         window.addEventListener('keydown', function(keyEvent) {
-            _UpdateCruiserPosition(keyEvent, cruiser);
+            _UpdateCruiserPosition(keyEvent, _cruiser);
         });
     }
 
     this.TakeDamage = function(engine) {
-
         this.callbackHandler.Invoke("HIT");
-
-
         if (this.hp == 0) {
             this.callbackHandler.Invoke("DEATH");
         }
     }
 
-    this.Heal = function() {
-        this.hp++;
+    this.PickupStudent = function(engine) {
+        if (this.hp < this.maxHP) {
+            this.hp++;
+        }
+        else {
+            this.callbackHandler.Invoke("ON_EXTRA_STUDENT");
+        }
     }
 
     //TryChangingLanes
@@ -68,17 +89,11 @@ function Cruiser(engine, transform, render, invTimer) {
     this.CanMove = function(newLane) { return newLane >= 0 && newLane < 3; }
 
     this.Update = function(engine) {
+        this.UpdateWheels(engine);
 
         //if ( ! this.GetComponent("HURT_BOX").enabled ) {
         // this.FlashAnimation();
         //}
-
-        this.distance += 1;
-        distanceElement.innerHTML = Math.floor(this.distance*this.speed*20);
-        for (var i = 0; i < this.wheels.length; i++) {
-            var wheel = this.wheels[i];
-            this.WheelUpdate(engine, wheel);
-        }
 
 		/*var obstacleTypes= ["Goose","Roadblock"];
 		for (var i=0;i<obstacleTypes.length;i=i+1){
@@ -87,14 +102,24 @@ function Cruiser(engine, transform, render, invTimer) {
 		}*/
     }
 
-    this.WheelUpdate = function(engine, wheel) { wheel.rotateX( this.speed ); }
+    this.UpdateWheels = function(engine) {
+        for (var wheel of this.wheels) {
+            this.WheelUpdate(engine, wheel);
+        }
+    }
+
+    this.WheelUpdate = function(engine, wheel) {
+        //wheel.rotateX( this.speed );
+        this.render.mesh.rotateOnAxis(new THREE.Vector3(1, 0, 0), multiplier * this.speed);
+    }
     this.SetSpeed = function(speed) { this.speed = speed; }
     this.InitWheels = function() { this.wheels = this.render.wheels; }
 
     this.RegisterOnDeath = function(callback) { this.callbackHandler.AddCallback("DEATH", callback); }
     this.RegisterOnHit = function(callback) { this.callbackHandler.AddCallback("HIT", callback); }
+    this.RegisterOnExtraStudent = function(callback) { this.callbackHandler.AddCallback("ON_EXTRA_STUDENT", callback); }
 
-     this.UpdateCruiserPosition = function(keyEvent, cruiser) {
+    this.UpdateCruiserPosition = function(keyEvent, cruiser) {
 
         var offset = 0;
         var check = false;
@@ -102,45 +127,44 @@ function Cruiser(engine, transform, render, invTimer) {
 
         if ( keyEvent.keyCode === 65) { //left 'a'
           input = -1;
-          offset = -70;
+          offset = -cruiser.laneWidth;
           //todo switch to be worldController.roadWidth
         }
         else if (keyEvent.keyCode === 68) { //right 'd'
           input = 1;
-          offset = 70;
+          offset = cruiser.laneWidth;
         }
 
         check = cruiser.TryChangingLane(input);
 
-        var newPosition = cruiser.transform.x + offset;
-
         if (check) {
+            var newPosition = cruiser.transform.x + offset;
           cruiser.transform.UpdatePosition(offset, 0 ,0);
         }
-
     }
-
 }
 
-
 //Create the model for the cruiser.
-function CruiserRender() {
-
+function CruiserRender(width, height, depth) {
   Render.call(this);
 
   this.Init = function() {
 
-    this.mesh.name = "Cruiser";
+    this.mesh.name = "CRUISER";
     this.wheels = [];
+
+    this.width = depth;
+    this.height = height;
+    this.depth = width;
 
     //Body--------------------------------------------------------------------------------------------------------------
 
-    var bodyWidth = 100;
-    var bodyHeight = 50;
-    var bodyDepth = 50;
+    var bodyWidth = width;
+    var bodyHeight = height;
+    var bodyDepth = depth;
 
     var bodyGeometry = new THREE.BoxGeometry(bodyWidth, bodyHeight, bodyDepth, 1, 1, 1);
-    var bodyMaterial = new THREE.MeshLambertMaterial({color:COLORS.red});
+    var bodyMaterial = new THREE.MeshLambertMaterial({color:COLORS.red, transparent: true, opacity: .2});
     var body = new THREE.Mesh(bodyGeometry, bodyMaterial);
     this.mesh.add(body);
 
@@ -166,7 +190,7 @@ function CruiserRender() {
     var windowGeometry = new THREE.BoxGeometry(windowWidth, windowHeight, windowDepth, 1, 1, 1);
     var windowMaterial = new THREE.MeshLambertMaterial({color:COLORS.white});
     var window = new THREE.Mesh(windowGeometry, windowMaterial);
-    this.mesh.add(window);
+    //this.mesh.add(window);
 
 
     var windowCount = 4;

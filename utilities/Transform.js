@@ -42,7 +42,7 @@ function TransformRender(scale) {
         var XDepth = 1;
 
         var XGeometry = new THREE.BoxGeometry(XWidth, XHeight, XDepth, 1, 1, 1);
-        var XMaterial = new THREE.MeshLambertMaterial({color:COLORS.red, transparent: true, opacity: 1});
+        var XMaterial = new THREE.MeshLambertMaterial({color:COLORS.red, transparent: true, opacity: 0.1});
         var X = new THREE.Mesh(XGeometry, XMaterial);
         this.mesh.add(X);
 
@@ -51,7 +51,7 @@ function TransformRender(scale) {
         var YDepth = 1;
 
         var YGeometry = new THREE.BoxGeometry(YWidth, YHeight, YDepth, 1, 1, 1);
-        var YMaterial = new THREE.MeshLambertMaterial({color:COLORS.blue, transparent: true, opacity: 1});
+        var YMaterial = new THREE.MeshLambertMaterial({color:COLORS.blue, transparent: true, opacity: 0.1});
         var Y = new THREE.Mesh(YGeometry, YMaterial);
         this.mesh.add(Y);
 
@@ -60,7 +60,7 @@ function TransformRender(scale) {
         var ZDepth = this.scale;
 
         var ZGeometry = new THREE.BoxGeometry(ZWidth, ZHeight, ZDepth, 1, 1, 1);
-        var ZMaterial = new THREE.MeshLambertMaterial({color:COLORS.yellow, transparent: true, opacity: 1});
+        var ZMaterial = new THREE.MeshLambertMaterial({color:COLORS.yellow, transparent: true, opacity: 0.1});
         var Z = new THREE.Mesh(ZGeometry, ZMaterial);
         this.mesh.add(Z);
     }

@@ -6,10 +6,10 @@ function Road(engine, transform, render) {
       N:0,
       E:1,
       S:2,
-      W:3
+      W:3,
     };
 
-    var vector = new THREE.Vector3(1,0,0);
+    var vector = new THREE.Vector3(1, 0, 0);
     var multiplier = 1;
 
     this.direction = directions.N;
@@ -111,23 +111,23 @@ function Road(engine, transform, render) {
     }
 }
 
-function RoadRender(radius, width, oppositeDirection) {
+function RoadRender(radius, width, laneRadius, laneWidth, oppositeDirection) {
 
   Render.call(this);
 
   this.Init = function() {
+    this.mesh.name = "ROAD";
 
-    this.mesh = new THREE.Object3D();
-    this.mesh.name = "Road";
-
+    //build road
     var cylinderGeometry = new THREE.CylinderGeometry( radius, radius, width, 50 );
     var cylinderMaterial = new THREE.MeshLambertMaterial( { color:COLORS.gray } );
     var road = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
 
-    //var laneGeometry = new THREE.CylinderGeometry( radius+5, radius+5, 5, 50 );
-    //var laneMaterial = new THREE.MeshLambertMaterial( { color:COLORS.yellow } );
-    //var roadLaneLeft = new THREE.Mesh( laneGeometry, laneMaterial );
-    //var roadLaneRight = new THREE.Mesh( laneGeometry, laneMaterial );
+    //build lane
+    var laneGeometry = new THREE.CylinderGeometry( laneRadius, laneRadius, laneWidth, 50 );
+    var laneMaterial = new THREE.MeshLambertMaterial( { color:COLORS.yellow } );
+    var roadLaneLeft = new THREE.Mesh( laneGeometry, laneMaterial );
+    var roadLaneRight = new THREE.Mesh( laneGeometry, laneMaterial );
 
     /*
     if (oppositeDirection) {
@@ -148,8 +148,13 @@ function RoadRender(radius, width, oppositeDirection) {
 
     //var roadParent = new THREE.Object3D();
     //roadParent.add(road);
-    //roadParent.add(roadLaneLeft);
-    //roadParent.add(roadLaneRight);
+
+    roadLaneLeft.position.y = -width / 6;
+    roadLaneRight.position.y = width / 6;
+
+    road.add(roadLaneLeft);
+    road.add(roadLaneRight);
+
     road.rotateX(DegreesToRadians(90));
     road.rotateZ(DegreesToRadians(90));
 

@@ -182,9 +182,7 @@ function GameObject(engine, transform = DefaultTransform(), render = new GameObj
 
     this.ToString = function(engine) { return "[GameObject id:" + this.id + "][GameObject type:" + this.type + "]"; }
 
-    this.RegisterOnLateUpdate = function(callback) {
-        this.callbackHandler.AddCallback("LATE_UPDATE", callback);
-    }
+    this.RegisterOnLateUpdate = function(callback) { this.callbackHandler.AddCallback("LATE_UPDATE", callback); }
 
 }
 
