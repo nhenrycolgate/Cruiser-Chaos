@@ -3,6 +3,13 @@ function Render(Init) {
     this.mesh = new THREE.Object3D();
     this.loaded = false;
 
+    this.EarlyLoad = function() {
+        if (!this.loaded) {
+          this.Init();
+          this.loaded = true;
+        }
+    }
+
     this.Init = function() {}
 
     //Source from https://www.w3schools.com/js/js_object_prototypes.asp

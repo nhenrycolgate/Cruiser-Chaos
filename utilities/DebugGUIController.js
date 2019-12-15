@@ -1,5 +1,6 @@
 function DebugGUIController(gui, showStats, hideStats) {
 
+    Controller.call(this, "GUI_CONTROLLER");
     this.gui = gui;
 
     this.open = false;

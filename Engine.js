@@ -21,10 +21,8 @@ function Engine(scene) {
     }
 
     this.GetObjectsOfType = function(type) { //Returns a set of the objects within the engine of a specific type
-        var objectsOfType = [];
-        var typeIDMap = new Map();
         if (this.typeMap.has(type)) {
-            typeIDMap = this.typeMap.get(type);
+            var typeIDMap = this.typeMap.get(type);
             var objects = [];
             for (var object of typeIDMap.values()) {
                 objects.push(object);
@@ -89,15 +87,17 @@ function Engine(scene) {
     }
 
     this.CreateInstance = function(object) { //
-        if (object.id == -1) {
+        if (object.id == -1) { //set id for gameObject
             object.id = engine.GetNextGameObjectID();
         }
 
         object.Init(this);
         this.AddGameObject(object);
-        if ( !object.render.loaded) {
+
+        if ( !object.render.loaded ) {
             object.render.Init();
         }
+
         this.scene.add(object.render.mesh);
         if ( !object.transform.render.loaded) {
             object.transform.render.Init();

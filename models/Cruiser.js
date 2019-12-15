@@ -1,19 +1,27 @@
-function Cruiser(engine, transform, render) {
+function Cruiser(engine, transform, render, invTimer) {
 
     GameObject.call(this, engine, transform, render, "Cruiser");
-    this.wheels = []; //contains the mesh information for the wheels
     this.height = 50;
-    this.distance = 0
+    this.distance = 0;
+    this.hp = 3;
+    this.lane = 1;
+    this.invTimer = invTimer; //invulnerability timer
 
+    this.wheels = []; //contains the mesh information for the wheels
+
+    //todo: move outside
     var distanceElement = document.getElementById("distance");
 
     this.Init = function() {
-        if (!this.render.loaded) {
-          this.render.Init();
-        }
+        this.render.EarlyLoad();
         this.InitWheels();
 
-        this.render.mesh.rotation.y -= DegreesToRadians(90);
+        var _cruiser = this;
+
+        //this.AddComponent( "HURT_BOX", new BoxCollider(...) );
+        //this.AddComponent("INV_TIMER", this.timer);
+        //this.GetComponent("INV_TIMER").RegisterOnClockExpired( (_timer) =>  _cruiser.GetComponent("HURT_BOX").Enable() );
+
         var _UpdateCruiserPosition = this.UpdateCruiserPosition;
         var cruiser = this;
         window.addEventListener('keydown', function(keyEvent) {
@@ -21,7 +29,20 @@ function Cruiser(engine, transform, render) {
         });
     }
 
-    this.lane = 1;
+    this.TakeDamage = function() {
+        this.hp--;
+
+        invTimer.Restart();
+        this.GetComponent("HURT_BOX").Disable();
+
+        if (hp == 0) {
+            this.callbackHandler.Invoke("DEATH");
+        }
+    }
+
+    this.Heal = function() {
+        this.hp++;
+    }
 
     this.UpdateLane = function(input) {
       var newLane = this.lane + input;
@@ -31,6 +52,7 @@ function Cruiser(engine, transform, render) {
     }
 
      this.UpdateCruiserPosition = function(keyEvent, cruiser) {
+
         var transform = 0;
         if ( keyEvent.keyCode === 65) { //left 'a'
           cruiser.UpdateLane(-1);
@@ -44,10 +66,16 @@ function Cruiser(engine, transform, render) {
         if (newPosition <= 70 && newPosition >= -70) {
           cruiser.transform.UpdatePosition(transform, 0 ,0);
         }
+
     }
 
 
     this.Update = function(engine) {
+
+        //if ( ! this.GetComponent("HURT_BOX").enabled ) {
+        // this.FlashAnimation();
+        //}
+
         this.distance += 1;
         distanceElement.innerHTML = Math.floor(this.distance*this.speed*20);
         for (var i = 0; i < this.wheels.length; i++) {
@@ -62,18 +90,12 @@ function Cruiser(engine, transform, render) {
 		}*/
     }
 
-    this.WheelUpdate = function(engine, wheel) {
-        //TODO: figure out the rotational speed relative to the speed of the game, and in terms of radians.
-        wheel.rotation.y += this.speed;
-    }
+    this.WheelUpdate = function(engine, wheel) { wheel.rotateX( this.speed ); }
+    this.SetSpeed = function(speed) { this.speed = speed; }
+    this.InitWheels = function() { this.wheels = this.render.wheels; }
 
-    this.SetSpeed = function(speed) {
-        this.speed = speed;
-    }
+    this.RegisterOnDeath = function(callback) { this.callbackHandler.AddCallback("DEATH", callback); }
 
-    this.InitWheels = function() {
-      this.wheels = this.render.wheels;
-    }
 }
 
 
@@ -84,11 +106,10 @@ function CruiserRender() {
 
   this.Init = function() {
 
-    this.mesh = new THREE.Object3D();
     this.mesh.name = "Cruiser";
     this.wheels = [];
 
-    //Body
+    //Body--------------------------------------------------------------------------------------------------------------
 
     var bodyWidth = 100;
     var bodyHeight = 50;
@@ -97,10 +118,9 @@ function CruiserRender() {
     var bodyGeometry = new THREE.BoxGeometry(bodyWidth, bodyHeight, bodyDepth, 1, 1, 1);
     var bodyMaterial = new THREE.MeshLambertMaterial({color:COLORS.red});
     var body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-
     this.mesh.add(body);
 
-    //Front
+    //Front-------------------------------------------------------------------------------------------------------------
 
     var frontWidth = 20;
     var frontHeight = 30;
@@ -111,10 +131,9 @@ function CruiserRender() {
     var front = new THREE.Mesh(frontGeometry, frontMaterial);
     front.position.x = -(bodyWidth / 2) - (frontWidth / 2);
     front.position.y = (frontHeight / 2) - (bodyHeight / 2);
-
     this.mesh.add(front);
 
-    //Window
+    //Window------------------------------------------------------------------------------------------------------------
 
     var windowWidth = 15;
     var windowHeight = 30;
@@ -123,24 +142,18 @@ function CruiserRender() {
     var windowGeometry = new THREE.BoxGeometry(windowWidth, windowHeight, windowDepth, 1, 1, 1);
     var windowMaterial = new THREE.MeshLambertMaterial({color:COLORS.white});
     var window = new THREE.Mesh(windowGeometry, windowMaterial);
-
     this.mesh.add(window);
 
-    //TODO; set up the proper space for the window copies.
 
     var windowCount = 4;
-
     var x = -(bodyWidth / 2) + (windowWidth / 1);
     var y = 0;
     var z = bodyDepth / 2;
-
     var padding = 5;
 
     for (var i = 0; i < windowCount; i++) {
 
         var xOffset = (windowWidth * i) + (padding * i);
-
-        //TODO: place the window at the correct x,y,z with offset and using both the positive and negative z value.
         var windowCopy = window.clone();
         windowCopy.name = "near_z_window_" + i;
         windowCopy.position.x = x + xOffset;
@@ -156,13 +169,11 @@ function CruiserRender() {
         this.mesh.add(windowCopy);
     }
 
-    //Wheel
-    //TODO: rotation the entire mesh so the default orientation is facing in the z axis.
+    //Wheel-------------------------------------------------------------------------------------------------------------
 
     var wheelWidth = 10;
     var wheelHeight = 10;
     var wheelDepth = 8;
-
     var wheelRadiusDetail = 10;
 
     var wheelGeometry = new THREE.CylinderGeometry(
@@ -175,8 +186,7 @@ function CruiserRender() {
     var wheelMaterial = new THREE.MeshLambertMaterial({color:COLORS.brownDark});
     var wheel = new THREE.Mesh(wheelGeometry, wheelMaterial);
 
-
-    //spock
+    //spock-------------------------------------------------------------------------------------------------------------
 
     var spockWidth = 3;
     var spockHeight = 3;
@@ -191,57 +201,53 @@ function CruiserRender() {
                          							spockRadiusDetail,
                          							6,
                          						);
+
     var spockMaterial = new THREE.MeshLambertMaterial({color:COLORS.white});
     var spock = new THREE.Mesh(spockGeometry, spockMaterial);
     wheel.add(spock);
-    wheel.rotation.x = DegreesToRadians(90);
+    wheel.rotateX(DegreesToRadians(90));
 
 //----------------------------------------------------------------------------------------------------------------------
 
-    var wheelCopy = wheel.clone();
-    wheelCopy.position.x = (bodyWidth / 2) - 16;
-    wheelCopy.position.y = -(bodyHeight / 2);
-    wheelCopy.position.z = (bodyDepth / 2) - 8;
-
-    this.mesh.add(wheelCopy);
-    this.wheels.push(wheelCopy);
-
-    var spockMaterial = new THREE.MeshLambertMaterial({color:COLORS.white});
-    var spock = new THREE.Mesh(spockGeometry, spockMaterial);
-    wheel.add(spock);
-    wheel.rotation.x = DegreesToRadians(90);
-
-    var wheelCopy = wheel.clone();
-    wheelCopy.position.x = (bodyWidth / 2) - 16;
-    wheelCopy.position.y = -(bodyHeight / 2);
-    wheelCopy.position.z = -(bodyDepth / 2) + 8;
-
-    this.mesh.add(wheelCopy);
-    this.wheels.push(wheelCopy);
+    var wheelCopy_0 = wheel.clone();
+    wheelCopy_0.position.x = (bodyWidth / 2) - 16;
+    wheelCopy_0.position.y = -(bodyHeight / 2);
+    wheelCopy_0.position.z = (bodyDepth / 2) - 8;
+    this.mesh.add(wheelCopy_0);
+    //this.wheels.push(wheelCopy);
 
 //----------------------------------------------------------------------------------------------------------------------
 
-    var wheelCopy = wheel.clone();
-    wheelCopy.position.x = -(bodyWidth / 2) + 16;
-    wheelCopy.position.y = -(bodyHeight / 2);
-    wheelCopy.position.z = (bodyDepth / 2) - 8;
+    var wheelCopy_1 = wheel.clone();
+    wheelCopy_1.position.x = (bodyWidth / 2) - 16;
+    wheelCopy_1.position.y = -(bodyHeight / 2);
+    wheelCopy_1.position.z = -(bodyDepth / 2) + 8;
+    this.mesh.add(wheelCopy_1);
+    //this.wheels.push(wheelCopy);
 
-    this.mesh.add(wheelCopy);
-    this.wheels.push(wheelCopy);
+//----------------------------------------------------------------------------------------------------------------------
 
-    var spockMaterial = new THREE.MeshLambertMaterial({color:COLORS.white});
-    var spock = new THREE.Mesh(spockGeometry, spockMaterial);
-    wheel.add(spock);
-    wheel.rotation.x = DegreesToRadians(90);
+    var wheelCopy_2 = wheel.clone();
+    wheelCopy_2.position.x = -(bodyWidth / 2) + 16;
+    wheelCopy_2.position.y = -(bodyHeight / 2);
+    wheelCopy_2.position.z = (bodyDepth / 2) - 8;
+    this.mesh.add(wheelCopy_2);
+    //this.wheels.push(wheelCopy);
 
-    var wheelCopy = wheel.clone();
-    wheelCopy.position.x = -(bodyWidth / 2) + 16;
-    wheelCopy.position.y = -(bodyHeight / 2);
-    wheelCopy.position.z = -(bodyDepth / 2) + 8;
+//----------------------------------------------------------------------------------------------------------------------
 
-    this.mesh.add(wheelCopy);
-    this.wheels.push(wheelCopy);
+    var wheelCopy_3 = wheel.clone();
+    wheelCopy_3.position.x = -(bodyWidth / 2) + 16;
+    wheelCopy_3.position.y = -(bodyHeight / 2);
+    wheelCopy_3.position.z = -(bodyDepth / 2) + 8;
+    this.mesh.add(wheelCopy_3);
+
+    this.wheels.push( wheelCopy_0 );
+    this.wheels.push( wheelCopy_1 );
+    this.wheels.push( wheelCopy_2 );
+    this.wheels.push( wheelCopy_3 );
 
     this.mesh.rotateY(DegreesToRadians(-90));
   }
+
 }

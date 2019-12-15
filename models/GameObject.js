@@ -8,13 +8,27 @@ function GameObject(engine, transform, render, type = "GAME_OBJECT") {
     this.tag = "GAME_OBJECT";
     this.callbackHandler = new CallbackHandler(this);
 
-    this.componentsByName = new Map();
-    this.componentNameByID = new Map();
+    this.componentsByName = new Map(); //grab component by name
+    this.componentsByType = new Map(); //grab component(s) by type
+    this.componentNameByID = new Map(); //grab name by ID
 
     this.AddComponent = function(name, component) {
+
         component.AttachToGameObject(this);
         this.componentsByName.set(name, component);
         this.componentNameByID.set(component.id, name);
+
+        if (this.componentsByType.has(component.type)) {
+            var typeIDMap = this.componentsByType.get(component.type);
+            typeIDMap.set(object.id, object);
+            this.typeMap.set(component.type, typeIDMap);
+        }
+        else {
+            var typeIDMap = new Map();
+            typeIDMap.set(component.id, component);
+            this.componentsByType.set(component.type, typeIDMap);
+        }
+
     }
 
     this.RemoveComponent = function(name) {
@@ -35,6 +49,23 @@ function GameObject(engine, transform, render, type = "GAME_OBJECT") {
         }
         else {
             return null;
+        }
+    }
+
+    this.GetComponentsByType = function(type) {
+
+        if (this.componentsByType.has(type)) {
+            var typeIDMap = this.componentsByType.get(type);
+            var components = [];
+            for (var object of typeIDMap.values()) {
+                components.push(object);
+            }
+            return components;
+        }
+        else {
+            console.log("No components of type " + type);
+            var array = [];
+            return array;
         }
     }
 
