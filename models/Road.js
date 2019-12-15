@@ -2,6 +2,18 @@ function Road(engine, transform, render) {
 
     GameObject.call(this, engine, transform, render, "ROAD");
 
+    var directions = {
+      N:0,
+      E:1,
+      S:2,
+      W:3
+    };
+
+    var vector = new THREE.Vector3(1,0,0);
+    var multiplier = 1;
+
+    this.direction = directions.N;
+
     this.Init = function() {
       if (!this.render.loaded) {
         this.render.Init();
@@ -12,8 +24,85 @@ function Road(engine, transform, render) {
         this.speed = speed;
     }
 
+    this.TurnLeft = function() {
+      // render.mesh.rotation.y = DegreesToRadians(90);
+      // this.oppositeRoad = !this.oppositeRoad;
+      this.direction = (this.direction + 3) % 4;
+      // render.mesh.rotation.z += DegreesToRadians(-90);
+      console.log("left" + this.direction);
+      // switch (this.direction) {
+      //   case this.directions.N:
+      //     this.direction = this.directions.W;
+      //
+      //     break;
+      //   case this.directions.E:
+      //     break;
+      //   case this.directions.S:
+      //     break;
+      //   case this.directions.W:
+      //     break;
+      // }
+    }
+
+    this.TurnRight = function() {
+
+      // this.oppositeRoad = !this.oppositeRoad;
+      this.direction = (this.direction + 1) % 4;
+      // render.mesh.rotation.z += DegreesToRadians(90);
+      console.log("right" + this.direction);
+      this.render.mesh.rotateY(DegreesToRadians(-90));
+      switch (this.direction) {
+        case directions.N:
+          vector = new THREE.Vector3(1,0,0);
+          multiplier = 1;
+          break;
+        case directions.E:
+          vector = new THREE.Vector3(0,0,1);
+          multiplier = 1;
+          break;
+        case directions.S:
+          vector = new THREE.Vector3(1,0,0);
+          multiplier = -1
+          break;
+        case directions.W:
+          vector = new THREE.Vector3(0,0,1);
+          multiplier = -1
+          break;
+      }
+    }
+
     this.Update = function() {
-        render.mesh.rotation.x += this.speed;
+
+      // this.render.mesh.rotateOnAxis(new THREE.Vector3(1,0,0), multiplier * this.speed);
+
+      this.render.mesh.rotateX(this.speed);
+
+      // switch (this.direction) {
+      //   case directions.N
+      // }
+      // console.log("x " + render.mesh.rotation.x);
+      // console.log("y " + render.mesh.rotation.y);
+      // console.log("z " + render.mesh.rotation.z);
+      // if (this.oppositeRoad) {
+      //   render.mesh.rotation.y += this.speed;
+      // } else {
+        // render.mesh.rotation.x += this.speed; //have the world spinning around the x axis
+      // }
+      //
+      // switch (this.direction) {
+      //   case directions.N:
+      //     this.render.mesh.rotateX(this.speed);
+      //     break;
+      //   case directions.E:
+      //     this.render.mesh.rotateY(this.speed);
+      //     break;
+      //   case directions.S:
+      //     this.render.mesh.rotateX(-this.speed);
+      //     break;
+      //   case directions.W:
+      //     this.render.mesh.rotateY(-this.speed);
+      //     break;
+      // }
     }
 }
 
@@ -38,17 +127,17 @@ function RoadRender(radius, width, oppositeDirection) {
     if (oppositeDirection) {
       roadLaneLeft.position.z = -width/6;
       roadLaneRight.position.z = width/6;
+      roadLaneLeft.rotateX(DegreesToRadians(90));
+      roadLaneRight.rotateX(DegreesToRadians(90));
+      road.rotateX(DegreesToRadians(90));
     } else {
       roadLaneLeft.position.x = -width/6;
       roadLaneRight.position.x = width/6;
-      roadLaneLeft.rotation.z = DegreesToRadians(90);
-      roadLaneRight.rotation.z = DegreesToRadians(90);
-      road.rotation.z = DegreesToRadians(90);
+      roadLaneLeft.rotateZ(DegreesToRadians(90));
+      roadLaneRight.rotateZ(DegreesToRadians(90));
+      road.rotateZ(DegreesToRadians(90));
     }
 
-    road.rotation.x = DegreesToRadians(90);
-    roadLaneLeft.rotation.x = DegreesToRadians(90);
-    roadLaneRight.rotation.x = DegreesToRadians(90);
 
     var roadParent = new THREE.Object3D();
     roadParent.add(road);

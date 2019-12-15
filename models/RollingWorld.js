@@ -21,12 +21,7 @@ function RollingWorld(engine, transform, render) {
         this.speed = speed;
     }
 
-    this.Update = function() {
-        // console.log("speed" + this.speed + " (print statement located in rollingworld.js)");
-        render.mesh.rotation.x += this.speed; //have the world spinning around the x axis
-
-        //should have some function call when a branched path appears that rotation the sphere by the y axis at intersects
-    }
+    this.Update = function() {}
 
     this.Unload_assets = function() {
         //TODO: create functionality to add objects to the geometry of the rolling sphere in the far plane

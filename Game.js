@@ -10,6 +10,8 @@ var engine,
     controls;
 var timer;
 
+var world, road, oppositeRoad;
+
 var gameInProgress = true; // Link to completing objectives
 
 var HEIGHT, WIDTH;
@@ -63,7 +65,7 @@ function init(event) {
     var spawner = new Spawner(engine, DefaultTransform(), new GameObjectRender(), new GameObjectRender(), new Timer(30));
     engine.CreateInstance(spawner);
 */
-    var world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender(worldRadius));
+    world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender(worldRadius));
     world.SetSpeed(DegreesToRadians(worldSpeed));
     engine.CreateInstance(world);
 
@@ -81,7 +83,7 @@ function init(event) {
 
     var particle = new Particle(engine, DefaultTransform(), new ParticleRender(), new Timer(20));
     var particleSystem = new ParticleSystem(engine, DefaultTransform(), new GameObjectRender(), particle, new Timer(1));
-    engine.CreateInstance(particleSystem);
+    // engine.CreateInstance(particleSystem);
 
     //var emptyGameObject = new GameObject(engine, DefaultTransform(), new GameObjectRender());
     //emptyGameObject.RegisterOnLateUpdate( (_obj) => _obj.transform.UpdatePosition(5, 0, 0) );
@@ -218,6 +220,14 @@ function handleKeyDown(keyEvent) {
     ShowBeginGameMenu(false);
     ShowGameOverMenu(true);
     gameInProgress = false;
+  } else if (keyEvent.keyCode === 37) { //Left
+    // world.TurnLeft();
+    road.TurnLeft();
+    oppositeRoad.TurnLeft();
+  } else if (keyEvent.keyCode === 39) { //right
+    // world.TurnRight();
+    road.TurnRight();
+    oppositeRoad.TurnRight();
   }
 }
 

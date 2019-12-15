@@ -41,9 +41,9 @@ function TransformRender() {
     Render.call(this);
 
     this.Init = function() {
-    
+
         this.mesh.name = "TRANSFORM";
-        var XWidth = 100;
+        var XWidth = 10000;
         var XHeight = 1;
         var XDepth = 1;
 
@@ -54,7 +54,7 @@ function TransformRender() {
         this.mesh.add(X);
 
         var YWidth = 1;
-        var YHeight = 100;
+        var YHeight = 10000;
         var YDepth = 1;
 
         var YGeometry = new THREE.BoxGeometry(YWidth, YHeight, YDepth, 1, 1, 1);
@@ -65,7 +65,7 @@ function TransformRender() {
 
         var ZWidth = 1;
         var ZHeight = 1;
-        var ZDepth = 100;
+        var ZDepth = 10000;
 
         var ZGeometry = new THREE.BoxGeometry(ZWidth, ZHeight, ZDepth, 1, 1, 1);
         var ZMaterial = new THREE.MeshLambertMaterial({color:COLORS.yellow, transparent: true, opacity: .5});
