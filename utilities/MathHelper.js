@@ -6,16 +6,17 @@ function Bound(value, min, max) {
     return value < min ? min : value > max ? max : value;
 }
 
-function RandomNumberBtwn(a,b){
-	var min= a; var max= b;
-	if (a>b){ min=b;max=a;}
-	return (Math.random()*(max-min))+min;
+function RandomNumberBtwn(a, b){
+	var min = a;
+	var max = b;
+	if (a > b){ min = b ; max = a;}
+	return (Math.random()*(max - min)) + min;
 }
 
 function GetPointOnSphere(position, radius){
 		var u= Math.random();
 		var v= Math.random();
-		var theta= u*2.0*Math.PI;
+		var theta = u * 2.0 * Math.PI;
 		var phi = Math.acos(2.0 * v - 1.0);
 		//var r = Math.cbrt(Math.random());
 		var sinTheta = Math.sin(theta);
@@ -26,4 +27,11 @@ function GetPointOnSphere(position, radius){
 		var y = radius * sinPhi * sinTheta + position[1];
 		var z = radius * cosPhi + position[2];
 		return [x,y,z]
+}
+
+//https://stackoverflow.com/questions/1527803/generating-random-whole-numbers-in-javascript-in-a-specific-range
+function GetRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }

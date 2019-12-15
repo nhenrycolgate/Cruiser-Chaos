@@ -30,6 +30,7 @@ function init(event) { //initializer
     //engine.AddController(new CameraController(camera, 1000));
     engine.AddController(new DebugGUIController(gui, ShowStats, HideStats));
     engine.AddController( new GameController() );
+    engine.AddController( new SpawnController() );
 
     //------------------------------------------------------------------------------------------------------------------
 
@@ -42,6 +43,7 @@ function init(event) { //initializer
     var laneWidth = roadWidth / 3;
     var worldSpeed = 0.6;
 
+    var wheelHeight = 5;
     var cruiserWidth = 100;
     var cruiserHeight = 50;
     var cruiserDepth = 50;
@@ -50,7 +52,7 @@ function init(event) { //initializer
 
     world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender(worldRadius));
     world.SetSpeed(DegreesToRadians(worldSpeed));
-    engine.CreateInstance(world);
+    //engine.CreateInstance(world);
 
     road = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, laneRadius, laneLineWidth, false));
     road.SetSpeed(DegreesToRadians(worldSpeed));
@@ -62,7 +64,7 @@ function init(event) { //initializer
 
     //todo fix hard code
     var cruiser = new Cruiser(engine,
-        new Transform(0, (cruiserHeight / 2) + roadRadius, 0),
+        new Transform(0, (cruiserHeight / 2) + roadRadius + wheelHeight, 0),
         new CruiserRender(cruiserWidth, cruiserHeight, cruiserDepth),
         new Timer(30));
 
@@ -112,6 +114,23 @@ function init(event) { //initializer
     startTimer.GetComponent("START_TIMER").RegisterOnClockExpired( (_timer) => collider.Enable() );
     startTimer.GetComponent("START_TIMER").RegisterOnClockExpired( (_timer) => _timer.Destroy() );
     engine.CreateInstance( startTimer );
+
+    //create the entity spawning unit
+    var spawn = new GameObject();
+    var spawner = new Spawner(engine, new Transform(0, 0, -worldRadius), new BoxColliderRender(100, 100, 100), spawn);
+    engine.CreateInstance(spawner);
+
+    //spawner.AddComponent("SPAWN_TIMER", new Timer(30));
+    //var spawnTimer = this.GetComponent("SPAWN_TIMER");
+    //spawnTimer.Restart();
+    //spawnTimer.RegisterOnClockExpired( (_timer) => spawner.Spawn(engine) );
+    //spawnTimer.RegisterOnClockExpired( (_timer) => _timer.Restart() );
+    //spawnTimer.RegisterOnClockExpired( (_timer) => console.log("SPAWN") );
+
+    var spawnController = engine.GetController("SPAWN_CONTROLLER");
+    spawnController.RegisterOnGenerated( (_this) => spawner.UseCode(_this.spawnCode) );
+
+    //todo add despawn collider at the other edge of the map
 
     //var trigger = new GameObject(engine, new Transform( 0, -worldRadius, 0 ));
     //trigger.AddComponent( "TRIGGER_0", new BoxCollider(roadWidth, 100, roadWidth) );
@@ -181,17 +200,17 @@ function CreateScene() {
     );
 
     //game position
-    camera.position.x = 0;
-    camera.position.y = 1300;
-    camera.position.z = 300;
-    camera.lookAt(new THREE.Vector3(0, 0, -1500));
+    //camera.position.x = 0;
+    //camera.position.y = 1300;
+    //camera.position.z = 300;
+    //camera.lookAt(new THREE.Vector3(0, 0, -1500));
 
     //DEBUG MODE
 
-    //camera.position.x = 0;
-    //camera.position.y = 2000;
-    //camera.position.z = 1;
-    //camera.lookAt(new THREE.Vector3(0, 0, 0));
+    camera.position.x = 0;
+    camera.position.y = 2000 * 3;
+    camera.position.z = 1;
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     gui = DebugGUI();
 
@@ -237,7 +256,6 @@ function CreateLights() {
   scene.add(shadowLight);
   // scene.add(ambientLight);
 }
-
 function ShowStats() { document.body.appendChild(stats.domElement); }
 function HideStats() { document.body.removeChild(stats.domElement); }
 

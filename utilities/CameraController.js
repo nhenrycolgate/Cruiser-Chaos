@@ -21,9 +21,7 @@ function CameraController(camera, zoom) {
         });
     }
 
-    this.SetZoom = function(zoom) {
-        this.zoom = zoom;
-    }
+    this.SetZoom = function(zoom) { this.zoom = zoom; }
 
     this.SetCameraPosition = function(keyEvent, cameraController) {
         if (keyEvent.key == "1") {

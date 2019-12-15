@@ -110,8 +110,8 @@ function Engine(scene) {
     }
 
     this.GetController = function(type) {
-        if (this.controller.has(type)) {
-            return this.controller.get(type);
+        if (this.controllers.has(type)) {
+            return this.controllers.get(type);
         }
         else {
             console.log("No controller of type :" + type);

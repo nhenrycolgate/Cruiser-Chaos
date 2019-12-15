@@ -110,7 +110,7 @@ function Cruiser(engine, transform, render = new CruiserRender(), invTimer) {
 
     this.WheelUpdate = function(engine, wheel) {
         //wheel.rotateX( this.speed );
-        this.render.mesh.rotateOnAxis(new THREE.Vector3(1, 0, 0), multiplier * this.speed);
+        wheel.rotateOnAxis(new THREE.Vector3(0, 1, 0), this.speed);
     }
     this.SetSpeed = function(speed) { this.speed = speed; }
     this.InitWheels = function() { this.wheels = this.render.wheels; }
