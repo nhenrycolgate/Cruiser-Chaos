@@ -11,7 +11,7 @@ function Component(type) {
 
     this.AttachToGameObject = function(gameObject) {
         this.gameObject = gameObject;
-        console.log("Attaching to gameObject", gameObject.id);
+        //console.log("Attaching to gameObject", gameObject.id);
         this.id = gameObject.GetNextComponentID();
         this.Init();
         if (this.render != null) {

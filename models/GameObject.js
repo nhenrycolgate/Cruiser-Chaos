@@ -16,7 +16,7 @@ function GameObject(engine, transform = DefaultTransform(), render = new GameObj
     this.AddComponent = function(name, component) {
         //throw new Exception();
         if (this.id == -1) {
-            console.log("cannot add, sending to temp set");
+            //console.log("cannot add, sending to temp set");
             this.toBeAdded.set(name, component);
             return;
         }
@@ -41,7 +41,7 @@ function GameObject(engine, transform = DefaultTransform(), render = new GameObj
     this.SetComponents = function() {
         //fix each component
 
-        console.log("Setting all components to GameObject");
+        //console.log("Setting all components to GameObject");
 
         for (var name of this.toBeAdded.keys()) {
             this.AddComponent(name, this.toBeAdded.get(name));

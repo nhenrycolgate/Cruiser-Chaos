@@ -69,6 +69,9 @@ function BoxCollider(width, height, depth, offsetTransform = DefaultTransform(),
     }
 
     this.Collision = function(otherBox) {
+        if ( !otherBox.enabled ) {
+            return false;
+        }
         return CheckCollision(this, otherBox);
     }
 

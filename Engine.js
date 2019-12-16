@@ -41,7 +41,7 @@ function Engine(scene) {
         while (this.objects.has(id)) {
             id++;
         }
-        console.log("next free id = ", id);
+        //console.log("next free id = ", id);
         return id++;
     }
 
@@ -53,6 +53,7 @@ function Engine(scene) {
         if (this.typeMap.has(object.type)) {
             var typeIDMap = this.typeMap.get(object.type);
             typeIDMap.delete(object.id);
+            this.typeMap.get(object.type, typeIDMap);
         }
     }
 
@@ -87,9 +88,9 @@ function Engine(scene) {
         if (object.id == -1) { //set id for gameObject
             object.id = engine.GetNextGameObjectID();
             if (object.toBeAdded.size != 0) {
-                console.log("object = ", object, "has unused components");
+                //console.log("object = ", object, "has unused components");
                 object.SetComponents(); //set components on non invoked object
-                console.log("object = ", object.componentsByName );
+                //console.log("object = ", object.componentsByName );
             }
 
         }

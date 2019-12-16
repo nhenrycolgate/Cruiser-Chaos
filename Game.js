@@ -63,11 +63,10 @@ function init(event) { //initializer
     //oppositeRoad.SetSpeed(DegreesToRadians(worldSpeed));
     //engine.CreateInstance(oppositeRoad);
 
-    //todo fix hard code
     var cruiser = new Cruiser(engine,
         new Transform(0, (cruiserHeight / 2) + roadRadius + wheelHeight, 0),
         new CruiserRender(cruiserWidth, cruiserHeight, cruiserDepth),
-        new Timer(30));
+        new Timer(120));
 
     cruiser.SetLaneWidth(laneWidth);
 
@@ -75,7 +74,7 @@ function init(event) { //initializer
     cruiser.RegisterOnHit( (_cruiser) =>  _cruiser.GetComponent("INV_TIMER").Restart() );
     cruiser.RegisterOnHit( (_cruiser) =>  _cruiser.GetComponent("HURT_BOX").Disable() );
     cruiser.RegisterOnDeath( (_cruiser) =>  _cruiser.Destroy(engine) );
-    //engine.CreateInstance(cruiser);
+    engine.CreateInstance(cruiser);
 
     //var empty = new GameObject();
     //empty.AddComponent("TIMER", new Timer(200));
@@ -149,26 +148,53 @@ function init(event) { //initializer
 
     var spawner = new Spawner(engine, new Transform(0, 0, -worldRadius), new BoxColliderRender(100, 100, 100));
 
-    spawner.Spawn = function(engine, prefab) {
+    spawner.ObjectSpawn = function(i) {
+        var empty = new GameObject(engine, new Transform(-laneWidth + (i * laneWidth), 0, -worldRadius));
+        var despawnBox = new BoxCollider(laneWidth, laneWidth, laneWidth);
+        var hitBox = new BoxCollider(laneWidth, laneWidth, laneWidth);
 
-        //var spawnObject = spawnTarget[Math.floor(Math.random() * spawnTarget.length)];
-        var empty = new GameObject(engine, new Transform(0, 0, -worldRadius));
-        var despawnBox = new BoxCollider(100, 100, 100);
+        despawnBox.RegisterOnCollision( (_this) => console.log("DESPAWN") );
         despawnBox.RegisterOnCollision( (_this) => empty.Destroy(engine) );
-        despawnBox.RegisterOnCollision( (_this) => console.log("FREE") );
+
+        hitBox.RegisterOnCollision( (_this) => cruiser.TakeDamage(engine) );
+        hitBox.RegisterOnCollision( (_this) => empty.Destroy(engine) );
+
         empty.AddComponent("DESPAWN_BOX", despawnBox);
+        empty.AddComponent("HIT_BOX", hitBox);
+
         empty.RegisterOnLateUpdate( (_this) => _this.RotateAbout(0, 0, 0, worldSpeed, 0, 0) );
 
         empty.Update = function() {
             if (empty.GetComponent("DESPAWN_BOX").Collision(despawner.GetComponent("DESPAWN_BOX"))) {
                 empty.GetComponent("DESPAWN_BOX").callbackHandler.Invoke("COLLISION");
             }
+
+            if (empty.GetComponent("HIT_BOX").Collision(cruiser.GetComponent("HURT_BOX"))) {
+                empty.GetComponent("HIT_BOX").callbackHandler.Invoke("COLLISION");
+            }
         }
         engine.CreateInstance(empty);
-
-        //console.log("copy_id after = " + copy.id);
-        //prefab.AddComponent("SHIT_BOX", new BoxCollider(300, 300, 300, new Transform(-100, 0, 0)));
     }
+
+    spawner.Spawn = function(engine, code) {
+
+        //var spawnObject = spawnTarget[Math.floor(Math.random() * spawnTarget.length)];
+
+        for (var i = 0; i < code.length; i++) {
+
+            console.log("code at i" + i);
+
+            if (code[i] == 0) {
+                continue;
+            }
+
+            else {
+                this.ObjectSpawn(i);
+            }
+        }
+
+    }
+
     engine.CreateInstance(spawner);
 
     //spawner.AddComponent("SPAWN_TIMER", new Timer(30));
@@ -250,17 +276,17 @@ function CreateScene() {
     );
 
     //game position
-    //camera.position.x = 0;
-    //camera.position.y = 1300;
-    //camera.position.z = 300;
-    //camera.lookAt(new THREE.Vector3(0, 0, -1500));
+    camera.position.x = 0;
+    camera.position.y = 1300;
+    camera.position.z = 300;
+    camera.lookAt(new THREE.Vector3(0, 0, -1500));
 
     //DEBUG MODE
 
-    camera.position.x = 100;
-    camera.position.y = 2000 * 2;
-    camera.position.z = 100;
-    camera.lookAt(new THREE.Vector3(0, 0, 0));
+    /*camera.position.x = 2000;
+    camera.position.y = 2000 * 1;
+    camera.position.z = 0;
+    camera.lookAt(new THREE.Vector3(0, 1000, 0));*/
 
     gui = DebugGUI();
 

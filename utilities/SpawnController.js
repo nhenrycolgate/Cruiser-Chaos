@@ -30,17 +30,25 @@ function SpawnController() {
         var result = [];
         var laneCount = 3;
         var freeLane = false;
+        var occupied = false;
 
         for (var i = 0; i < laneCount; i++) {
             var code = GetRandomInt(0, 1);
             result.push(code);
             freeLane = freeLane || (code == 0);
+            occupied = occupied || (code == 1);
         }
 
         if ( !freeLane) {
-            target = GetRandomInt(0, 2);
+            target = GetRandomInt(0, 1);
             result[target] = 0;
         }
+
+        if ( !occupied) {
+            target = GetRandomInt(0, 1);
+            result[target] = 1;
+        }
+
         return result;
     }
 
