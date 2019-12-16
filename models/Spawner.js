@@ -15,10 +15,14 @@ function Spawner(engine, transform = DefaultTransform(), render = new GameObject
     }
 
     this.Spawn = function(engine, prefab) {
+
         //var spawnObject = spawnTarget[Math.floor(Math.random() * spawnTarget.length)];
-        var copy = prefab.Copy();
-        console.log("copy_id before = " + copy.id);
-        engine.CreateInstance(copy);
-        console.log("copy_id after = " + copy.id);
+        //var empty = new GameObject(engine, new Transform(0, 0, -worldRadius));
+        //empty.AddComponent("COLLISION", new BoxCollider(100, 100, 100));
+        //empty.RegisterOnLateUpdate( (_this) => _worldRadius.RotateAbout(0, 0, 0, worldSpeed, 0, 0) );
+        //engine.CreateInstance(empty);
+
+        //console.log("copy_id after = " + copy.id);
+        //prefab.AddComponent("SHIT_BOX", new BoxCollider(300, 300, 300, new Transform(-100, 0, 0)));
     }
 }

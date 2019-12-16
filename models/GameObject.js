@@ -11,11 +11,10 @@ function GameObject(engine, transform = DefaultTransform(), render = new GameObj
     this.componentsByName = new Map(); //grab component by name
     this.componentsByType = new Map(); //grab component(s) by type
     this.componentUsedID = new Set(); //set of used IDs
-
     this.toBeAdded = new Map();
 
     this.AddComponent = function(name, component) {
-
+        //throw new Exception();
         if (this.id == -1) {
             console.log("cannot add, sending to temp set");
             this.toBeAdded.set(name, component);

@@ -58,6 +58,7 @@ function Engine(scene) {
 
     this.Update = function() { //
         if (this.enabled) {
+            //console.log("objects in world" + this.objects.size);
             this.UpdateControllers();
             this.UpdateObjects();
             this.RenderObjects();
@@ -85,7 +86,6 @@ function Engine(scene) {
     this.CreateInstance = function(object) { //
         if (object.id == -1) { //set id for gameObject
             object.id = engine.GetNextGameObjectID();
-
             if (object.toBeAdded.size != 0) {
                 console.log("object = ", object, "has unused components");
                 object.SetComponents(); //set components on non invoked object

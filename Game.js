@@ -50,13 +50,14 @@ function init(event) { //initializer
 
     //------------------------------------------------------------------------------------------------------------------
 
+
     world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender(worldRadius));
     world.SetSpeed(DegreesToRadians(worldSpeed));
-    //engine.CreateInstance(world);
+    engine.CreateInstance(world);
 
     road = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, laneRadius, laneLineWidth, false));
     road.SetSpeed(DegreesToRadians(worldSpeed));
-    //engine.CreateInstance(road);
+    engine.CreateInstance(road);
 
     //oppositeRoad = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, true));
     //oppositeRoad.SetSpeed(DegreesToRadians(worldSpeed));
@@ -92,9 +93,9 @@ function init(event) { //initializer
     collider.render.EarlyLoad();
     collider.Disable();
 
-    trigger.AddComponent( "TRIGGER_0", collider );
+    //trigger.AddComponent( "TRIGGER_0", collider );
     var timer = new Timer(200);
-    trigger.AddComponent( "REFRESH_TIMER", timer );
+    //trigger.AddComponent( "REFRESH_TIMER", timer );
     timer.Reset();
 
     collider.RegisterOnCollision( (_collider) => road.TurnRight() );
@@ -113,7 +114,7 @@ function init(event) { //initializer
 
     var startTimer = new GameObject();
     var timer = new Timer(200);
-    startTimer.AddComponent("START_TIMER", timer );
+    //startTimer.AddComponent("START_TIMER", timer );
     timer.RegisterOnClockExpired( (_timer) => collider.Enable() );
     timer.RegisterOnClockExpired( (_timer) => _timer.Destroy(engine) );
     //engine.CreateInstance( startTimer );
@@ -122,33 +123,52 @@ function init(event) { //initializer
 
     var despawner = new GameObject(engine, new Transform(0, 0, worldRadius));
     despawner.AddComponent("DESPAWN_BOX", new BoxCollider(roadWidth, 10, roadWidth));
-    //engine.CreateInstance(despawner);
+    engine.CreateInstance(despawner);
 
     //Spawner-----------------------------------------------------------------------------------------------------------
 
     //create the entity spawning unit
-    var spawn = new GameObject(engine, new Transform(0, 0, -worldRadius),
-        new CruiserRender(cruiserWidth, cruiserHeight, cruiserDepth));
+    //var spawn = new GameObject(engine, new Transform(0, 0, -worldRadius),
+    //    new CruiserRender(cruiserWidth, cruiserHeight, cruiserDepth));
+    //engine.CreateInstance(spawn);
 
-    spawn.Init = function() {
-        this.AddComponent("DESPAWN_BOX", new BoxCollider(300, 300, 300));
-        //spawn.GetComponent("DESPAWN_BOX").RegisterOnCollision( (_this) => _this.Destroy(engine) );
-        this.RegisterOnLateUpdate( (_spawn) => _spawn.RotateAbout(0, 0, 0, worldSpeed, 0, 0) );
-    }
+    //spawn.AddComponent("DESPAWN_BOX", new BoxCollider(300, 300, 300, new Transform(0, 0, 0)));
+    //spawn.GetComponent("DESPAWN_BOX").RegisterOnCollision( (_this) => _this.Destroy(engine) );
+    //spawn.RegisterOnLateUpdate( (_spawn) => _spawn.RotateAbout(0, 0, 0, worldSpeed, 0, 0) );
 
-
-
-    spawn.Update = function(engine) {
+    //spawn.Update = function(engine) {
         //if (this.GetComponent("DESPAWN_BOX").Collision(despawner.GetComponent("DESPAWN_BOX"))) {
         //    this.callbackHandler.Invoke("ON_COLLISION");
         //}
 
         //this.RotateAbout(0, 0, 0, worldSpeed, 0, 0);
-    }
+    //}
 
     //console.log(spawn);
 
-    var spawner = new Spawner(engine, new Transform(0, 0, -worldRadius), new BoxColliderRender(100, 100, 100), spawn);
+
+    var spawner = new Spawner(engine, new Transform(0, 0, -worldRadius), new BoxColliderRender(100, 100, 100));
+
+    spawner.Spawn = function(engine, prefab) {
+
+        //var spawnObject = spawnTarget[Math.floor(Math.random() * spawnTarget.length)];
+        var empty = new GameObject(engine, new Transform(0, 0, -worldRadius));
+        var despawnBox = new BoxCollider(100, 100, 100);
+        despawnBox.RegisterOnCollision( (_this) => empty.Destroy(engine) );
+        despawnBox.RegisterOnCollision( (_this) => console.log("FREE") );
+        empty.AddComponent("DESPAWN_BOX", despawnBox);
+        empty.RegisterOnLateUpdate( (_this) => _this.RotateAbout(0, 0, 0, worldSpeed, 0, 0) );
+
+        empty.Update = function() {
+            if (empty.GetComponent("DESPAWN_BOX").Collision(despawner.GetComponent("DESPAWN_BOX"))) {
+                empty.GetComponent("DESPAWN_BOX").callbackHandler.Invoke("COLLISION");
+            }
+        }
+        engine.CreateInstance(empty);
+
+        //console.log("copy_id after = " + copy.id);
+        //prefab.AddComponent("SHIT_BOX", new BoxCollider(300, 300, 300, new Transform(-100, 0, 0)));
+    }
     engine.CreateInstance(spawner);
 
     //spawner.AddComponent("SPAWN_TIMER", new Timer(30));
@@ -238,7 +258,7 @@ function CreateScene() {
     //DEBUG MODE
 
     camera.position.x = 100;
-    camera.position.y = 2000 * 4;
+    camera.position.y = 2000 * 2;
     camera.position.z = 100;
     camera.lookAt(new THREE.Vector3(0, 0, 0));
 
