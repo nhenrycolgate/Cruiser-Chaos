@@ -36,11 +36,12 @@ function Engine(scene) {
         }
     }
 
-    this.GetNextGameObjectID = function() { //
+    this.GetNextGameObjectID = function() {
         var id = 0;
         while (this.objects.has(id)) {
             id++;
         }
+        console.log("next free id = ", id);
         return id++;
     }
 
@@ -84,7 +85,13 @@ function Engine(scene) {
     this.CreateInstance = function(object) { //
         if (object.id == -1) { //set id for gameObject
             object.id = engine.GetNextGameObjectID();
-            object.SetComponents(); //set components on non invoked object
+
+            if (object.toBeAdded.size != 0) {
+                console.log("object = ", object, "has unused components");
+                object.SetComponents(); //set components on non invoked object
+                console.log("object = ", object.componentsByName );
+            }
+
         }
 
         object.Init(this);

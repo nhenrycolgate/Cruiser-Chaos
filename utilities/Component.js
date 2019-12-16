@@ -1,7 +1,7 @@
 function Component(type) {
 
     this.type = type;
-    this.gameObject = -1;
+    this.gameObject = null;
     this.id = -1;
     this.callbackHandler = new CallbackHandler(this);
     this.enabled = true;
@@ -11,6 +11,7 @@ function Component(type) {
 
     this.AttachToGameObject = function(gameObject) {
         this.gameObject = gameObject;
+        console.log("Attaching to gameObject", gameObject.id);
         this.id = gameObject.GetNextComponentID();
         this.Init();
         if (this.render != null) {
@@ -44,7 +45,6 @@ function Component(type) {
     this.ToString = function() { return "[Component type " + this.type + "][Component id " + this.id + "]"; }
 
 //Source from https://www.w3schools.com/js/js_object_prototypes.asp
-//todo: see if this works and makes deep copies
 
     this.Copy = function() {
         var cloneObj = this;

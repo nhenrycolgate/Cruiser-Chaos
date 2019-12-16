@@ -130,9 +130,13 @@ function init(event) { //initializer
     var spawn = new GameObject(engine, new Transform(0, 0, -worldRadius),
         new CruiserRender(cruiserWidth, cruiserHeight, cruiserDepth));
 
-    spawn.AddComponent("DESPAWN_BOX", new BoxCollider(300, 300, 300));
-    //spawn.GetComponent("DESPAWN_BOX").RegisterOnCollision( (_this) => _this.Destroy(engine) );
-    spawn.RegisterOnLateUpdate( (_spawn) => _spawn.RotateAbout(0, 0, 0, worldSpeed, 0, 0) );
+    spawn.Init = function() {
+        this.AddComponent("DESPAWN_BOX", new BoxCollider(300, 300, 300));
+        //spawn.GetComponent("DESPAWN_BOX").RegisterOnCollision( (_this) => _this.Destroy(engine) );
+        this.RegisterOnLateUpdate( (_spawn) => _spawn.RotateAbout(0, 0, 0, worldSpeed, 0, 0) );
+    }
+
+
 
     spawn.Update = function(engine) {
         //if (this.GetComponent("DESPAWN_BOX").Collision(despawner.GetComponent("DESPAWN_BOX"))) {
@@ -142,7 +146,7 @@ function init(event) { //initializer
         //this.RotateAbout(0, 0, 0, worldSpeed, 0, 0);
     }
 
-    console.log(spawn);
+    //console.log(spawn);
 
     var spawner = new Spawner(engine, new Transform(0, 0, -worldRadius), new BoxColliderRender(100, 100, 100), spawn);
     engine.CreateInstance(spawner);
@@ -234,7 +238,7 @@ function CreateScene() {
     //DEBUG MODE
 
     camera.position.x = 100;
-    camera.position.y = 2000 * 1;
+    camera.position.y = 2000 * 4;
     camera.position.z = 100;
     camera.lookAt(new THREE.Vector3(0, 0, 0));
 

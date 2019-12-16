@@ -15,6 +15,8 @@ function Render(Init) {
     //Source from https://www.w3schools.com/js/js_object_prototypes.asp
     this.Copy = function() {
 
+        //console.log("render copy");
+
         var cloneObj = this;
         if(this.__isClone) {
           cloneObj = this.__clonedFrom;
