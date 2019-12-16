@@ -55,6 +55,7 @@ function BoxCollider(width, height, depth, offsetTransform = DefaultTransform(),
     }
 
     this.Render = function(engine) {
+        return;
         if (this.render == null) {
             return;
         }
@@ -99,8 +100,11 @@ function BoxColliderRender(width, height, depth, _color) {
 
     this.Init = function() {
         this.mesh.name = "BOX_COLLIDER";
+
+        this._opacity = .5;
+
         var geometry = new THREE.BoxGeometry(width, height, depth, 1, 1, 1);
-        var material = new THREE.MeshLambertMaterial({color: _color, transparent: true, opacity: .5, wireframe: true});
+        var material = new THREE.MeshLambertMaterial({color: _color, transparent: true, opacity: this._opacity, wireframe: true});
         this.box = new THREE.Mesh(geometry, material);
         this.mesh.add(this.box);
     }

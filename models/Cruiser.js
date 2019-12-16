@@ -1,5 +1,5 @@
 //Cruiser logic
-function Cruiser(engine, transform, render = new CruiserRender(), invTimer) {
+function Cruiser(engine, transform, render = new CruiserRender()) {
 
     GameObject.call(this, engine, transform, render, "Cruiser");
 
@@ -7,7 +7,13 @@ function Cruiser(engine, transform, render = new CruiserRender(), invTimer) {
     this.hp = this.maxHp;
 
     this.lane = 1;
-    this.invTimer = invTimer; //invulnerability timer
+    this.invTimer = new Timer(120); //invulnerability timer
+
+    this.movingTimer = new Timer(6);
+    this.moving = false;
+
+    
+    this.moveRotation;
 
     this.width = 0;
     this.height = 0;
@@ -42,12 +48,15 @@ function Cruiser(engine, transform, render = new CruiserRender(), invTimer) {
         this.AddComponent("INV_TIMER", this.invTimer);
         this.GetComponent("INV_TIMER").RegisterOnClockExpired( (_timer) =>  _cruiser.GetComponent("HURT_BOX").Enable() );
 
+        //movement Timer
+        this.AddComponent("MOV_TIMER", this.movingTimer);
+        this.GetComponent("MOV_TIMER").RegisterOnClockExpired( (_timer) => _cruiser.StopMoving() );
+        this.GetComponent("MOV_TIMER").RegisterOnClockExpired( (_timer) => _cruiser.SnapToLane() );
+
         this.RegisterOnHit( (_this) => _this.hp-- );
         this.RegisterOnDeath( (_this) => engine.GetController("GAME_CONTROLLER").GameOver() );
 
-        //todo, grab reference to student for amount???
         this.RegisterOnExtraStudent( (_this) => engine.GetController("GAME_CONTROLLER").UpdateScore(1000) );
-
 
         var _UpdateCruiserPosition = this.UpdateCruiserPosition;
 
@@ -72,7 +81,13 @@ function Cruiser(engine, transform, render = new CruiserRender(), invTimer) {
         }
     }
 
-    //TryChangingLanes
+    this.SnapToLane = function() {
+        this.transform.SetPosition(this.target, this.transform.y, this.transform.z);
+        //this.render.mesh.rotateZ(-this.moveRotation);
+        this.render.mesh.rotateY(-this.moveRotation);
+    }
+    this.CanMove = function(newLane) { return newLane >= 0 && newLane < 3; }
+
     this.TryChangingLane = function(input) {
         var oldLane = this.lane;
         var newLane = this.lane + input;
@@ -86,10 +101,16 @@ function Cruiser(engine, transform, render = new CruiserRender(), invTimer) {
         return false;
     }
 
-    this.CanMove = function(newLane) { return newLane >= 0 && newLane < 3; }
+    this.StopMoving = function() { this.moving = false; }
 
     this.Update = function(engine) {
         this.UpdateWheels(engine);
+
+        if (this.moving) {
+            var delta = Math.lerp(this.current, this.target, this.movingTimer.GetPercent() );
+            console.log("delta", delta);
+            this.transform.SetPosition(delta, this.transform.y ,this.transform.z);
+        }
 
         //if ( ! this.GetComponent("HURT_BOX").enabled ) {
         // this.FlashAnimation();
@@ -109,7 +130,6 @@ function Cruiser(engine, transform, render = new CruiserRender(), invTimer) {
     }
 
     this.WheelUpdate = function(engine, wheel) {
-        //wheel.rotateX( this.speed );
         wheel.rotateOnAxis(new THREE.Vector3(0, 1, 0), this.speed);
     }
     this.SetSpeed = function(speed) { this.speed = speed; }
@@ -121,25 +141,43 @@ function Cruiser(engine, transform, render = new CruiserRender(), invTimer) {
 
     this.UpdateCruiserPosition = function(keyEvent, cruiser) {
 
+        if (cruiser.moving) { //cruiser is currently move lanes
+            return;
+        }
+
         var offset = 0;
         var check = false;
         var input = 0;
+        var multiple = 0;
 
-        if ( keyEvent.keyCode === 65) { //left 'a'
-          input = -1;
-          offset = -cruiser.laneWidth;
-          //todo switch to be worldController.roadWidth
+        if ( keyEvent.keyCode === 65) { //LEFT
+            input = -1;
+            multiple = -1;
+            offset = multiple * cruiser.laneWidth;
+
         }
-        else if (keyEvent.keyCode === 68) { //right 'd'
-          input = 1;
-          offset = cruiser.laneWidth;
+        else if (keyEvent.keyCode === 68) { //RIGHT
+            input = 1;
+            multiple = 1;
+            offset = multiple * cruiser.laneWidth;
         }
 
         check = cruiser.TryChangingLane(input);
 
         if (check) {
-            var newPosition = cruiser.transform.x + offset;
-          cruiser.transform.UpdatePosition(offset, 0 ,0);
+            //grab current and target position
+
+            cruiser.target = cruiser.transform.x + offset;
+            cruiser.current = cruiser.transform.x;
+
+            //set moving to true
+            cruiser.moving = true;
+            cruiser.moveRotation = -multiple * DegreesToRadians(10);
+            cruiser.render.mesh.rotateY(cruiser.moveRotation);
+            //cruiser.render.mesh.rotateZ(cruiser.moveRotation);
+
+            //start the timer
+            cruiser.movingTimer.Restart();
         }
     }
 }
@@ -164,7 +202,7 @@ function CruiserRender(width, height, depth) {
     var bodyDepth = depth;
 
     var bodyGeometry = new THREE.BoxGeometry(bodyWidth, bodyHeight, bodyDepth, 1, 1, 1);
-    var bodyMaterial = new THREE.MeshLambertMaterial({color:COLORS.red, transparent: true, opacity: .2});
+    var bodyMaterial = new THREE.MeshLambertMaterial({color:COLORS.red, transparent: true, opacity: 1});
     var body = new THREE.Mesh(bodyGeometry, bodyMaterial);
     this.mesh.add(body);
 

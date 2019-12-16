@@ -19,6 +19,12 @@ function Transform(x, y, z, scale = 1000) {
     }
 
     this.Render = function() {
+        return;
+
+        if ( !this.render.loaded ) {
+            this.render.Init();
+        }
+        this.scene.add(object.transform.render.mesh);
         this.render.mesh.position.x = this.x;
         this.render.mesh.position.y = this.y;
         this.render.mesh.position.z = this.z;
@@ -40,7 +46,7 @@ function TransformRender(scale) {
         var XWidth = this.scale;
         var XHeight = 1;
         var XDepth = 1;
-        var _opacity = 0.5;
+        var _opacity = 0.5 * 0;
 
         var XGeometry = new THREE.BoxGeometry(XWidth, XHeight, XDepth, 1, 1, 1);
         var XMaterial = new THREE.MeshLambertMaterial({color:COLORS.red, transparent: true, opacity: _opacity});

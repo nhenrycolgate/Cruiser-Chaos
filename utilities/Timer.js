@@ -4,12 +4,13 @@ function Timer(time) {
 
     this.time = time;
     this.left = time;
-    this.enabled = true;
+    this.enabled = false;
 
     this.Reset =   function() { this.Refresh(); this.Disable(); }
     this.Restart = function() { this.Refresh(); this.Enable(); }
     this.Refresh = function() { this.left = time; }
     this.Expired = function() { return this.left == 0; }
+    this.GetPercent = function() { return (this.time - this.left) / this.time };
 
     this.Update = function() {
         if (!this.enabled) {

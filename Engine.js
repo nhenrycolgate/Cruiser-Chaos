@@ -81,6 +81,7 @@ function Engine(scene) {
     this.RenderObjects = function() { //
         for (var object of this.objects.values()) {
             object.Render(this);
+            object.transform.Render(this);
         }
     }
 
@@ -97,17 +98,10 @@ function Engine(scene) {
 
         object.Init(this);
         this.AddGameObject(object);
-
         if ( !object.render.loaded ) {
             object.render.Init();
         }
-
         this.scene.add(object.render.mesh);
-        if ( !object.transform.render.loaded ) {
-            object.transform.render.Init();
-        }
-        this.scene.add(object.transform.render.mesh);
-
     }
 
     this.Enable = function() { this.enabled = true; } //Enable the engine

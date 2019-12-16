@@ -28,7 +28,7 @@ function init(event) { //initializer
 
     engine = new Engine(scene);
     //engine.AddController(new CameraController(camera, 1000));
-    engine.AddController( new DebugGUIController(gui, ShowStats, HideStats));
+    //engine.AddController( new DebugGUIController(gui, ShowStats, HideStats));
     engine.AddController( new GameController() );
     engine.AddController( new SpawnController() );
     engine.AddController( new BuildingSpawnController() );
@@ -51,7 +51,6 @@ function init(event) { //initializer
 
     //------------------------------------------------------------------------------------------------------------------
 
-
     world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender(worldRadius));
     world.SetSpeed(DegreesToRadians(worldSpeed));
     engine.CreateInstance(world);
@@ -66,8 +65,7 @@ function init(event) { //initializer
 
     var cruiser = new Cruiser(engine,
         new Transform(0, (cruiserHeight / 2) + roadRadius + wheelHeight, 0),
-        new CruiserRender(cruiserWidth, cruiserHeight, cruiserDepth),
-        new Timer(120));
+        new CruiserRender(cruiserWidth, cruiserHeight, cruiserDepth));
 
     cruiser.SetLaneWidth(laneWidth);
 
@@ -122,7 +120,7 @@ function init(event) { //initializer
     //Despawner---------------------------------------------------------------------------------------------------------
 
     var despawner = new GameObject(engine, new Transform(0, 0, worldRadius));
-    despawner.AddComponent("DESPAWN_BOX", new BoxCollider(roadWidth*4, 10, roadWidth));
+    despawner.AddComponent("DESPAWN_BOX", new BoxCollider(roadWidth * 4, 10, roadWidth));
     engine.CreateInstance(despawner);
 
     //Spawner-----------------------------------------------------------------------------------------------------------
@@ -161,7 +159,6 @@ function init(event) { //initializer
         var despawnBox = new BoxCollider(laneWidth, laneWidth, laneWidth);
         var hitBox = new BoxCollider(laneWidth, laneWidth, laneWidth);
 
-        despawnBox.RegisterOnCollision( (_this) => console.log("DESPAWN") );
         despawnBox.RegisterOnCollision( (_this) => empty.Destroy(engine) );
 
         hitBox.RegisterOnCollision( (_this) => cruiser.TakeDamage(engine) );
@@ -185,22 +182,10 @@ function init(event) { //initializer
     }
 
     spawner.Spawn = function(engine, code) {
-
-        //var spawnObject = spawnTarget[Math.floor(Math.random() * spawnTarget.length)];
-
         for (var i = 0; i < code.length; i++) {
-
-            console.log("code at i" + i);
-
-            if (code[i] == 0) {
-                continue;
-            }
-
-            else {
-                this.ObjectSpawn(i);
-            }
+            if (code[i] == 0) { continue; }
+            else { this.ObjectSpawn(i); }
         }
-
     }
 
     engine.CreateInstance(spawner);
@@ -221,12 +206,26 @@ function init(event) { //initializer
       if (side == 0) {
         side = -1;
       }
-      var building = new Building(engine, new Transform(side*roadWidth*2, 0, -worldRadius));
-      building.RegisterOnLateUpdate( ( _this ) => building.RotateAbout(0,0,0,worldSpeed,0,0));
+      var building = new Building(engine, new Transform(side * roadWidth * 2, 0, -worldRadius));
+
+      building.Init = function() {
+        building.AddComponent("DESPAWN_BOX", new BoxCollider(100, 100, 100));
+        building.GetComponent("DESPAWN_BOX").RegisterOnCollision( (_this) => building.Destroy(engine) );
+      }
+
+      building.Update = function() {
+          if (building.GetComponent("DESPAWN_BOX").Collision(despawner.GetComponent("DESPAWN_BOX"))) {
+              building.GetComponent("DESPAWN_BOX").callbackHandler.Invoke("COLLISION");
+          }
+      }
+
+      building.RegisterOnLateUpdate( ( _this ) => building.RotateAbout(0, 0, 0, worldSpeed, 0, 0));
       engine.CreateInstance(building);
+
     }
     var buildingSpawnController = engine.GetController("BUILDINGSPAWN_CONTROLLER");
     buildingSpawnController.RegisterOnGenerated( (_this) => buildingSpawner.Spawn(engine) );
+
     //var trigger = new GameObject(engine, new Transform( 0, -worldRadius, 0 ));
     //trigger.AddComponent( "TRIGGER_0", new BoxCollider(roadWidth, 100, roadWidth) );
     //trigger.RegisterOnLateUpdate( (_this) => _this.RotateAbout(0, 0, 0, worldSpeed, 0, 0) );
@@ -294,18 +293,18 @@ function CreateScene() {
     farPlane
     );
 
+    //DEBUG MODE
+
+    camera.position.x = 0;
+    camera.position.y = 2000 * 2;
+    camera.position.z = 1;
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
+
     //game position
     camera.position.x = 0;
     camera.position.y = 1300;
     camera.position.z = 300;
     camera.lookAt(new THREE.Vector3(0, 0, -1500));
-
-    //DEBUG MODE
-
-    /*camera.position.x = 0;
-    camera.position.y = 2000 * 1;
-    camera.position.z = 1;
-    camera.lookAt(new THREE.Vector3(0, 0, 0));*/
 
     gui = DebugGUI();
 
@@ -328,7 +327,7 @@ function CreateStats() {
 
 function CreateLights() {
 
-  hemisphereLight = new THREE.HemisphereLight(0xaaaaaa,0x000000, .9);
+  hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x000000, .9);
 
   ambientLight = new THREE.AmbientLight(0xdc8874, .5);
 

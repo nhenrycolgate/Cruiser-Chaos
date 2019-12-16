@@ -2,29 +2,46 @@ function SpawnController() {
 
     Controller.call(this, "SPAWN_CONTROLLER");
 
-    this.coolDownTimer = null; //??
-
+    this.coolDownTimer = new Timer(60);
     this.spawnCode = null;
 
     this.Init = function() {
-        var _GetSpawn = this.GetSpawn;
+
+        var _spawnController = this;
+
+        this.coolDownTimer.Restart();
+        this.coolDownTimer.RegisterOnClockExpired( (_timer) => _timer.Restart() );
+        this.coolDownTimer.RegisterOnClockExpired( (_timer) => console.log("SPAWN") );
+        this.coolDownTimer.RegisterOnClockExpired( (_timer) => _spawnController.GenerateSpawn(_spawnController) );
+
+        /*var _GetSpawn = this.GetSpawn;
         var _spawnController = this;
         window.addEventListener('keydown', function(keyEvent) {
             _GetSpawn(keyEvent, _spawnController);
-        });
+        });*/
+    }
+
+    this.Update = function(engine) {
+        this.coolDownTimer.Update(engine);
     }
 
     this.SetSpawnCode = function(spawnCode) { this.spawnCode = spawnCode; }
 
     this.GetSpawn = function(keyEvent, _spawnController) {
         if (keyEvent.key == "p") {
-            var spawnCode = _spawnController.GetSpawnCode();
-
-            _spawnController.SetSpawnCode(spawnCode);
-            _spawnController.callbackHandler.Invoke("GENERATED");
-            spawnCode = null;
+            GenerateSpawn(_spawnController);
         }
     }
+
+    this.GenerateSpawn = function(_spawnController) {
+
+        var spawnCode = _spawnController.GetSpawnCode();
+        _spawnController.SetSpawnCode(spawnCode);
+        _spawnController.callbackHandler.Invoke("GENERATED");
+        spawnCode = null;
+
+    }
+
 
     this.GetSpawnCode = function() {
         var result = [];
