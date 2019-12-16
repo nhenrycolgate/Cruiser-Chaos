@@ -48,13 +48,14 @@ function Pothole(engine, transform = DefaultTransform(), render = new PotholeRen
 }
 
 function PotholeRender(){
+
 	Render.call(this);
 	
 	this.Init = function() {
 		this.mesh.name = "Pothole";
 		
-		var holeSize=roadRadius/6;
-		var holegeometry= new THREE.CylinderGeometry(holeSize,holeSize,10);
+		var holeSize = roadRadius;
+		var holegeometry= new THREE.CylinderGeometry(holeSize, holeSize, 10);
 		var holematerial = new THREE.MeshLambertMaterial( {color: 0x6b520d} );
 		var hole = new THREE.Mesh(holegeometry, holematerial );
 		this.mesh.add(hole);

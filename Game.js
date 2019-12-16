@@ -149,7 +149,14 @@ function init(event) { //initializer
     var spawner = new Spawner(engine, new Transform(0, 0, -worldRadius), new BoxColliderRender(100, 100, 100));
 
     spawner.ObjectSpawn = function(i) {
-        var empty = new GameObject(engine, new Transform(-laneWidth + (i * laneWidth), 0, -worldRadius));
+
+        var models = [new GooseNewRender(), new RoadBlockRender()];
+
+        var render = models[GetRandomInt(0, models.length - 1)];
+
+        var empty = new GameObject(engine,
+            new Transform(-laneWidth + (i * laneWidth), 0, -worldRadius - 50),
+            render);
         var despawnBox = new BoxCollider(laneWidth, laneWidth, laneWidth);
         var hitBox = new BoxCollider(laneWidth, laneWidth, laneWidth);
 
@@ -248,7 +255,7 @@ function init(event) { //initializer
 
     var sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender(worldRadius * 3));
     sky.SetSpeed(DegreesToRadians(worldSpeed / 8));
-    //engine.CreateInstance(sky);
+    engine.CreateInstance(sky);
 
     THREEx.FullScreen.bindKey({ charCode : 'l'.charCodeAt(0)}); // Credit: Leo
 
@@ -283,10 +290,10 @@ function CreateScene() {
 
     //DEBUG MODE
 
-    /*camera.position.x = 2000;
+    /*camera.position.x = 0;
     camera.position.y = 2000 * 1;
-    camera.position.z = 0;
-    camera.lookAt(new THREE.Vector3(0, 1000, 0));*/
+    camera.position.z = 1;
+    camera.lookAt(new THREE.Vector3(0, 0, 0));*/
 
     gui = DebugGUI();
 

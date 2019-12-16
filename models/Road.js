@@ -78,8 +78,10 @@ function Road(engine, transform, render) {
 
     this.Update = function() {
 
+        this.render.mesh.rotateX(this.speed);
+
       //this.render.mesh.rotateOnAxis(new THREE.Vector3(1,0,0), multiplier * this.speed);
-      //this.render.mesh.rotateX(this.speed);
+
       //console.log("rot?" + this.render.mesh.rotation.x);
 
       // switch (this.direction) {
