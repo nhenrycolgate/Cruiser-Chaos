@@ -28,7 +28,7 @@ function init(event) { //initializer
 
     engine = new Engine(scene);
     //engine.AddController(new CameraController(camera, 1000));
-    engine.AddController(new DebugGUIController(gui, ShowStats, HideStats));
+    engine.AddController( new DebugGUIController(gui, ShowStats, HideStats));
     engine.AddController( new GameController() );
     engine.AddController( new SpawnController() );
 
@@ -56,7 +56,7 @@ function init(event) { //initializer
 
     road = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, laneRadius, laneLineWidth, false));
     road.SetSpeed(DegreesToRadians(worldSpeed));
-    engine.CreateInstance(road);
+    //engine.CreateInstance(road);
 
     //oppositeRoad = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, true));
     //oppositeRoad.SetSpeed(DegreesToRadians(worldSpeed));
@@ -74,7 +74,7 @@ function init(event) { //initializer
     cruiser.RegisterOnHit( (_cruiser) =>  _cruiser.GetComponent("INV_TIMER").Restart() );
     cruiser.RegisterOnHit( (_cruiser) =>  _cruiser.GetComponent("HURT_BOX").Disable() );
     cruiser.RegisterOnDeath( (_cruiser) =>  _cruiser.Destroy(engine) );
-    engine.CreateInstance(cruiser);
+    //engine.CreateInstance(cruiser);
 
     //var empty = new GameObject();
     //empty.AddComponent("TIMER", new Timer(200));
@@ -88,13 +88,15 @@ function init(event) { //initializer
 
     //todo add NESW triggers at the trigger
     var trigger = new GameObject(engine, new Transform( 0, worldRadius, 0 ));
-    trigger.AddComponent( "TRIGGER_0", new BoxCollider(roadWidth, 100, roadWidth) );
-    trigger.AddComponent( "REFRESH_TIMER", new Timer(200) );
+    var collider = new BoxCollider(roadWidth, 100, roadWidth);
+    collider.render.EarlyLoad();
+    collider.Disable();
 
-    var timer = trigger.GetComponent("REFRESH_TIMER");
+    trigger.AddComponent( "TRIGGER_0", collider );
+    var timer = new Timer(200);
+    trigger.AddComponent( "REFRESH_TIMER", timer );
     timer.Reset();
 
-    var collider = trigger.GetComponent("TRIGGER_0");
     collider.RegisterOnCollision( (_collider) => road.TurnRight() );
     collider.RegisterOnCollision( (_collider) => _collider.Disable() );
     collider.RegisterOnCollision( (_collider) => timer.Restart() );
@@ -105,18 +107,43 @@ function init(event) { //initializer
             collider.callbackHandler.Invoke("COLLISION");
         }
     }
+
     trigger.RegisterOnLateUpdate( (_this) => _this.RotateAbout(0, 0, 0, worldSpeed, 0, 0) );
-    collider.Disable();
-    engine.CreateInstance( trigger );
+    //engine.CreateInstance( trigger );
 
     var startTimer = new GameObject();
-    startTimer.AddComponent("START_TIMER", new Timer(200));
-    startTimer.GetComponent("START_TIMER").RegisterOnClockExpired( (_timer) => collider.Enable() );
-    startTimer.GetComponent("START_TIMER").RegisterOnClockExpired( (_timer) => _timer.Destroy() );
-    engine.CreateInstance( startTimer );
+    var timer = new Timer(200);
+    startTimer.AddComponent("START_TIMER", timer );
+    timer.RegisterOnClockExpired( (_timer) => collider.Enable() );
+    timer.RegisterOnClockExpired( (_timer) => _timer.Destroy(engine) );
+    //engine.CreateInstance( startTimer );
+
+    //Despawner---------------------------------------------------------------------------------------------------------
+
+    var despawner = new GameObject(engine, new Transform(0, 0, worldRadius));
+    despawner.AddComponent("DESPAWN_BOX", new BoxCollider(roadWidth, 10, roadWidth));
+    //engine.CreateInstance(despawner);
+
+    //Spawner-----------------------------------------------------------------------------------------------------------
 
     //create the entity spawning unit
-    var spawn = new GameObject();
+    var spawn = new GameObject(engine, new Transform(0, 0, -worldRadius),
+        new CruiserRender(cruiserWidth, cruiserHeight, cruiserDepth));
+
+    spawn.AddComponent("DESPAWN_BOX", new BoxCollider(300, 300, 300));
+    //spawn.GetComponent("DESPAWN_BOX").RegisterOnCollision( (_this) => _this.Destroy(engine) );
+    spawn.RegisterOnLateUpdate( (_spawn) => _spawn.RotateAbout(0, 0, 0, worldSpeed, 0, 0) );
+
+    spawn.Update = function(engine) {
+        //if (this.GetComponent("DESPAWN_BOX").Collision(despawner.GetComponent("DESPAWN_BOX"))) {
+        //    this.callbackHandler.Invoke("ON_COLLISION");
+        //}
+
+        //this.RotateAbout(0, 0, 0, worldSpeed, 0, 0);
+    }
+
+    console.log(spawn);
+
     var spawner = new Spawner(engine, new Transform(0, 0, -worldRadius), new BoxColliderRender(100, 100, 100), spawn);
     engine.CreateInstance(spawner);
 
@@ -128,9 +155,8 @@ function init(event) { //initializer
     //spawnTimer.RegisterOnClockExpired( (_timer) => console.log("SPAWN") );
 
     var spawnController = engine.GetController("SPAWN_CONTROLLER");
-    spawnController.RegisterOnGenerated( (_this) => spawner.UseCode(_this.spawnCode) );
+    spawnController.RegisterOnGenerated( (_this) => spawner.UseCode(engine, _this.spawnCode) );
 
-    //todo add despawn collider at the other edge of the map
 
     //var trigger = new GameObject(engine, new Transform( 0, -worldRadius, 0 ));
     //trigger.AddComponent( "TRIGGER_0", new BoxCollider(roadWidth, 100, roadWidth) );
@@ -172,7 +198,7 @@ function init(event) { //initializer
 
     var sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender(worldRadius * 3));
     sky.SetSpeed(DegreesToRadians(worldSpeed / 8));
-    engine.CreateInstance(sky);
+    //engine.CreateInstance(sky);
 
     THREEx.FullScreen.bindKey({ charCode : 'l'.charCodeAt(0)}); // Credit: Leo
 
@@ -207,9 +233,9 @@ function CreateScene() {
 
     //DEBUG MODE
 
-    camera.position.x = 0;
-    camera.position.y = 2000 * 3;
-    camera.position.z = 1;
+    camera.position.x = 100;
+    camera.position.y = 2000 * 1;
+    camera.position.z = 100;
     camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     gui = DebugGUI();

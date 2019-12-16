@@ -65,6 +65,7 @@ function BoxCollider(width, height, depth, offsetTransform = DefaultTransform(),
         this.render.mesh.position.x = this.gameObject.transform.x + this.offsetTransform.x;
         this.render.mesh.position.y = this.gameObject.transform.y + this.offsetTransform.y;
         this.render.mesh.position.z = this.gameObject.transform.z + this.offsetTransform.z;
+
     }
 
     this.Collision = function(otherBox) {

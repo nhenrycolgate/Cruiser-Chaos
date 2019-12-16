@@ -84,6 +84,7 @@ function Engine(scene) {
     this.CreateInstance = function(object) { //
         if (object.id == -1) { //set id for gameObject
             object.id = engine.GetNextGameObjectID();
+            object.SetComponents(); //set components on non invoked object
         }
 
         object.Init(this);
@@ -94,7 +95,7 @@ function Engine(scene) {
         }
 
         this.scene.add(object.render.mesh);
-        if ( !object.transform.render.loaded) {
+        if ( !object.transform.render.loaded ) {
             object.transform.render.Init();
         }
         this.scene.add(object.transform.render.mesh);

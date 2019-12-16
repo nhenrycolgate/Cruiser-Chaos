@@ -10,13 +10,20 @@ function GameObject(engine, transform = DefaultTransform(), render = new GameObj
 
     this.componentsByName = new Map(); //grab component by name
     this.componentsByType = new Map(); //grab component(s) by type
-    this.componentNameByID = new Map(); //grab name by ID
+    this.componentUsedID = new Set(); //set of used IDs
+
+    this.toBeAdded = new Map();
 
     this.AddComponent = function(name, component) {
 
+        if (this.id == -1) {
+            this.toBeAdded.set(name, component);
+            return;
+        }
+
         component.AttachToGameObject(this);
         this.componentsByName.set(name, component);
-        this.componentNameByID.set(component.id, name);
+        this.componentUsedID.add(component.id);
 
         if (this.componentsByType.has(component.type)) {
             var typeIDMap = this.componentsByType.get(component.type);
@@ -31,13 +38,19 @@ function GameObject(engine, transform = DefaultTransform(), render = new GameObj
 
     }
 
-    this.RemoveComponent = function(name) {
+    this.SetComponents = function() {
+        //fix each component
 
+        for (var name of this.toBeAdded.keys()) {
+            this.AddComponent(name, this.toBeAdded.get(name));
+        }
+
+        this.toBeAdded = new Map();
     }
 
     this.GetNextComponentID = function() {
         var id = 0;
-        while (this.componentNameByID.has(id)) {
+        while (this.componentUsedID.has(id)) {
             id++;
         }
         return id++;
@@ -158,6 +171,7 @@ function GameObject(engine, transform = DefaultTransform(), render = new GameObj
 
 //Source from https://www.w3schools.com/js/js_object_prototypes.asp
     this.Copy = function() {
+
         var cloneObj = this;
         if(this.__isClone) {
           cloneObj = this.__clonedFrom;
@@ -166,7 +180,10 @@ function GameObject(engine, transform = DefaultTransform(), render = new GameObj
         var temp = function() { return cloneObj.apply(this, arguments); };
 
         for(var key in this) {
-            if (this[key].hasOwnProperty("Copy")) {
+            if (this[key].hasOwnProperty("Copy") && key.toString() == "callbackHandler") {
+                temp[key] = this[key].Copy(temp);
+            }
+            else if (this[key].hasOwnProperty("Copy")) {
                 temp[key] = this[key].Copy();
             }
             else {

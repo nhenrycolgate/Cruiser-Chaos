@@ -5,7 +5,9 @@ function Callback(func) {
 //Source from https://www.w3schools.com/js/js_object_prototypes.asp
 Callback.prototype.Copy = function() {
 
-    var cloneObj = this;
+    return new Callback(this.func.clone());
+
+    /*var cloneObj = this;
     if(this.__isClone) {
       cloneObj = this.__clonedFrom;
     }
@@ -18,5 +20,5 @@ Callback.prototype.Copy = function() {
     temp.__isClone = true;
     temp.__clonedFrom = cloneObj;
 
-    return temp;
+    return temp;*/
 };

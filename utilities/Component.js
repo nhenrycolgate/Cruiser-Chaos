@@ -1,8 +1,8 @@
 function Component(type) {
 
     this.type = type;
-    this.gameObject = null;
-    this.id = null;
+    this.gameObject = -1;
+    this.id = -1;
     this.callbackHandler = new CallbackHandler(this);
     this.enabled = true;
     this.tag = "COMPONENT";

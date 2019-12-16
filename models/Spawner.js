@@ -3,13 +3,7 @@ function Spawner(engine, transform = DefaultTransform(), render = new GameObject
     GameObject.call(this, engine, transform, render, "SPAWNER");
     this.prefab = prefab;
 
-    this.Init = function(engine) {}
-
-    this.SetAsDefaultSpawner = function(engine) {
-
-    }
-
-    this.UseCode = function(code) {
+    this.UseCode = function(engine, code) {
         //console.log(spawnCode);
 
         var message = "";
@@ -17,10 +11,12 @@ function Spawner(engine, transform = DefaultTransform(), render = new GameObject
             message +=  c + ".";
         }
         console.log("code = " + message);
+        this.Spawn(engine, this.prefab);
     }
 
-    this.Spawn = function(engine) {
+    this.Spawn = function(engine, prefab) {
         //var spawnObject = spawnTarget[Math.floor(Math.random() * spawnTarget.length)];
-        engine.CreateInstance(prefab.Copy());
+        var copy = prefab.Copy();
+        engine.CreateInstance(copy);
     }
 }

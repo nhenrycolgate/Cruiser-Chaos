@@ -39,20 +39,14 @@ function CallbackHandler(entity) {
         }
     }
 
-    this.Copy = function() {
-        var callbackHandlerCopy = new CallbackHandler(this.entity);
-        callbackHandlerCopy.callbacks = new Map();
+    this.Copy = function(copyEntity) {
+        var callbackHandlerCopy = new CallbackHandler(copyEntity);
         for (var event of this.callbacks.keys()) {
-
-            var callbackEventSetCopy = new Set();
             var callbackEventSet = this.callbacks.get(event);
             for (var callback of callbackEventSet) {
-                callbackEventSetCopy.add(callback.Copy());
+                callbackHandlerCopy.AddCallback(event, callback.func);
             }
-
-            callbackHandlerCopy.set(event, callbackEventSetCopy);
         }
-
         return callbackHandlerCopy;
     }
 }
