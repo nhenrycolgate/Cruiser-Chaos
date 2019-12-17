@@ -46,6 +46,11 @@ function Engine(scene) {
     }
 
     this.Destroy = function(object) { //
+
+        if ( !this.objects.has(object.id) ) {
+            throw new Error("Trying to delete a non existent object");
+        }
+
         this.scene.remove(object.render.mesh);
         this.scene.remove(object.transform.render.mesh);
 

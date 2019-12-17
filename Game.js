@@ -26,14 +26,6 @@ function init(event) { //initializer
 
     //Initialize engine and engine data
 
-    engine = new Engine(scene);
-    //engine.AddController(new CameraController(camera, 1000));
-    //engine.AddController( new DebugGUIController(gui, ShowStats, HideStats));
-    engine.AddController( new GameController() );
-    engine.AddController( new MenuController() );
-    engine.AddController( new SpawnController() );
-    engine.AddController( new BuildingSpawnController() );
-
     //------------------------------------------------------------------------------------------------------------------
 
     var worldRadius = 1000;
@@ -43,26 +35,33 @@ function init(event) { //initializer
     var laneLineWidth = 5;
     var roadWidth = 210;
     var laneWidth = roadWidth / 3;
-    var worldSpeed = 0.6;
+    var worldSpeed = 0.3;
+    var worldSpeedDx = 0.2;
 
     var wheelHeight = 5;
     var cruiserWidth = 100;
     var cruiserHeight = 50;
     var cruiserDepth = 50;
 
+    engine = new Engine(scene);
+    //engine.AddController(new CameraController(camera, 1000));
+    //engine.AddController( new DebugGUIController(gui, ShowStats, HideStats));
+    engine.AddController( new GameController(DegreesToRadians(worldSpeed), DegreesToRadians(worldSpeedDx)) );
+    engine.AddController( new MenuController() );
+    engine.AddController( new SpawnController() );
+    engine.AddController( new BuildingSpawnController() );
+
     //------------------------------------------------------------------------------------------------------------------
 
     world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender(worldRadius));
     world.SetSpeed(DegreesToRadians(worldSpeed));
+    engine.GetController("GAME_CONTROLLER").RegisterOnSpeedChange( () => world.SetSpeed(engine.GetController("GAME_CONTROLLER").speed) );
     engine.CreateInstance(world);
 
     road = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, laneRadius, laneLineWidth, false));
     road.SetSpeed(DegreesToRadians(worldSpeed));
+    engine.GetController("GAME_CONTROLLER").RegisterOnSpeedChange( () => road.SetSpeed(engine.GetController("GAME_CONTROLLER").speed) );
     engine.CreateInstance(road);
-
-    //oppositeRoad = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, true));
-    //oppositeRoad.SetSpeed(DegreesToRadians(worldSpeed));
-    //engine.CreateInstance(oppositeRoad);
 
     var cruiser = new Cruiser(engine,
         new Transform(0, (cruiserHeight / 2) + roadRadius + wheelHeight, 0),
@@ -76,48 +75,6 @@ function init(event) { //initializer
     cruiser.RegisterOnDeath( (_cruiser) =>  _cruiser.Destroy(engine) );
     engine.CreateInstance(cruiser);
 
-    //var empty = new GameObject();
-    //empty.AddComponent("TIMER", new Timer(200));
-    //empty.GetComponent("TIMER").RegisterOnClockExpired( (_timer) => cruiser.TakeDamage(engine) );
-    //empty.GetComponent("TIMER").RegisterOnClockExpired( (_timer) => _timer.Restart() );
-    //engine.CreateInstance(empty);
-
-    //var particle = new Particle(engine, DefaultTransform(), new ParticleRender(), new Timer(20));
-    //var particleSystem = new ParticleSystem(engine, DefaultTransform(), new GameObjectRender(), particle, new Timer(1));
-    // engine.CreateInstance(particleSystem);
-
-    //todo add NESW triggers at the trigger
-    var trigger = new GameObject(engine, new Transform( 0, worldRadius, 0 ));
-    var collider = new BoxCollider(roadWidth, 100, roadWidth);
-    collider.render.EarlyLoad();
-    collider.Disable();
-
-    //trigger.AddComponent( "TRIGGER_0", collider );
-    var timer = new Timer(200);
-    //trigger.AddComponent( "REFRESH_TIMER", timer );
-    timer.Reset();
-
-    collider.RegisterOnCollision( (_collider) => road.TurnRight() );
-    collider.RegisterOnCollision( (_collider) => _collider.Disable() );
-    collider.RegisterOnCollision( (_collider) => timer.Restart() );
-    timer.RegisterOnClockExpired( (_timer) => collider.Enable() );
-
-    collider.Update = function(engine) {
-        if ( collider.Collision(cruiser.GetComponent("HURT_BOX")) ) {
-            collider.callbackHandler.Invoke("COLLISION");
-        }
-    }
-
-    trigger.RegisterOnLateUpdate( (_this) => _this.RotateAbout(0, 0, 0, worldSpeed, 0, 0) );
-    //engine.CreateInstance( trigger );
-
-    var startTimer = new GameObject();
-    var timer = new Timer(200);
-    //startTimer.AddComponent("START_TIMER", timer );
-    timer.RegisterOnClockExpired( (_timer) => collider.Enable() );
-    timer.RegisterOnClockExpired( (_timer) => _timer.Destroy(engine) );
-    //engine.CreateInstance( startTimer );
-
     //Despawner---------------------------------------------------------------------------------------------------------
 
     var despawner = new GameObject(engine, new Transform(0, 0, worldRadius));
@@ -125,26 +82,6 @@ function init(event) { //initializer
     engine.CreateInstance(despawner);
 
     //Spawner-----------------------------------------------------------------------------------------------------------
-
-    //create the entity spawning unit
-    //var spawn = new GameObject(engine, new Transform(0, 0, -worldRadius),
-    //    new CruiserRender(cruiserWidth, cruiserHeight, cruiserDepth));
-    //engine.CreateInstance(spawn);
-
-    //spawn.AddComponent("DESPAWN_BOX", new BoxCollider(300, 300, 300, new Transform(0, 0, 0)));
-    //spawn.GetComponent("DESPAWN_BOX").RegisterOnCollision( (_this) => _this.Destroy(engine) );
-    //spawn.RegisterOnLateUpdate( (_spawn) => _spawn.RotateAbout(0, 0, 0, worldSpeed, 0, 0) );
-
-    //spawn.Update = function(engine) {
-        //if (this.GetComponent("DESPAWN_BOX").Collision(despawner.GetComponent("DESPAWN_BOX"))) {
-        //    this.callbackHandler.Invoke("ON_COLLISION");
-        //}
-
-        //this.RotateAbout(0, 0, 0, worldSpeed, 0, 0);
-    //}
-
-    //console.log(spawn);
-
 
     var spawner = new Spawner(engine, new Transform(0, 0, -worldRadius));
 
@@ -154,8 +91,6 @@ function init(event) { //initializer
 
         var render = models[GetRandomInt(0, models.length - 1)];
         render.EarlyLoad();
-
-        console.log("render h", render.height);
 
         var empty = new GameObject(engine,
             new Transform(-laneWidth + (i * laneWidth), 0, -worldRadius - render.height),
@@ -171,7 +106,15 @@ function init(event) { //initializer
         empty.AddComponent("DESPAWN_BOX", despawnBox);
         empty.AddComponent("HIT_BOX", hitBox);
 
-        empty.RegisterOnLateUpdate( (_this) => _this.RotateAbout(0, 0, 0, worldSpeed, 0, 0) );
+        empty.SetSpeed = function(speed) {
+            console.log("Speed = ", speed);
+            empty.speed = speed;
+        }
+        empty.GetSpeed = function() { return empty.speed; }
+        empty.SetSpeed(worldSpeed);
+
+        engine.GetController("GAME_CONTROLLER").RegisterOnSpeedChange( () => empty.SetSpeed(engine.GetController("GAME_CONTROLLER").getSpeed()) );
+        empty.RegisterOnLateUpdate( (_this) => _this.RotateAbout(0, 0, 0, _this.GetSpeed(), 0, 0) );
 
         empty.Update = function() {
             if (empty.GetComponent("DESPAWN_BOX").Collision(despawner.GetComponent("DESPAWN_BOX"))) {
@@ -182,6 +125,7 @@ function init(event) { //initializer
                 empty.GetComponent("HIT_BOX").callbackHandler.Invoke("COLLISION");
             }
         }
+
         engine.CreateInstance(empty);
     }
 
@@ -220,20 +164,17 @@ function init(event) { //initializer
       engine.CreateInstance(building);
 
     }
+
     var buildingSpawnController = engine.GetController("BUILDINGSPAWN_CONTROLLER");
     buildingSpawnController.RegisterOnGenerated( (_this) => buildingSpawner.Spawn(engine) );
 
-    //var cloud = new Cloud(engine, new Transform(0, 1000, -worldRadius), new CloudRender(), new Timer(2000));
-    //cloud.Update = function(engine) {
-    //    cloud.RotateAbout(0, 1000, -worldRadius, 0, 0, worldSpeed);
-    //}
+    //------------------------------------------------------------------------------------------------------------------
 
     var rain = new Rain(engine, new Transform(0, worldRadius * 2, 0), new RainRender(), new Timer(20));
     rain.dim = worldRadius / 4;
 
     var rainSpawner = new ParticleSystem(engine, DefaultTransform(), new GameObjectRender(), rain, new Timer(1));
     rainSpawner.particle = rain;
-
     engine.CreateInstance(rainSpawner);
 
     var sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender(worldRadius * 3));

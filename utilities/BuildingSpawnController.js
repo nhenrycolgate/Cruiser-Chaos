@@ -5,7 +5,7 @@ function BuildingSpawnController() {
     this.coolDownTimer = null;
 
     this.Init = function() {
-        this.coolDownTimer = new Timer(60);
+        this.coolDownTimer = new Timer(160);
         this.coolDownTimer.Restart();
         this.coolDownTimer.RegisterOnClockExpired( () => this.coolDownTimer.Restart() )
         this.coolDownTimer.RegisterOnClockExpired( () => this.callbackHandler.Invoke("GENERATED") );

@@ -13,6 +13,7 @@ function Road(engine, transform, render) {
     var multiplier = 1;
 
     this.direction = directions.N;
+    this.speed = 0;
 
     this.Init = function() {
       if (!this.render.loaded) {
@@ -20,9 +21,9 @@ function Road(engine, transform, render) {
       }
     }
 
-    this.SetSpeed = function(speed) {
-        this.speed = speed;
-    }
+    this.SetSpeed = function(speed) { this.speed = speed; }
+
+    this.GetSpeed = function() { return this.speed; }
 
     this.TurnLeft = function() {
       // render.mesh.rotation.y = DegreesToRadians(90);

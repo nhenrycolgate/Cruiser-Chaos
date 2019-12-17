@@ -6,19 +6,19 @@ function CallbackHandler(entity) {
     this.AddCallback = function (event, cb) {
         var callback = new Callback(cb);
         if (this.callbacks.has(event)) {
-            var callbackEventSet = this.callbacks.get(event);
-            if ( !callbackEventSet.has(callback) ) {
-                callbackEventSet.add(callback);
-                this.callbacks.set(event, callbackEventSet);
+            var callbackEventArray = this.callbacks.get(event);
+            if ( !callbackEventArray.includes(callback) ) {
+                callbackEventArray.push(callback);
+                this.callbacks.set(event, callbackEventArray);
             }
             else {
                 console.log("Callback:[" + cbObject + "] already subscribed to event {" + event + "}");
             }
         }
         else {
-            var callbackEventSet = new Set();
-            callbackEventSet.add(callback);
-            this.callbacks.set(event, callbackEventSet);
+            var callbackEventArray = new Array();
+            callbackEventArray.push(callback);
+            this.callbacks.set(event, callbackEventArray);
         }
     }
 
@@ -32,9 +32,39 @@ function CallbackHandler(entity) {
     }
 
     this.Invoke = function(event) {
+
         if (this.callbacks.has(event)) {
-            for (var callback of this.callbacks.get(event)) {
-                callback.func(entity);
+            var toBeDeleted = [];
+
+            var array = this.callbacks.get(event);
+
+            for (var i = 0; i < array.length; i++) {
+                var callback = array[i];
+                try {
+                    callback.func(entity); //tries to make the callback
+                }
+                catch (error) {
+                    toBeDeleted.push(i); //add it to an array to be deleted
+                }
+            }
+
+            if (toBeDeleted.length != 0) {
+
+                var tempArray = [];
+                var index = 0;
+
+                for (var i = 0; i < array.length; i++) {
+
+                    var target = toBeDeleted[index];
+                    if (target == i) { //don't add this to the tempArray
+                        index ++;
+                    }
+                    else {
+                        tempArray.push(array[i]);
+                    }
+                }
+
+                this.callbacks.set(event, tempArray);
             }
         }
     }
@@ -42,8 +72,8 @@ function CallbackHandler(entity) {
     this.Copy = function(copyEntity) {
         var callbackHandlerCopy = new CallbackHandler(copyEntity);
         for (var event of this.callbacks.keys()) {
-            var callbackEventSet = this.callbacks.get(event);
-            for (var callback of callbackEventSet) {
+            var callbackEventArray = this.callbacks.get(event);
+            for (var callback of callbackEventArray) {
                 callbackHandlerCopy.AddCallback(event, callback.func);
             }
         }
