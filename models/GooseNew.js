@@ -56,6 +56,8 @@ function GooseNewRender(){
 		/*this.lowerbody= new THREE.Object3D();
 		this.middlebody= new THREE.Object3D();
 		this.upperbody= new THREE.Object3D();*/
+
+		this.height = 30;
 		
 		////////////////
 		var bodySize= 25;

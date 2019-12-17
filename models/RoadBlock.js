@@ -51,6 +51,8 @@ function RoadBlockRender(){
 
         this.mesh.name= "Roadblock";
 
+        this.height = 
+
         /////////////////
         var legHeight = 40;
         var leg1geometry = new THREE.CylinderGeometry( 5,5 ,legHeight, 10 );
