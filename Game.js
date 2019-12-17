@@ -146,19 +146,22 @@ function init(event) { //initializer
     //console.log(spawn);
 
 
-    var spawner = new Spawner(engine, new Transform(0, 0, -worldRadius), new BoxColliderRender(100, 100, 100));
+    var spawner = new Spawner(engine, new Transform(0, 0, -worldRadius));
 
     spawner.ObjectSpawn = function(i) {
 
         var models = [new GooseNewRender(), new RoadBlockRender()];
 
         var render = models[GetRandomInt(0, models.length - 1)];
+        render.EarlyLoad();
+
+        console.log("render h", render.height);
 
         var empty = new GameObject(engine,
-            new Transform(-laneWidth + (i * laneWidth), 0, -worldRadius - 20),
+            new Transform(-laneWidth + (i * laneWidth), 0, -worldRadius - render.height),
             render);
-        var despawnBox = new BoxCollider(laneWidth, laneWidth, laneWidth);
-        var hitBox = new BoxCollider(laneWidth, laneWidth, laneWidth);
+        var despawnBox = new BoxCollider(10, 10, 10, DefaultTransform(), COLORS.yellow);
+        var hitBox = new BoxCollider(laneWidth, laneWidth, laneWidth / 2);
 
         despawnBox.RegisterOnCollision( (_this) => empty.Destroy(engine) );
 

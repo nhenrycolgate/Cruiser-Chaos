@@ -51,7 +51,7 @@ function RoadBlockRender(){
 
         this.mesh.name= "Roadblock";
 
-        this.height = 
+        this.height = 20;
 
         /////////////////
         var legHeight = 40;
