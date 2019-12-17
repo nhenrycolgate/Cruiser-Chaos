@@ -1,4 +1,5 @@
 function MenuController() {
+
     this.beginGameMenu = document.getElementById("beginGameMenu");
     this.gameUI = document.getElementById("gameUI");
     this.gameOverMenu = document.getElementById("gameOverMenu");
