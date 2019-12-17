@@ -43,6 +43,26 @@
     transform : translate(-50%,-50%);
 }
 
+#gameUI {
+  position:absolute;
+  font-family:'Roboto', sans-serif;
+  font-weight:bold;
+  text-transform: uppercase;
+  color:#FFFFFF;
+  opacity:0;
+  left:50%;
+  top:0px;
+  width:100%;
+  transform : translate(-50%,-100%);
+  user-select: none;
+  z-index:1;
+}
+
+#gameUI.show {
+    opacity:1;
+    transform : translate(-50%,-50%);
+}
+
 #gameTitle {
   position:absolute;
   font-family:'Roboto', sans-serif;
@@ -108,7 +128,7 @@
   user-select: none;
 }
 
-#dist {
+#scoreContainer {
   position:absolute;
   left:50%;
   top:50px;
@@ -120,7 +140,7 @@
   position:relative;
   font-family:'Roboto', sans-serif;
   text-transform:uppercase;
-  color:#ffa873;//100707;
+  color:#ffa873;
   font-size:12px;
   letter-spacing:2px;
   text-align:center;
@@ -135,4 +155,23 @@
   font-size:40px;
   font-family:'Roboto';
   text-align:center;
+}
+
+#healthContainer {
+  position:absolute;
+  transform:translate(-50%,0%);
+  user-select: none;
+  right:20px;
+  top:100px;
+}
+
+#health{
+  position:relative;
+  text-transform:uppercase;
+  color:#dc5f45;
+  font-size:60px;
+  font-family:'Roboto';
+  text-align:center;
+  width:100px;
+  height:100px;
 }
