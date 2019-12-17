@@ -61,10 +61,11 @@ function Cruiser(engine, transform, render = new CruiserRender()) {
         this.GetComponent("MOV_TIMER").RegisterOnClockExpired( (_timer) => _cruiser.StopMoving() );
         this.GetComponent("MOV_TIMER").RegisterOnClockExpired( (_timer) => _cruiser.SnapToLane() );
 
-        this.RegisterOnHit( (_this) => { _this.hp--; _this.callbackHandler.Invoke("ON_HEALTH_CHANGE"); } );
+        this.RegisterOnHit( (_this) => { _this.hp--;} );
         this.RegisterOnHit( (_this) => _cruiser.GetComponent("FLASH_TIMER").Restart() ); //start flashing
         this.RegisterOnHit( (_this) => _cruiser.Flash() ); //flash cruiser
-        this.RegisterOnHealthChange( (_this) => engine.GetController("GAME_CONTROLLER").SetHealth(_this.hp) ); //flash cruiser
+
+        this.RegisterOnHealthChange( (_this) => engine.GetController("GAME_CONTROLLER").SetHealth(_this.hp) );
 
         this.RegisterOnDeath( (_this) => engine.GetController("GAME_CONTROLLER").GameOver() );
 
@@ -79,6 +80,8 @@ function Cruiser(engine, transform, render = new CruiserRender()) {
 
     this.TakeDamage = function(engine) {
         this.callbackHandler.Invoke("HIT");
+        this.callbackHandler.Invoke("ON_HEALTH_CHANGE");
+
         if (this.hp == 0) {
             this.callbackHandler.Invoke("DEATH");
         }
@@ -86,8 +89,10 @@ function Cruiser(engine, transform, render = new CruiserRender()) {
 
     this.PickupStudent = function(engine) {
         if (this.hp < this.maxHp) {
-            this.callbackHandler.Invoke("ON_HEALTH_CHANGE");
             this.hp++;
+
+            engine.GetController("GAME_CONTROLLER").UpdateScore(100);
+            this.callbackHandler.Invoke("ON_HEALTH_CHANGE");
         }
         else {
             this.callbackHandler.Invoke("ON_EXTRA_STUDENT");

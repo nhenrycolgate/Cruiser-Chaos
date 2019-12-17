@@ -196,7 +196,7 @@ function init(event) { //initializer
         side = -1;
     }
 
-    var student = new Character(engine, new Transform((side * roadWidth) - (side * 70), 0, -worldRadius-20));
+    var student = new Character(engine, new Transform((side * roadWidth) - (side * 70), 0, -worldRadius - 10));
 
     student.speed = engine.GetController("GAME_CONTROLLER").GetSpeed();
     student.SetSpeed = function(speed) { building.speed = speed; }
@@ -265,7 +265,7 @@ function CreateScene() {
     camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     //game position
-    camera.position.x = 0;
+    camera.position.x = 50;
     camera.position.y = 1300;
     camera.position.z = 300;
     camera.lookAt(new THREE.Vector3(0, 0, -1500));
