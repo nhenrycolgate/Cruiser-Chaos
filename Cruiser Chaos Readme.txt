@@ -1,8 +1,8 @@
-Cruiser Chaos
+﻿Cruiser Chaos
 Ethan Dorow, Nile Henry, Kyle Wybranowski
 
 
-Game Background: You are a Colgate University cruiser driver who is in charge of transporting students safely through the town. There are three lanes that you can drive in. You start the game with three students on board the cruiser. While driving, you must avoid hitting geese, potholes, and road blocks. If you do hit an obstacle, you lose a student (nobody likes a reckless driver!), however you can pick more up along the drive . The game ends when you run out of students. 
+Game Background: You are a Colgate University cruiser driver who is in charge of transporting students safely through the town. There are three lanes that you can drive in. You start the game with three students on board the cruiser. While driving, you must avoid hitting geese, potholes, and road blocks. If you do hit an obstacle, you lose a student (nobody likes a reckless driver!), however you can pick more up along the drive. The game ends when you run out of students. 
 
 
 Scene: The game consists of a rolling world, which is represented by a sphere. The roads are cylinders with radii slightly bigger than that of the world (so they stick out from the surface of the world). Buildings are pinned in specific spots on the sides of the road. The goose, roadblock, and pothole obstacles are basic models with minimalist style art. The obstacles spawn randomly in the three lanes below the horizon of the world and move towards you quickly. Once the obstacles are behind you, they will despawn to conserve memory. 
@@ -90,10 +90,11 @@ The architecture for our game is extremely strong and modular. Through the use o
 
 Next Steps:
 * Implement objectives that we failed to implement due to time constraints 
-* Additional power-ups: 
-   * Slower driving speed for easier navigation
+* Power-ups: 
+   * Speed slow-down
    * Points multiplier
    * Student magnet 
+   * Temporary invulnerability
 * Additional world environments: Colgate Campus, random environment
 * Weather: 
    * Precipitation (snow, rain)
