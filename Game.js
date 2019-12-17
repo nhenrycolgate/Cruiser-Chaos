@@ -36,7 +36,7 @@ function init(event) { //initializer
     var roadWidth = 210;
     var laneWidth = roadWidth / 3;
     var worldSpeed = 0.3;
-    var worldSpeedDx = 0.2;
+    var worldSpeedDx = 0.15;
 
     var wheelHeight = 5;
     var cruiserWidth = 100;
@@ -46,7 +46,7 @@ function init(event) { //initializer
     engine = new Engine(scene);
     //engine.AddController(new CameraController(camera, 1000));
     //engine.AddController( new DebugGUIController(gui, ShowStats, HideStats));
-    engine.AddController( new GameController(DegreesToRadians(worldSpeed), DegreesToRadians(worldSpeedDx)) );
+    engine.AddController( new GameController(worldSpeed, worldSpeedDx) );
     engine.AddController( new MenuController() );
     engine.AddController( new SpawnController() );
     engine.AddController( new BuildingSpawnController() );
@@ -55,12 +55,12 @@ function init(event) { //initializer
 
     world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender(worldRadius));
     world.SetSpeed(DegreesToRadians(worldSpeed));
-    engine.GetController("GAME_CONTROLLER").RegisterOnSpeedChange( () => world.SetSpeed(engine.GetController("GAME_CONTROLLER").speed) );
+    engine.GetController("GAME_CONTROLLER").RegisterOnSpeedChange( () => world.SetSpeed(DegreesToRadians(engine.GetController("GAME_CONTROLLER").speed)) );
     engine.CreateInstance(world);
 
     road = new Road(engine, new Transform(0, 0, 0), new RoadRender(roadRadius, roadWidth, laneRadius, laneLineWidth, false));
     road.SetSpeed(DegreesToRadians(worldSpeed));
-    engine.GetController("GAME_CONTROLLER").RegisterOnSpeedChange( () => road.SetSpeed(engine.GetController("GAME_CONTROLLER").speed) );
+    engine.GetController("GAME_CONTROLLER").RegisterOnSpeedChange( () => road.SetSpeed(DegreesToRadians(engine.GetController("GAME_CONTROLLER").speed)) );
     engine.CreateInstance(road);
 
     var cruiser = new Cruiser(engine,
@@ -78,7 +78,7 @@ function init(event) { //initializer
     //Despawner---------------------------------------------------------------------------------------------------------
 
     var despawner = new GameObject(engine, new Transform(0, 0, worldRadius));
-    despawner.AddComponent("DESPAWN_BOX", new BoxCollider(roadWidth * 4, 10, roadWidth));
+    despawner.AddComponent("DESPAWN_BOX", new BoxCollider(roadWidth * 4, 100, roadWidth));
     engine.CreateInstance(despawner);
 
     //Spawner-----------------------------------------------------------------------------------------------------------
@@ -106,14 +106,11 @@ function init(event) { //initializer
         empty.AddComponent("DESPAWN_BOX", despawnBox);
         empty.AddComponent("HIT_BOX", hitBox);
 
-        empty.SetSpeed = function(speed) {
-            console.log("Speed = ", speed);
-            empty.speed = speed;
-        }
+        empty.SetSpeed = function(speed) { empty.speed = speed; }
         empty.GetSpeed = function() { return empty.speed; }
-        empty.SetSpeed(worldSpeed);
+        empty.speed = engine.GetController("GAME_CONTROLLER").GetSpeed();
 
-        engine.GetController("GAME_CONTROLLER").RegisterOnSpeedChange( () => empty.SetSpeed(engine.GetController("GAME_CONTROLLER").getSpeed()) );
+        engine.GetController("GAME_CONTROLLER").RegisterOnSpeedChange( () => empty.SetSpeed(engine.GetController("GAME_CONTROLLER").GetSpeed()) );
         empty.RegisterOnLateUpdate( (_this) => _this.RotateAbout(0, 0, 0, _this.GetSpeed(), 0, 0) );
 
         empty.Update = function() {
@@ -149,6 +146,14 @@ function init(event) { //initializer
       }
       var building = new Building(engine, new Transform(side * roadWidth * 2, 0, -worldRadius));
 
+      building.speed = engine.GetController("GAME_CONTROLLER").GetSpeed();
+
+      building.SetSpeed = function(speed) {
+        building.speed = speed;
+      }
+
+      engine.GetController("GAME_CONTROLLER").RegisterOnSpeedChange( () => building.SetSpeed(engine.GetController("GAME_CONTROLLER").GetSpeed()) );
+
       building.Init = function() {
         building.AddComponent("DESPAWN_BOX", new BoxCollider(100, 100, 100));
         building.GetComponent("DESPAWN_BOX").RegisterOnCollision( (_this) => building.Destroy(engine) );
@@ -160,7 +165,7 @@ function init(event) { //initializer
           }
       }
 
-      building.RegisterOnLateUpdate( ( _this ) => building.RotateAbout(0, 0, 0, worldSpeed, 0, 0));
+      building.RegisterOnLateUpdate( ( _this ) => building.RotateAbout(0, 0, 0, building.speed, 0, 0));
       engine.CreateInstance(building);
 
     }

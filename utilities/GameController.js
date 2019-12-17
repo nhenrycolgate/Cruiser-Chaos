@@ -23,14 +23,17 @@ function GameController(speed, speedDx) {
         this.score += 1;
         this.scoreElement.innerHTML = Math.floor(this.score);
 
-        if (this.score % 200 == 0 && this.speed < 2.0) {
-            console.log("speedUp");
+        if (this.score % 500 == 0 && this.speed <= 1.0) {
+            console.log("GAME SPEED = ", this.speed);
             this.UpdateSpeed(this.speedDx);
         }
 
     }
 
-    this.GetSpeed = function() { return this.speed; }
+    this.GetSpeed = function() {
+        console.log("HUH?");
+        return this.speed;
+    }
 
     this.SetSpeed = function(speed) {
         this.speed = speed;

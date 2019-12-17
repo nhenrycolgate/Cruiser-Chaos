@@ -55,7 +55,7 @@ function BoxCollider(width, height, depth, offsetTransform = DefaultTransform(),
     }
 
     this.Render = function(engine) {
-        //return;
+        return;
         if (this.render == null) {
             return;
         }
