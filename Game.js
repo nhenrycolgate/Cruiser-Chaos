@@ -45,11 +45,12 @@ function init(event) { //initializer
 
     engine = new Engine(scene);
     //engine.AddController(new CameraController(camera, 1000));
-    //engine.AddController( new DebugGUIController(gui, ShowStats, HideStats));
+    engine.AddController( new DebugGUIController(gui, ShowStats, HideStats));
     engine.AddController( new GameController(worldSpeed, worldSpeedDx) );
     engine.AddController( new MenuController() );
     engine.AddController( new SpawnController() );
     engine.AddController( new BuildingSpawnController() );
+    engine.AddController( new StudentSpawnController() );
 
     //------------------------------------------------------------------------------------------------------------------
 
@@ -84,6 +85,7 @@ function init(event) { //initializer
     //Spawner-----------------------------------------------------------------------------------------------------------
 
     var spawner = new Spawner(engine, new Transform(0, 0, -worldRadius));
+    engine.GetController("GAME_CONTROLLER").RegisterOnSpeedChange( () => engine.GetController("SPAWN_CONTROLLER").coolDownTimer.time -= 10 );
 
     spawner.ObjectSpawn = function(i) {
 
@@ -144,13 +146,10 @@ function init(event) { //initializer
       if (side == 0) {
         side = -1;
       }
+
       var building = new Building(engine, new Transform(side * roadWidth * 2, 0, -worldRadius));
-
       building.speed = engine.GetController("GAME_CONTROLLER").GetSpeed();
-
-      building.SetSpeed = function(speed) {
-        building.speed = speed;
-      }
+      building.SetSpeed = function(speed) { building.speed = speed; }
 
       engine.GetController("GAME_CONTROLLER").RegisterOnSpeedChange( () => building.SetSpeed(engine.GetController("GAME_CONTROLLER").GetSpeed()) );
 
@@ -173,18 +172,65 @@ function init(event) { //initializer
     var buildingSpawnController = engine.GetController("BUILDINGSPAWN_CONTROLLER");
     buildingSpawnController.RegisterOnGenerated( (_this) => buildingSpawner.Spawn(engine) );
 
+    engine.GetController("GAME_CONTROLLER").RegisterOnSpeedChange( () => buildingSpawnerController.timer.time -= 10 );
+
     //------------------------------------------------------------------------------------------------------------------
 
-    var rain = new Rain(engine, new Transform(0, worldRadius * 2, 0), new RainRender(), new Timer(20));
+    var rain = new Rain(engine, new Transform(0, worldRadius * 2, 0), new RainRender(), new Timer(15));
     rain.dim = worldRadius / 4;
 
-    var rainSpawner = new ParticleSystem(engine, DefaultTransform(), new GameObjectRender(), rain, new Timer(1));
+    var rainSpawner = new ParticleSystem(engine, DefaultTransform(), new GameObjectRender(), rain, new Timer(2));
     rainSpawner.particle = rain;
-    engine.CreateInstance(rainSpawner);
+    //engine.CreateInstance(rainSpawner);
 
     var sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender(worldRadius * 3));
     sky.SetSpeed(DegreesToRadians(worldSpeed / 8));
     engine.CreateInstance(sky);
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    var studentSpawner = new Spawner(engine, new Transform(0, 0, -worldRadius), new BoxColliderRender(100, 100, 100));
+    studentSpawner.Spawn = function (engine) {
+    var side = GetRandomInt(0,1);
+    if (side == 0) {
+        side = -1;
+    }
+
+    var student = new Character(engine, new Transform((side * roadWidth) - (side * 70), 0, -worldRadius));
+
+    student.speed = engine.GetController("GAME_CONTROLLER").GetSpeed();
+    student.SetSpeed = function(speed) { building.speed = speed; }
+    student.RegisterOnLateUpdate( ( _this ) => student.RotateAbout(0, 0, 0, student.speed, 0, 0));
+
+    engine.GetController("GAME_CONTROLLER").RegisterOnSpeedChange( () => student.SetSpeed(engine.GetController("GAME_CONTROLLER").GetSpeed()) );
+
+    student.Init = function() {
+        student.AddComponent("DESPAWN_BOX", new BoxCollider(100, 100, 100));
+        student.GetComponent("DESPAWN_BOX").RegisterOnCollision( (_this) => student.Destroy(engine) );
+
+        var hitBox = new BoxCollider(laneWidth, laneWidth, laneWidth);
+        hitBox.RegisterOnCollision( (_this) => cruiser.PickupStudent(engine) );
+        hitBox.RegisterOnCollision( (_this) => student.Destroy(engine) );
+        student.AddComponent("HIT_BOX", hitBox);
+    }
+
+    student.Update = function() {
+        if (student.GetComponent("DESPAWN_BOX").Collision(despawner.GetComponent("DESPAWN_BOX"))) {
+            student.GetComponent("DESPAWN_BOX").callbackHandler.Invoke("COLLISION");
+        }
+        if (student.GetComponent("HIT_BOX").Collision(cruiser.GetComponent("GRAB_BOX_L"))) {
+            student.GetComponent("HIT_BOX").callbackHandler.Invoke("COLLISION");
+        }
+        if (student.GetComponent("HIT_BOX").Collision(cruiser.GetComponent("GRAB_BOX_R"))) {
+            student.GetComponent("HIT_BOX").callbackHandler.Invoke("COLLISION");
+        }
+    }
+
+    engine.CreateInstance(student);
+
+    }
+    var studentSpawnController = engine.GetController("STUDENTSPAWN_CONTROLLER");
+    studentSpawnController.RegisterOnGenerated( (_this) => studentSpawner.Spawn(engine) );
 
     THREEx.FullScreen.bindKey({ charCode : 'l'.charCodeAt(0)}); // Credit: Leo
 
@@ -281,31 +327,7 @@ function loop() { //game loop, game engine updates which updates scene
     stats.update();
     requestAnimationFrame(loop);
 }
-function handleKeyDown(keyEvent) {
-  // if (gameInProgress) {
-  //   ShowBeginGameMenu(false);
-  //   ShowGameOverMenu(false);
-  // }
-  //
-  // if (keyEvent.keyCode === 32) { //space
-  //   ShowGameOverMenu(false);
-  //   gameInProgress = true;
-  // }
-  /*
-  else if (keyEvent.keyCode === 188) { // Just for testing GameOverMenu
-    ShowBeginGameMenu(false);
-    ShowGameOverMenu(true);
-    gameInProgress = false;
-  } else if (keyEvent.keyCode === 37) { //Left
-    // world.TurnLeft();
-    road.TurnLeft();
-    oppositeRoad.TurnLeft();
-  } else if (keyEvent.keyCode === 39) { //right
-    // world.TurnRight();
-    road.TurnRight();
-    oppositeRoad.TurnRight();
-  }*/
-}
+
 function handleWindowResize() {
   HEIGHT = window.innerHeight - 20;
   WIDTH = window.innerWidth - 20;
@@ -316,4 +338,3 @@ function handleWindowResize() {
 
 window.addEventListener('load', init, false);
 window.addEventListener('resize', handleWindowResize, false);
-document.onkeydown = handleKeyDown;

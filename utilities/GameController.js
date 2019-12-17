@@ -10,7 +10,6 @@ function GameController(speed, speedDx) {
 
     this.health = 3;
     this.score = 0;
-    this.maxScore = 1000;
     this.multiplier = 0.1;
 
     this.speed = speed;
@@ -24,16 +23,12 @@ function GameController(speed, speedDx) {
         this.scoreElement.innerHTML = Math.floor(this.score);
 
         if (this.score % 500 == 0 && this.speed <= 1.0) {
-            console.log("GAME SPEED = ", this.speed);
             this.UpdateSpeed(this.speedDx);
         }
 
     }
 
-    this.GetSpeed = function() {
-        console.log("HUH?");
-        return this.speed;
-    }
+    this.GetSpeed = function() { return this.speed; }
 
     this.SetSpeed = function(speed) {
         this.speed = speed;
@@ -46,7 +41,16 @@ function GameController(speed, speedDx) {
     }
 
     this.GameOver = function() {
-        //end the game
+
+    }
+
+    this.UpdateScore = function(score) {
+        this.score += score;
+        this.scoreElement.innerHTML = this.score;
+    }
+
+    this.SetHealth = function(health) {
+        this.healthElement.innerHTML = health;
     }
 
     this.RegisterOnSpeedChange = function(callback) { this.callbackHandler.AddCallback("ON_SPEED_CHANGE", callback) }

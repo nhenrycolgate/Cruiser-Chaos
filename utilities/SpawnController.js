@@ -2,7 +2,7 @@ function SpawnController() {
 
     Controller.call(this, "SPAWN_CONTROLLER");
 
-    this.coolDownTimer = new Timer(60);
+    this.coolDownTimer = new Timer(90);
     this.spawnCode = null;
 
     this.Init = function() {
