@@ -15,8 +15,8 @@ var ambientLight, hemisphereLight, shadowLight; //lighting
 
 function init(event) { //initializer
 
-    beginGameMenu = document.getElementById("beginGameMenu");
-    gameOverMenu = document.getElementById("gameOverMenu");
+    // beginGameMenu = document.getElementById("beginGameMenu");
+    // gameOverMenu = document.getElementById("gameOverMenu");
 
     //Global Initializer
 
@@ -30,6 +30,7 @@ function init(event) { //initializer
     //engine.AddController(new CameraController(camera, 1000));
     //engine.AddController( new DebugGUIController(gui, ShowStats, HideStats));
     engine.AddController( new GameController() );
+    engine.AddController( new MenuController() );
     engine.AddController( new SpawnController() );
     engine.AddController( new BuildingSpawnController() );
 
@@ -321,8 +322,8 @@ function CreateLights() {
 function ShowStats() { document.body.appendChild(stats.domElement); }
 function HideStats() { document.body.removeChild(stats.domElement); }
 
-function ShowBeginGameMenu(show) { beginGameMenu.className = show ? "show" : ""; }
-function ShowGameOverMenu(show) { gameOverMenu.className = show ? "show" : ""; }
+// function ShowBeginGameMenu(show) { beginGameMenu.className = show ? "show" : ""; }
+// function ShowGameOverMenu(show) { gameOverMenu.className = show ? "show" : ""; }
 function loop() { //game loop, game engine updates which updates scene
   if (gameInProgress) {
     engine.Update();
@@ -332,15 +333,15 @@ function loop() { //game loop, game engine updates which updates scene
     requestAnimationFrame(loop);
 }
 function handleKeyDown(keyEvent) {
-  if (gameInProgress) {
-    ShowBeginGameMenu(false);
-    ShowGameOverMenu(false);
-  }
-
-  if (keyEvent.keyCode === 32) { //space
-    ShowGameOverMenu(false);
-    gameInProgress = true;
-  }
+  // if (gameInProgress) {
+  //   ShowBeginGameMenu(false);
+  //   ShowGameOverMenu(false);
+  // }
+  //
+  // if (keyEvent.keyCode === 32) { //space
+  //   ShowGameOverMenu(false);
+  //   gameInProgress = true;
+  // }
   /*
   else if (keyEvent.keyCode === 188) { // Just for testing GameOverMenu
     ShowBeginGameMenu(false);

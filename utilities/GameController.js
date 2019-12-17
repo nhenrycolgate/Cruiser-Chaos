@@ -6,6 +6,8 @@ function GameController() {
     this.direction = Direction.NORTH; //direction the world is rotating
 
     this.scoreElement = document.getElementById("score");
+    this.healthElement = document.getElementById("health");
+    this.health = 3;
     this.score = 0;
     this.maxScore = 1000;
     this.speed = 1;

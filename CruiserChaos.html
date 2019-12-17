@@ -24,6 +24,7 @@
         <script src="utilities/CameraController.js"></script>
         <script src="utilities/DebugGUI.js"></script>
         <script src="utilities/DebugGUIController.js"></script>
+        <script src="utilities/MenuController.js"></script>
         <script src="utilities/GameController.js"></script>
         <script src="utilities/SpawnController.js"></script>
         <script src="utilities/BuildingSpawnController.js"></script>
@@ -58,7 +59,7 @@
 
 <body>
     <div class="world" id="world">
-      <div class="show" id="beginGameMenu">
+      <div id="beginGameMenu">
         <div id="gameTitle">Cruiser Chaos</div>
         <div id="rules">Rules</div>
         <div style="text-align:center;width:50%;margin:auto;">
@@ -68,12 +69,18 @@
         </div>
         <div id="pressAnyKey">Press any key to begin</div>
       </div>
+      <div class="show" id="gameUI">
+        <div id="scoreContainer">
+          <div class="label">Score</div>
+          <div id="score">000</div>
+        </div>
+        <div id="healthContainer">
+          <div class="label">Students</div>
+          <div id="health">3</div>
+        </div>
+      </div>
       <div id="gameOverMenu">Game Over
       <div id="pressAnyKey">Press any key to play again</div>
-      </div>
-      <div id="dist">
-        <div class="label">Distance</div>
-        <div id="score">000</div>
       </div>
     </div>
 </body>
