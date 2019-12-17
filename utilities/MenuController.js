@@ -4,7 +4,7 @@ function MenuController() {
     this.gameUI = document.getElementById("gameUI");
     this.gameOverMenu = document.getElementById("gameOverMenu");
 
-    this.beginGameMenuOpen = false;
+    this.beginGameMenuOpen = true;
     this.gameUIOpen = false;
     this.gameOverMenuOpen = false;
 
@@ -19,7 +19,10 @@ function MenuController() {
     }
 
     this.ToggleMenu = function(keyEvent, toggleMenu) {
-      console.log(toggleMenu.gameOverMenuOpen);
+      if (toggleMenu.beginGameMenuOpen) {
+        toggleMenu.ShowBeginGameMenu(false);
+        toggleMenu.ShowGameUI(true);
+      }
       if (toggleMenu.gameOverMenuOpen) {
         toggleMenu.ShowGameOverMenu(false);
 
