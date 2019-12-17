@@ -59,7 +59,7 @@ function Engine(scene) {
 
     this.Update = function() { //
         if (this.enabled) {
-            //console.log("objects in world" + this.objects.size);
+            console.log("objects in world" + this.objects.size);
             this.UpdateControllers();
             this.UpdateObjects();
             this.RenderObjects();

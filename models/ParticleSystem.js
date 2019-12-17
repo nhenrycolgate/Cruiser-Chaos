@@ -16,7 +16,9 @@ function ParticleSystem(engine, transform, render, particle, timer) {
     }
 
     this.GenerateParticle = function(engine) {
-        engine.CreateInstance(particle.Copy(engine));
+        var copy = particle.Copy(engine);
+        console.log("particle = ", copy);
+        engine.CreateInstance(copy);
     }
 
 }

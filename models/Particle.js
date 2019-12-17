@@ -17,14 +17,13 @@ function Particle(engine, transform, render, timer) {
     }
 
     this.Update = function() {
-        this.transform.UpdatePosition(this.x, this.y, this.z);
-        this.render.particle.material.transparent = true;
-        this.render.particle.material.opacity -= 1 / this.timer.time;
+
+        //this.transform.UpdatePosition(this.x, this.y, this.z);
+        //this.render.particle.material.transparent = true;
+        //this.render.particle.material.opacity -= 1 / this.timer.time;
     }
 
     this.Copy = function(engine) {
-        //var renderCopy = {};
-        //renderCopy.mesh = this.render.mesh.clone();
         return new Particle(engine, this.transform.Copy(), this.render.Copy(), this.timer.Copy());
     }
 }

@@ -21,7 +21,9 @@ function RollingWorld(engine, transform, render) {
         this.speed = speed;
     }
 
-    this.Update = function() {}
+    this.Update = function() {
+        this.render.mesh.rotateX(this.speed);
+    }
 
     this.Unload_assets = function() {
         //TODO: create functionality to add objects to the geometry of the rolling sphere in the far plane

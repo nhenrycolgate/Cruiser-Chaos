@@ -58,6 +58,8 @@ function GameObject(engine, transform = DefaultTransform(), render = new GameObj
         return id++;
     }
 
+    this.HasComponent = function(name) { return this.componentsByName.has(name); }
+
     this.GetComponent = function(name) {
         if (this.componentsByName.has(name)) {
             return this.componentsByName.get(name);

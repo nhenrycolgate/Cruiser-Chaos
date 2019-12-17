@@ -11,7 +11,6 @@ function SpawnController() {
 
         this.coolDownTimer.Restart();
         this.coolDownTimer.RegisterOnClockExpired( (_timer) => _timer.Restart() );
-        this.coolDownTimer.RegisterOnClockExpired( (_timer) => console.log("SPAWN") );
         this.coolDownTimer.RegisterOnClockExpired( (_timer) => _spawnController.GenerateSpawn(_spawnController) );
 
         /*var _GetSpawn = this.GetSpawn;

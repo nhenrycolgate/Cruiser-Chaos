@@ -7,13 +7,13 @@ function Cruiser(engine, transform, render = new CruiserRender()) {
     this.hp = this.maxHp;
 
     this.lane = 1;
-    this.invTimer = new Timer(120); //invulnerability timer
+    this.invTimer = new Timer(80); //invulnerability timer
 
-    this.movingTimer = new Timer(6);
+    this.movingTimer = new Timer(10);
     this.moving = false;
 
-    
-    this.moveRotation;
+    this.flash = false;
+    this.flashTimer = new Timer(5);
 
     this.width = 0;
     this.height = 0;
@@ -47,6 +47,14 @@ function Cruiser(engine, transform, render = new CruiserRender()) {
         //Invulnerability Timer
         this.AddComponent("INV_TIMER", this.invTimer);
         this.GetComponent("INV_TIMER").RegisterOnClockExpired( (_timer) =>  _cruiser.GetComponent("HURT_BOX").Enable() );
+        this.GetComponent("INV_TIMER").RegisterOnClockExpired( (_timer) =>  _cruiser.flash = false );
+        this.GetComponent("INV_TIMER").RegisterOnClockExpired( (_timer) =>  _cruiser.GetComponent("FLASH_TIMER").Reset() ); //stop flashing
+        this.GetComponent("INV_TIMER").RegisterOnClockExpired( (_timer) =>  _cruiser.render.body.material.opacity = 1 ); //reset the cruiser render
+
+        //Flashing Timer
+        this.AddComponent("FLASH_TIMER", this.flashTimer);
+        this.GetComponent("FLASH_TIMER").RegisterOnClockExpired( (_timer) => _timer.Restart() ); //loop flashing
+        this.GetComponent("FLASH_TIMER").RegisterOnClockExpired( (_timer) => _cruiser.Flash() ); //flash cruiser
 
         //movement Timer
         this.AddComponent("MOV_TIMER", this.movingTimer);
@@ -54,6 +62,9 @@ function Cruiser(engine, transform, render = new CruiserRender()) {
         this.GetComponent("MOV_TIMER").RegisterOnClockExpired( (_timer) => _cruiser.SnapToLane() );
 
         this.RegisterOnHit( (_this) => _this.hp-- );
+        this.RegisterOnHit( (_this) => _cruiser.GetComponent("FLASH_TIMER").Restart() ); //start flashing
+        this.RegisterOnHit( (_this) => _cruiser.Flash() ); //flash cruiser
+
         this.RegisterOnDeath( (_this) => engine.GetController("GAME_CONTROLLER").GameOver() );
 
         this.RegisterOnExtraStudent( (_this) => engine.GetController("GAME_CONTROLLER").UpdateScore(1000) );
@@ -84,7 +95,7 @@ function Cruiser(engine, transform, render = new CruiserRender()) {
     this.SnapToLane = function() {
         this.transform.SetPosition(this.target, this.transform.y, this.transform.z);
         //this.render.mesh.rotateZ(-this.moveRotation);
-        this.render.mesh.rotateY(-this.moveRotation);
+        this.render.mesh.rotation.y = this.oldRotation;
     }
     this.CanMove = function(newLane) { return newLane >= 0 && newLane < 3; }
 
@@ -103,13 +114,19 @@ function Cruiser(engine, transform, render = new CruiserRender()) {
 
     this.StopMoving = function() { this.moving = false; }
 
+    this.Flash = function() {
+        this.render.body.material.opacity = this.flash ? 1 : 0.5;
+        this.flash = !this.flash;
+    }
+
     this.Update = function(engine) {
         this.UpdateWheels(engine);
 
         if (this.moving) {
             var delta = Math.lerp(this.current, this.target, this.movingTimer.GetPercent() );
-            console.log("delta", delta);
             this.transform.SetPosition(delta, this.transform.y ,this.transform.z);
+
+            this.render.mesh.rotation.y += this.moveRotation;
         }
 
         //if ( ! this.GetComponent("HURT_BOX").enabled ) {
@@ -172,8 +189,11 @@ function Cruiser(engine, transform, render = new CruiserRender()) {
 
             //set moving to true
             cruiser.moving = true;
-            cruiser.moveRotation = -multiple * DegreesToRadians(10);
-            cruiser.render.mesh.rotateY(cruiser.moveRotation);
+
+            cruiser.oldRotation = cruiser.render.mesh.rotation.y;
+            cruiser.moveRotation = -multiple * DegreesToRadians(1);
+
+            //cruiser.render.mesh.rotateY(cruiser.moveRotation);
             //cruiser.render.mesh.rotateZ(cruiser.moveRotation);
 
             //start the timer
@@ -203,8 +223,8 @@ function CruiserRender(width, height, depth) {
 
     var bodyGeometry = new THREE.BoxGeometry(bodyWidth, bodyHeight, bodyDepth, 1, 1, 1);
     var bodyMaterial = new THREE.MeshLambertMaterial({color:COLORS.red, transparent: true, opacity: 1});
-    var body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-    this.mesh.add(body);
+    this.body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+    this.mesh.add(this.body);
 
     //Front-------------------------------------------------------------------------------------------------------------
 
@@ -228,7 +248,6 @@ function CruiserRender(width, height, depth) {
     var windowGeometry = new THREE.BoxGeometry(windowWidth, windowHeight, windowDepth, 1, 1, 1);
     var windowMaterial = new THREE.MeshLambertMaterial({color:COLORS.white});
     var window = new THREE.Mesh(windowGeometry, windowMaterial);
-    //this.mesh.add(window);
 
 
     var windowCount = 4;

@@ -8,7 +8,7 @@ function Spawner(engine, transform = DefaultTransform(), render = new GameObject
         for (var c of code) {
             message +=  c + ".";
         }
-        console.log("code = " + message);
+        //console.log("code = " + message);
         this.Spawn(engine, code);
     }
 

@@ -154,7 +154,7 @@ function init(event) { //initializer
         var render = models[GetRandomInt(0, models.length - 1)];
 
         var empty = new GameObject(engine,
-            new Transform(-laneWidth + (i * laneWidth), 0, -worldRadius - 50),
+            new Transform(-laneWidth + (i * laneWidth), 0, -worldRadius - 20),
             render);
         var despawnBox = new BoxCollider(laneWidth, laneWidth, laneWidth);
         var hitBox = new BoxCollider(laneWidth, laneWidth, laneWidth);
@@ -190,13 +190,6 @@ function init(event) { //initializer
 
     engine.CreateInstance(spawner);
 
-    //spawner.AddComponent("SPAWN_TIMER", new Timer(30));
-    //var spawnTimer = this.GetComponent("SPAWN_TIMER");
-    //spawnTimer.Restart();
-    //spawnTimer.RegisterOnClockExpired( (_timer) => spawner.Spawn(engine) );
-    //spawnTimer.RegisterOnClockExpired( (_timer) => _timer.Restart() );
-    //spawnTimer.RegisterOnClockExpired( (_timer) => console.log("SPAWN") );
-
     var spawnController = engine.GetController("SPAWN_CONTROLLER");
     spawnController.RegisterOnGenerated( (_this) => spawner.UseCode(engine, _this.spawnCode) );
 
@@ -226,43 +219,18 @@ function init(event) { //initializer
     var buildingSpawnController = engine.GetController("BUILDINGSPAWN_CONTROLLER");
     buildingSpawnController.RegisterOnGenerated( (_this) => buildingSpawner.Spawn(engine) );
 
-    //var trigger = new GameObject(engine, new Transform( 0, -worldRadius, 0 ));
-    //trigger.AddComponent( "TRIGGER_0", new BoxCollider(roadWidth, 100, roadWidth) );
-    //trigger.RegisterOnLateUpdate( (_this) => _this.RotateAbout(0, 0, 0, worldSpeed, 0, 0) );
-    //engine.CreateInstance( trigger );
+    //var cloud = new Cloud(engine, new Transform(0, 1000, -worldRadius), new CloudRender(), new Timer(2000));
+    //cloud.Update = function(engine) {
+    //    cloud.RotateAbout(0, 1000, -worldRadius, 0, 0, worldSpeed);
+    //}
 
-    //var emptyGameObject = new GameObject(engine, DefaultTransform(), new GameObjectRender());
-    //emptyGameObject.RegisterOnLateUpdate( (_obj) => _obj.transform.UpdatePosition(5, 0, 0) );
-    //emptyGameObject.AddComponent("BOX_COLLIDER", new BoxCollider(100, 100, 100) );
-    //emptyGameObject.GetComponent("BOX_COLLIDER").RegisterOnCollision( (_collider) => emptyGameObject.Destroy(engine) );
-    //engine.CreateInstance(emptyGameObject);
+    var rain = new Rain(engine, new Transform(0, worldRadius * 2, 0), new RainRender(), new Timer(20));
+    rain.dim = worldRadius / 4;
 
-    //var target = new GameObject(engine, new Transform(1000, 0, 0), new GameObjectRender());
-    //target.RegisterOnLateUpdate( (_obj) => _obj.transform.UpdatePosition(-1, 0, 0) );
-    //target.AddComponent("BOX_COLLIDER", new BoxCollider(100, 100, 100, new Transform(+100, -100, 0)) );
-    //engine.CreateInstance(target);
+    var rainSpawner = new ParticleSystem(engine, DefaultTransform(), new GameObjectRender(), rain, new Timer(1));
+    rainSpawner.particle = rain;
 
-    //var spawn = new TestGameObject(engine);
-
-/*
-    var emptyGameObject = new GameObject(engine, new Transform(0, 0, 0), new GameObjectRender());
-    emptyGameObject.AddComponent("PRINT_TIMER", new Timer(30));
-    var timer = emptyGameObject.GetComponent("PRINT_TIMER");
-    timer.Enable();
-    timer.RegisterOnClockExpired( () => console.log("This should loop!") );
-    timer.RegisterOnClockExpired( (_timer) => _timer.Restart() );
-
-    emptyGameObject.AddComponent("OTHER_TIMER", new Timer(30));
-    var timer = emptyGameObject.GetComponent("OTHER_TIMER");
-    timer.Enable();
-    timer.RegisterOnClockExpired( () => console.log("This should also loop!") );
-    timer.RegisterOnClockExpired( (_timer) => _timer.Restart() );
-    //engine.CreateInstance(emptyGameObject);
-
-    var spawner = new Spawner(engine, DefaultTransform(), new GameObjectRender(), new GameObjectRender(), new Timer(30));
-    engine.CreateInstance(spawner);
-*/
-
+    engine.CreateInstance(rainSpawner);
 
     var sky = new Sky(engine, new Transform(0, 0, 0), new SkyRender(worldRadius * 3));
     sky.SetSpeed(DegreesToRadians(worldSpeed / 8));
