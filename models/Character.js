@@ -28,9 +28,9 @@ function Character(engine, transform = DefaultTransform(), render= new Character
 }
 
 function CharacterRender() {
-	
+
 	Render.call(this);
-	
+
 	this.Init = function(){
 		this.mesh.name = "CHARACTER";
 		this.arms = [];
@@ -82,5 +82,32 @@ function CharacterRender() {
 		completedArm.position.x -= (bodyWidth / 2 + shoulderWidth / 2) * 2;
 		this.mesh.add(completedArm);
 		this.arms.push(completedArm);
+
+    var headSize = 15;
+    var headColor = COLORS.yellow;
+
+    var headGeometry = new THREE.BoxGeometry(headSize, headSize, headSize, 1, 1, 1);
+		var headMaterial = new THREE.MeshLambertMaterial({color: headColor });
+		var head = new THREE.Mesh(headGeometry, headMaterial);
+
+    head.position.y = bodyHeight/2 + headSize/2;
+    this.mesh.add(head);
+
+    var legGeometry = new THREE.BoxGeometry(armWidth, armHeight, armDepth, 1, 1, 1);
+    var legMaterial = new THREE.MeshLambertMaterial({color: armColor});
+    var leg = new THREE.Mesh(legGeometry, legMaterial);
+
+    //right leg
+    var completedLeg = leg.clone();
+    completedLeg.position.x = -bodyWidth/2 + armWidth/2;
+    completedLeg.position.y = -armHeight;
+    this.mesh.add(completedLeg);
+
+    //left leg
+    var completedLeg = leg.clone();
+    completedLeg.position.x = bodyWidth/2 - armWidth/2;
+    completedLeg.position.y = -armHeight;
+    this.mesh.add(completedLeg);
+
 	}
 }

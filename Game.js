@@ -196,7 +196,7 @@ function init(event) { //initializer
         side = -1;
     }
 
-    var student = new Character(engine, new Transform((side * roadWidth) - (side * 70), 0, -worldRadius));
+    var student = new Character(engine, new Transform((side * roadWidth) - (side * 70), 0, -worldRadius-20));
 
     student.speed = engine.GetController("GAME_CONTROLLER").GetSpeed();
     student.SetSpeed = function(speed) { building.speed = speed; }
