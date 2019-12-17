@@ -1,4 +1,4 @@
-function Character(engine, transform, render) {
+function Character(engine, transform = DefaultTransform(), render= new CharacterRender()) {
 
     GameObject.call(this, engine, transform, render, "CHARACTER");
     this.arms = []; //contains the mesh information for the character arms
@@ -28,55 +28,59 @@ function Character(engine, transform, render) {
 }
 
 function CharacterRender() {
-    this.mesh = new THREE.Object3D();
-    this.mesh.name = "CHARACTER";
-    this.arms = [];
+	
+	Render.call(this);
+	
+	this.Init = function(){
+		this.mesh.name = "CHARACTER";
+		this.arms = [];
 
-    var bodyWidth = 20;
-    var bodyHeight = 30;
-    var bodyDepth = 10;
-    var bodyColor = COLORS.red;
+		var bodyWidth = 20;
+		var bodyHeight = 30;
+		var bodyDepth = 10;
+		var bodyColor = COLORS.red;
 
-    var bodyGeometry = new THREE.BoxGeometry(bodyWidth, bodyHeight, bodyDepth, 1, 1, 1);
-    var bodyMaterial = new THREE.MeshLambertMaterial({color: bodyColor});
-    var body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+		var bodyGeometry = new THREE.BoxGeometry(bodyWidth, bodyHeight, bodyDepth, 1, 1, 1);
+		var bodyMaterial = new THREE.MeshLambertMaterial({color: bodyColor});
+		var body = new THREE.Mesh(bodyGeometry, bodyMaterial);
 
-    this.mesh.add(body);
+		this.mesh.add(body);
 
-    var shoulderWidth = 5;
-    var shoulderHeight = 5;
-    var shoulderDepth = 5;
-    var shoulderColor = COLORS.red;
+		var shoulderWidth = 5;
+		var shoulderHeight = 5;
+		var shoulderDepth = 5;
+		var shoulderColor = COLORS.red;
 
-    var shoulderGeometry = new THREE.BoxGeometry(shoulderWidth, shoulderHeight, shoulderDepth, 1, 1, 1);
-    var shoulderMaterial = new THREE.MeshLambertMaterial({color: shoulderColor});
-    var shoulder = new THREE.Mesh(shoulderGeometry, shoulderMaterial);
+		var shoulderGeometry = new THREE.BoxGeometry(shoulderWidth, shoulderHeight, shoulderDepth, 1, 1, 1);
+		var shoulderMaterial = new THREE.MeshLambertMaterial({color: shoulderColor});
+		var shoulder = new THREE.Mesh(shoulderGeometry, shoulderMaterial);
 
-    shoulder.position.x = bodyWidth / 2 + shoulderWidth / 2;
-    shoulder.position.y = bodyHeight / 2 - shoulderHeight / 2;
+		shoulder.position.x = bodyWidth / 2 + shoulderWidth / 2;
+		shoulder.position.y = bodyHeight / 2 - shoulderHeight / 2;
 
-    var armWidth = 4;
-    var armHeight = 5 + 15;
-    var armDepth = 4;
-    var armColor = COLORS.yellow;
+		var armWidth = 4;
+		var armHeight = 5 + 15;
+		var armDepth = 4;
+		var armColor = COLORS.yellow;
 
-    var armGeometry = new THREE.BoxGeometry(armWidth, armHeight, armDepth, 1, 1, 1);
-    var armMaterial = new THREE.MeshLambertMaterial({color: armColor});
-    var arm = new THREE.Mesh(armGeometry, armMaterial);
+		var armGeometry = new THREE.BoxGeometry(armWidth, armHeight, armDepth, 1, 1, 1);
+		var armMaterial = new THREE.MeshLambertMaterial({color: armColor});
+		var arm = new THREE.Mesh(armGeometry, armMaterial);
 
-    arm.position.x = 0;
-    arm.position.y = 0 - (shoulderHeight / 2) - (armHeight / 2);
+		arm.position.x = 0;
+		arm.position.y = 0 - (shoulderHeight / 2) - (armHeight / 2);
 
-    shoulder.add(arm);
+		shoulder.add(arm);
 
-    //right arm
-    var completedArm = shoulder.clone();
-    this.mesh.add(completedArm);
-    this.arms.push(completedArm);
+		//right arm
+		var completedArm = shoulder.clone();
+		this.mesh.add(completedArm);
+		this.arms.push(completedArm);
 
-    //left arm
-    var completedArm = shoulder.clone();
-    completedArm.position.x -= (bodyWidth / 2 + shoulderWidth / 2) * 2;
-    this.mesh.add(completedArm);
-    this.arms.push(completedArm);
+		//left arm
+		var completedArm = shoulder.clone();
+		completedArm.position.x -= (bodyWidth / 2 + shoulderWidth / 2) * 2;
+		this.mesh.add(completedArm);
+		this.arms.push(completedArm);
+	}
 }
