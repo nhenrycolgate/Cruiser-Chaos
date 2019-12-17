@@ -7,8 +7,6 @@ var engine, //reference to the engine
 
     renderer; //scene renderer
 
-var gameInProgress = true; // Link to completing objectives
-
 var HEIGHT, WIDTH; //display size
 
 var ambientLight, hemisphereLight, shadowLight; //lighting
@@ -52,6 +50,8 @@ function init(event) { //initializer
     engine.AddController( new BuildingSpawnController() );
     engine.AddController( new StudentSpawnController() );
 
+    engine.GetController("MENU_CONTROLLER").RegisterOnReset( () => Init() )
+
     //------------------------------------------------------------------------------------------------------------------
 
     world = new RollingWorld(engine, new Transform(0, 0, 0), new RollingWorldRender(worldRadius));
@@ -74,6 +74,7 @@ function init(event) { //initializer
     cruiser.RegisterOnHit( (_cruiser) =>  _cruiser.GetComponent("INV_TIMER").Restart() );
     cruiser.RegisterOnHit( (_cruiser) =>  _cruiser.GetComponent("HURT_BOX").Disable() );
     cruiser.RegisterOnDeath( (_cruiser) =>  _cruiser.Destroy(engine) );
+    cruiser.RegisterOnDeath( (_cruiser) =>  engine.GetController("MENU_CONTROLLER").ShowGameOverMenu(true) );
     engine.CreateInstance(cruiser);
 
     //Despawner---------------------------------------------------------------------------------------------------------
@@ -320,9 +321,7 @@ function HideStats() { document.body.removeChild(stats.domElement); }
 // function ShowBeginGameMenu(show) { beginGameMenu.className = show ? "show" : ""; }
 // function ShowGameOverMenu(show) { gameOverMenu.className = show ? "show" : ""; }
 function loop() { //game loop, game engine updates which updates scene
-  if (gameInProgress) {
     engine.Update();
-  }
     renderer.render(scene, camera);
     stats.update();
     requestAnimationFrame(loop);

@@ -19,17 +19,13 @@ function MenuController() {
     }
 
     this.ToggleMenu = function(keyEvent, toggleMenu) {
-        if (keyEvent.key == "[") {
-          this.beginGameMenuOpen = !this.beginGameMenuOpen;
-          toggleMenu.ShowBeginGameMenu(this.beginGameMenuOpen);
-        } else if (keyEvent.key == "]"){
-          this.gameUIOpen = !this.gameUIOpen;
-          toggleMenu.ShowGameUI(this.gameUIOpen);
-        } else if (keyEvent.key == '\\') {
-          this.gameOverMenuOpen = !this.gameOverMenuOpen;
-          toggleMenu.ShowGameOverMenu(this.gameOverMenuOpen);
-        }
+      console.log(toggleMenu.gameOverMenuOpen);
+      if (toggleMenu.gameOverMenuOpen) {
+        toggleMenu.ShowGameOverMenu(false);
 
+        // https://stackoverflow.com/questions/3715047/how-to-reload-a-page-using-javascript
+        window.location.reload(false);
+      }
     }
 
     this.ShowBeginGameMenu = function(show) {
@@ -45,6 +41,9 @@ function MenuController() {
     this.ShowGameOverMenu = function(show) {
       gameOverMenu.className = show ? "show" : "";
       this.gameOverMenuOpen = show;
+      this.ShowGameUI(false);
     }
+
+    this.RegisterOnReset= function(callback) { this.callbackHandler.AddCallback("RESET", callback) }
 
 }
