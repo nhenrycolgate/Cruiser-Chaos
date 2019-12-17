@@ -43,14 +43,15 @@ function init(event) { //initializer
 
     engine = new Engine(scene);
     //engine.AddController(new CameraController(camera, 1000));
-    engine.AddController( new DebugGUIController(gui, ShowStats, HideStats));
+    // engine.AddController( new DebugGUIController(gui, ShowStats, HideStats));
     engine.AddController( new GameController(worldSpeed, worldSpeedDx) );
-    engine.AddController( new MenuController() );
+    engine.AddController( new MenuController(engine) );
     engine.AddController( new SpawnController() );
     engine.AddController( new BuildingSpawnController() );
     engine.AddController( new StudentSpawnController() );
 
-    engine.GetController("MENU_CONTROLLER").RegisterOnReset( () => Init() )
+    engine.GetController("MENU_CONTROLLER").RegisterOnStart( () => engine.enabled = true );
+    engine.enabled = false;
 
     //------------------------------------------------------------------------------------------------------------------
 
@@ -271,7 +272,7 @@ function CreateScene() {
     camera.position.z = 300;
     camera.lookAt(new THREE.Vector3(0, 0, -1500));
 
-    gui = DebugGUI();
+    // gui = DebugGUI();
 
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(WIDTH, HEIGHT);

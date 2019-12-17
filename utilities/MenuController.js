@@ -1,4 +1,4 @@
-function MenuController() {
+function MenuController(engine) {
 
     this.beginGameMenu = document.getElementById("beginGameMenu");
     this.gameUI = document.getElementById("gameUI");
@@ -19,6 +19,7 @@ function MenuController() {
     }
 
     this.ToggleMenu = function(keyEvent, toggleMenu) {
+      toggleMenu.callbackHandler.Invoke("ON_START_GAME");
       if (toggleMenu.beginGameMenuOpen) {
         toggleMenu.ShowBeginGameMenu(false);
         toggleMenu.ShowGameUI(true);
@@ -47,6 +48,6 @@ function MenuController() {
       this.ShowGameUI(false);
     }
 
-    this.RegisterOnReset= function(callback) { this.callbackHandler.AddCallback("RESET", callback) }
+    this.RegisterOnStart= function(callback) { this.callbackHandler.AddCallback("ON_START_GAME", callback) }
 
 }
